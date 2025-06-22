@@ -23,10 +23,12 @@ __all__ = [
     'RemoveMount', 'PatchShipNav', 'Register',
 ]
 
+# spec_name: get-status.response
 @dataclasses.dataclass
 class ServerStatus:
     """Fetched status successfully."""
 
+    # spec_name: get-status.response.stats
     @dataclasses.dataclass
     class Stats:
         #: Number of registered agents in the game.
@@ -63,6 +65,7 @@ class ServerStatus:
                 accounts = from_json(int, v['accounts']) if 'accounts' in v else None,
             )
 
+    # spec_name: get-status.response.health
     @dataclasses.dataclass
     class Health:
         #: The date/time when the market was last updated.
@@ -83,8 +86,10 @@ class ServerStatus:
                 last_market_update = from_json(datetime, v['lastMarketUpdate']) if 'lastMarketUpdate' in v else None,
             )
 
+    # spec_name: get-status.response.leaderboards
     @dataclasses.dataclass
     class Leaderboards:
+        # spec_name: get-status.response.leaderboards.mostCredits
         @dataclasses.dataclass
         class MostCredit:
             #: Symbol of the agent.
@@ -108,6 +113,7 @@ class ServerStatus:
                     credits = from_json(int, v['credits']),
                 )
 
+        # spec_name: get-status.response.leaderboards.mostSubmittedCharts
         @dataclasses.dataclass
         class MostSubmittedChart:
             #: Symbol of the agent.
@@ -152,6 +158,7 @@ class ServerStatus:
                 most_submitted_charts = from_json(list[ServerStatus.Leaderboards.MostSubmittedChart], v['mostSubmittedCharts']),
             )
 
+    # spec_name: get-status.response.serverResets
     @dataclasses.dataclass
     class ServerResets:
         #: The date and time when the game server will reset.
@@ -175,6 +182,7 @@ class ServerStatus:
                 frequency = from_json(str, v['frequency']),
             )
 
+    # spec_name: get-status.response.announcements
     @dataclasses.dataclass
     class Announcement:
         title: str
@@ -196,6 +204,7 @@ class ServerStatus:
                 body = from_json(str, v['body']),
             )
 
+    # spec_name: get-status.response.links
     @dataclasses.dataclass
     class Link:
         name: str
@@ -263,10 +272,12 @@ class ServerStatus:
             links = from_json(list[ServerStatus.Link], v['links']),
         )
 
+# spec_name: get-error-codes.response
 @dataclasses.dataclass
 class ErrorCodes:
     """Fetched error codes successfully."""
 
+    # spec_name: get-error-codes.response.errorCodes
     @dataclasses.dataclass
     class ErrorCode:
         code: int
@@ -304,6 +315,7 @@ class ErrorCodes:
             error_codes = from_json(list[ErrorCodes.ErrorCode], v['errorCodes']),
         )
 
+# spec_name: supply-construction.response
 @dataclasses.dataclass
 class SupplyConstruction:
     """Successfully supplied construction site."""
@@ -329,6 +341,7 @@ class SupplyConstruction:
             cargo = from_json(models.ShipCargo, v['cargo']),
         )
 
+# spec_name: accept-contract.response
 @dataclasses.dataclass
 class AcceptContract:
     """Successfully accepted contract."""
@@ -354,6 +367,7 @@ class AcceptContract:
             agent = from_json(models.Agent, v['agent']),
         )
 
+# spec_name: fulfill-contract.response
 @dataclasses.dataclass
 class FulfillContract:
     """Successfully fulfilled a contract."""
@@ -379,6 +393,7 @@ class FulfillContract:
             agent = from_json(models.Agent, v['agent']),
         )
 
+# spec_name: deliver-contract.response
 @dataclasses.dataclass
 class DeliverContract:
     """Successfully delivered cargo to contract."""
@@ -404,6 +419,7 @@ class DeliverContract:
             cargo = from_json(models.ShipCargo, v['cargo']),
         )
 
+# spec_name: get-my-factions.response
 @dataclasses.dataclass
 class MyFaction:
     symbol: models.FactionSymbol
@@ -425,6 +441,7 @@ class MyFaction:
             reputation = from_json(int, v['reputation']),
         )
 
+# spec_name: purchase-ship.response
 @dataclasses.dataclass
 class PurchaseShip:
     """Purchased ship successfully."""
@@ -454,10 +471,12 @@ class PurchaseShip:
             transaction = from_json(models.ShipyardTransaction, v['transaction']),
         )
 
+# spec_name: get-my-account.response
 @dataclasses.dataclass
 class MyAccount:
     """Default Response"""
 
+    # spec_name: get-my-account.response.account
     @dataclasses.dataclass
     class Account:
         id: str
@@ -502,6 +521,7 @@ class MyAccount:
             account = from_json(MyAccount.Account, v['account']),
         )
 
+# spec_name: create-chart.response
 @dataclasses.dataclass
 class CreateChart:
     """Successfully charted waypoint."""
@@ -537,6 +557,7 @@ class CreateChart:
             agent = from_json(models.Agent, v['agent']),
         )
 
+# spec_name: negotiate-contract.response
 @dataclasses.dataclass
 class NegotiateContract:
     """Successfully negotiated a new contract."""
@@ -558,6 +579,7 @@ class NegotiateContract:
             contract = from_json(models.Contract, v['contract']),
         )
 
+# spec_name: dock-ship.response
 @dataclasses.dataclass
 class DockShip:
     """The ship has successfully docked at its current location."""
@@ -579,6 +601,7 @@ class DockShip:
             nav = from_json(models.ShipNav, v['nav']),
         )
 
+# spec_name: extract-resources.response
 @dataclasses.dataclass
 class ExtractResources:
     """Successfully extracted resources."""
@@ -616,6 +639,7 @@ class ExtractResources:
             modifiers = from_json(list[models.WaypointModifierInfo], v['modifiers']) if 'modifiers' in v else None,
         )
 
+# spec_name: extract-resources-with-survey.response
 @dataclasses.dataclass
 class ExtractResourcesWithSurvey:
     """Successfully extracted resources."""
@@ -653,6 +677,7 @@ class ExtractResourcesWithSurvey:
             modifiers = from_json(list[models.WaypointModifierInfo], v['modifiers']) if 'modifiers' in v else None,
         )
 
+# spec_name: jettison.response
 @dataclasses.dataclass
 class Jettison:
     """Jettison successful."""
@@ -674,6 +699,7 @@ class Jettison:
             cargo = from_json(models.ShipCargo, v['cargo']),
         )
 
+# spec_name: jump-ship.response
 @dataclasses.dataclass
 class JumpShip:
     """Jump successful."""
@@ -708,6 +734,7 @@ class JumpShip:
             agent = from_json(models.Agent, v['agent']),
         )
 
+# spec_name: create-ship-system-scan.response
 @dataclasses.dataclass
 class CreateShipSystemScan:
     """Successfully scanned for nearby systems."""
@@ -734,6 +761,7 @@ class CreateShipSystemScan:
             systems = from_json(list[models.ScannedSystem], v['systems']),
         )
 
+# spec_name: create-ship-waypoint-scan.response
 @dataclasses.dataclass
 class CreateShipWaypointScan:
     """Successfully scanned for nearby waypoints."""
@@ -760,6 +788,7 @@ class CreateShipWaypointScan:
             waypoints = from_json(list[models.ScannedWaypoint], v['waypoints']),
         )
 
+# spec_name: create-ship-ship-scan.response
 @dataclasses.dataclass
 class CreateShipShipScan:
     """Successfully scanned for nearby ships."""
@@ -786,6 +815,7 @@ class CreateShipShipScan:
             ships = from_json(list[models.ScannedShip], v['ships']),
         )
 
+# spec_name: scrap-ship.response
 @dataclasses.dataclass
 class ScrapShip:
     """Ship scrapped successfully."""
@@ -811,6 +841,7 @@ class ScrapShip:
             transaction = from_json(models.ScrapTransaction, v['transaction']),
         )
 
+# spec_name: get-scrap-ship.response
 @dataclasses.dataclass
 class GetScrapShip:
     """Successfully retrieved the amount of value that will be
@@ -834,6 +865,7 @@ class GetScrapShip:
             transaction = from_json(models.ScrapTransaction, v['transaction']),
         )
 
+# spec_name: navigate-ship.response
 @dataclasses.dataclass
 class NavigateShip:
     """The successful transit information including the route
@@ -866,6 +898,7 @@ class NavigateShip:
             events = from_json(list[models.ShipConditionEvent], v['events']),
         )
 
+# spec_name: warp-ship.response
 @dataclasses.dataclass
 class WarpShip:
     """The successful transit information including the route
@@ -898,6 +931,7 @@ class WarpShip:
             events = from_json(list[models.ShipConditionEvent], v['events']),
         )
 
+# spec_name: orbit-ship.response
 @dataclasses.dataclass
 class OrbitShip:
     """The ship has successfully moved into orbit at its current
@@ -921,6 +955,7 @@ class OrbitShip:
             nav = from_json(models.ShipNav, v['nav']),
         )
 
+# spec_name: purchase-cargo.response
 @dataclasses.dataclass
 class PurchaseCargo:
     """Purchased goods successfully."""
@@ -950,6 +985,7 @@ class PurchaseCargo:
             agent = from_json(models.Agent, v['agent']),
         )
 
+# spec_name: ship-refine.body.produce
 class Produce(Enum):
     """The type of good to produce out of the refining process."""
 
@@ -963,10 +999,12 @@ class Produce(Enum):
     MERITIUM = 'MERITIUM'
     FUEL = 'FUEL'
 
+# spec_name: ship-refine.response
 @dataclasses.dataclass
 class ShipRefine:
     """The ship has successfully refined goods."""
 
+    # spec_name: ship-refine.response.produced
     @dataclasses.dataclass
     class ProducedItem:
         #: The good's symbol.
@@ -990,6 +1028,7 @@ class ShipRefine:
                 units = from_json(int, v['units']),
             )
 
+    # spec_name: ship-refine.response.consumed
     @dataclasses.dataclass
     class ConsumedItem:
         #: The good's symbol.
@@ -1043,6 +1082,7 @@ class ShipRefine:
             consumed = from_json(list[ShipRefine.ConsumedItem], v['consumed']),
         )
 
+# spec_name: refuel-ship.response
 @dataclasses.dataclass
 class RefuelShip:
     """Refueled successfully."""
@@ -1078,6 +1118,7 @@ class RefuelShip:
             cargo = from_json(models.ShipCargo, v['cargo']) if 'cargo' in v else None,
         )
 
+# spec_name: repair-ship.response
 @dataclasses.dataclass
 class RepairShip:
     """Ship repaired successfully."""
@@ -1107,6 +1148,7 @@ class RepairShip:
             transaction = from_json(models.RepairTransaction, v['transaction']),
         )
 
+# spec_name: get-repair-ship.response
 @dataclasses.dataclass
 class GetRepairShip:
     """Successfully retrieved the cost of repairing a ship."""
@@ -1128,6 +1170,7 @@ class GetRepairShip:
             transaction = from_json(models.RepairTransaction, v['transaction']),
         )
 
+# spec_name: sell-cargo.response
 @dataclasses.dataclass
 class SellCargo:
     """Cargo was successfully sold."""
@@ -1157,6 +1200,7 @@ class SellCargo:
             agent = from_json(models.Agent, v['agent']),
         )
 
+# spec_name: siphon-resources.response
 @dataclasses.dataclass
 class SiphonResources:
     """Siphon successful."""
@@ -1190,6 +1234,7 @@ class SiphonResources:
             events = from_json(list[models.ShipConditionEvent], v['events']),
         )
 
+# spec_name: create-survey.response
 @dataclasses.dataclass
 class CreateSurvey:
     """Surveys has been created."""
@@ -1216,6 +1261,7 @@ class CreateSurvey:
             surveys = from_json(list[models.Survey], v['surveys']),
         )
 
+# spec_name: transfer-cargo.response
 @dataclasses.dataclass
 class TransferCargo:
     """Cargo transferred successfully."""
@@ -1241,6 +1287,7 @@ class TransferCargo:
             target_cargo = from_json(models.ShipCargo, v['targetCargo']),
         )
 
+# spec_name: install-ship-module.response
 @dataclasses.dataclass
 class InstallShipModule:
     """Successfully installed the module on the ship."""
@@ -1274,6 +1321,7 @@ class InstallShipModule:
             transaction = from_json(models.ShipModificationTransaction, v['transaction']),
         )
 
+# spec_name: remove-ship-module.response
 @dataclasses.dataclass
 class RemoveShipModule:
     """Successfully removed the module from the ship."""
@@ -1307,6 +1355,7 @@ class RemoveShipModule:
             transaction = from_json(models.ShipModificationTransaction, v['transaction']),
         )
 
+# spec_name: install-mount.response
 @dataclasses.dataclass
 class InstallMount:
     """Successfully installed the mount."""
@@ -1342,6 +1391,7 @@ class InstallMount:
             transaction = from_json(models.ShipModificationTransaction, v['transaction']),
         )
 
+# spec_name: remove-mount.response
 @dataclasses.dataclass
 class RemoveMount:
     """Successfully removed the mount."""
@@ -1377,6 +1427,7 @@ class RemoveMount:
             transaction = from_json(models.ShipModificationTransaction, v['transaction']),
         )
 
+# spec_name: patch-ship-nav.response
 @dataclasses.dataclass
 class PatchShipNav:
     """Success response for updating the nav configuration of a
@@ -1408,6 +1459,7 @@ class PatchShipNav:
             events = from_json(list[models.ShipConditionEvent], v['events']),
         )
 
+# spec_name: register.response
 @dataclasses.dataclass
 class Register:
     """Successfully registered."""

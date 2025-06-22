@@ -17,6 +17,7 @@ class WriteTypes(writer.Writer):
 
     def write_type(self, type: types.Type, children: types.Resolver.IterTypes) -> None:
         self.print()
+        self.print(f'# spec_name: {type.spec_name}')
         if isinstance(type.definition, types.Struct):
             self._write_struct(type, type.definition, children)
         elif isinstance(type.definition, types.Enum):

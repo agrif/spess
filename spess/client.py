@@ -54,6 +54,7 @@ class Client(backend.Backend):
     # Accounts
     #
 
+    # spec_name: get-my-account
     def my_account(self) -> responses.MyAccount:
         """Get Account
 
@@ -66,6 +67,7 @@ class Client(backend.Backend):
             '/my/account',
         )
 
+    # spec_name: register
     def register(self, symbol: str, faction: models.FactionSymbol) -> responses.Register:
         """Register New Agent
 
@@ -114,6 +116,7 @@ class Client(backend.Backend):
     # Agents
     #
 
+    # spec_name: get-agents
     def agents(self) -> Paged[models.PublicAgent]:
         """List all public agent details.
 
@@ -126,6 +129,7 @@ class Client(backend.Backend):
             '/agents',
         )
 
+    # spec_name: get-agent
     def agent(self, agent_symbol: str) -> models.PublicAgent:
         """Get public details for a specific agent.
 
@@ -141,6 +145,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: get-my-agent
     def my_agent(self) -> models.Agent:
         """Get Agent
 
@@ -153,6 +158,7 @@ class Client(backend.Backend):
             '/my/agent',
         )
 
+    # spec_name: get-my-agent-events
     def my_agent_events(self) -> list[models.AgentEvent]:
         """Get Agent Events
 
@@ -169,6 +175,7 @@ class Client(backend.Backend):
     # Contracts
     #
 
+    # spec_name: get-contracts
     def contracts(self) -> Paged[models.Contract]:
         """List Contracts
 
@@ -181,6 +188,7 @@ class Client(backend.Backend):
             '/my/contracts',
         )
 
+    # spec_name: get-contract
     def contract(self, contract_id: str) -> models.Contract:
         """Get Contract
 
@@ -196,6 +204,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: accept-contract
     def accept_contract(self, contract_id: str) -> responses.AcceptContract:
         """Accept Contract
 
@@ -214,6 +223,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: fulfill-contract
     def fulfill_contract(self, contract_id: str) -> responses.FulfillContract:
         """Fulfill Contract
 
@@ -230,6 +240,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: deliver-contract
     def deliver_contract(self, contract_id: str, ship_symbol: str, trade_symbol: str, units: int) -> responses.DeliverContract:
         """Deliver Cargo to Contract
 
@@ -258,6 +269,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: negotiate-contract
     def negotiate_contract(self, ship_symbol: str) -> responses.NegotiateContract:
         """Negotiate Contract
 
@@ -289,6 +301,7 @@ class Client(backend.Backend):
     # Factions
     #
 
+    # spec_name: get-factions
     def factions(self) -> Paged[models.Faction]:
         """List factions
 
@@ -301,6 +314,7 @@ class Client(backend.Backend):
             '/factions',
         )
 
+    # spec_name: get-faction
     def faction(self, faction_symbol: str) -> models.Faction:
         """Faction details
 
@@ -316,6 +330,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: get-my-factions
     def my_factions(self) -> Paged[responses.MyFaction]:
         """Get My Factions
 
@@ -332,6 +347,7 @@ class Client(backend.Backend):
     # Fleet
     #
 
+    # spec_name: get-my-ships
     def my_ships(self) -> Paged[models.Ship]:
         """List Ships
 
@@ -345,6 +361,7 @@ class Client(backend.Backend):
             '/my/ships',
         )
 
+    # spec_name: purchase-ship
     def purchase_ship(self, ship_type: models.ShipType, waypoint_symbol: str) -> responses.PurchaseShip:
         """Purchase Ship
 
@@ -369,6 +386,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: get-my-ship
     def my_ship(self, ship_symbol: str) -> models.Ship:
         """Get Ship
 
@@ -384,6 +402,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: create-chart
     def create_chart(self, ship_symbol: str) -> responses.CreateChart:
         """Create Chart
 
@@ -409,6 +428,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: get-ship-cooldown
     def ship_cooldown(self, ship_symbol: str) -> models.Cooldown:
         """Get Ship Cooldown
 
@@ -435,6 +455,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: dock-ship
     def dock_ship(self, ship_symbol: str) -> responses.DockShip:
         """Dock Ship
 
@@ -460,6 +481,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: extract-resources
     def extract_resources(self, ship_symbol: str) -> responses.ExtractResources:
         """Extract Resources
 
@@ -485,6 +507,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: extract-resources-with-survey
     def extract_resources_with_survey(self, ship_symbol: str, survey: models.Survey | None = None) -> responses.ExtractResourcesWithSurvey:
         """Extract Resources with Survey
 
@@ -508,6 +531,7 @@ class Client(backend.Backend):
             body = to_json(survey),
         )
 
+    # spec_name: jettison
     def jettison(self, ship_symbol: str, symbol: models.TradeSymbol, units: int) -> responses.Jettison:
         """Jettison Cargo
 
@@ -527,6 +551,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: jump-ship
     def jump_ship(self, ship_symbol: str, waypoint_symbol: str) -> responses.JumpShip:
         """Jump Ship
 
@@ -551,6 +576,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: create-ship-system-scan
     def create_ship_system_scan(self, ship_symbol: str) -> responses.CreateShipSystemScan:
         """Scan Systems
 
@@ -571,6 +597,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: create-ship-waypoint-scan
     def create_ship_waypoint_scan(self, ship_symbol: str) -> responses.CreateShipWaypointScan:
         """Scan Waypoints
 
@@ -595,6 +622,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: create-ship-ship-scan
     def create_ship_ship_scan(self, ship_symbol: str) -> responses.CreateShipShipScan:
         """Scan Ships
 
@@ -617,6 +645,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: scrap-ship
     def scrap_ship(self, ship_symbol: str) -> responses.ScrapShip:
         """Scrap Ship
 
@@ -635,6 +664,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: get-scrap-ship
     def get_scrap_ship(self, ship_symbol: str) -> responses.GetScrapShip:
         """Get Scrap Ship
 
@@ -651,6 +681,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: navigate-ship
     def navigate_ship(self, ship_symbol: str, waypoint_symbol: str) -> responses.NavigateShip:
         """Navigate Ship
 
@@ -680,6 +711,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: warp-ship
     def warp_ship(self, ship_symbol: str, waypoint_symbol: str) -> responses.WarpShip:
         """Warp Ship
 
@@ -705,6 +737,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: orbit-ship
     def orbit_ship(self, ship_symbol: str) -> responses.OrbitShip:
         """Orbit Ship
 
@@ -730,6 +763,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: purchase-cargo
     def purchase_cargo(self, ship_symbol: str, symbol: models.TradeSymbol, units: int) -> responses.PurchaseCargo:
         """Purchase Cargo
 
@@ -759,6 +793,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: ship-refine
     def ship_refine(self, ship_symbol: str, produce: responses.Produce) -> responses.ShipRefine:
         """Ship Refine
 
@@ -784,6 +819,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: refuel-ship
     def refuel_ship(self, ship_symbol: str, units: int | None = None, from_cargo: bool | None = None) -> responses.RefuelShip:
         """Refuel Ship
 
@@ -813,6 +849,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: repair-ship
     def repair_ship(self, ship_symbol: str) -> responses.RepairShip:
         """Repair Ship
 
@@ -831,6 +868,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: get-repair-ship
     def get_repair_ship(self, ship_symbol: str) -> responses.GetRepairShip:
         """Get Repair Ship
 
@@ -847,6 +885,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: sell-cargo
     def sell_cargo(self, ship_symbol: str, symbol: models.TradeSymbol, units: int) -> responses.SellCargo:
         """Sell Cargo
 
@@ -868,6 +907,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: siphon-resources
     def siphon_resources(self, ship_symbol: str) -> responses.SiphonResources:
         """Siphon Resources
 
@@ -886,6 +926,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: create-survey
     def create_survey(self, ship_symbol: str) -> responses.CreateSurvey:
         """Create Survey
 
@@ -921,6 +962,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: transfer-cargo
     def transfer_cargo(self, from_ship: str, trade_symbol: models.TradeSymbol, units: int, to_ship: str) -> responses.TransferCargo:
         """Transfer Cargo
 
@@ -950,6 +992,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: get-my-ship-cargo
     def my_ship_cargo(self, ship_symbol: str) -> models.ShipCargo:
         """Get Ship Cargo
 
@@ -965,6 +1008,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: get-ship-modules
     def ship_modules(self, ship_symbol: str) -> list[models.ShipModule]:
         """Get Ship Modules
 
@@ -980,6 +1024,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: install-ship-module
     def install_ship_module(self, ship_symbol: str, symbol: str) -> responses.InstallShipModule:
         """Install Ship Module
 
@@ -998,6 +1043,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: remove-ship-module
     def remove_ship_module(self, ship_symbol: str, symbol: str) -> responses.RemoveShipModule:
         """Remove Ship Module
 
@@ -1017,6 +1063,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: get-mounts
     def mounts(self, ship_symbol: str) -> list[models.ShipMount]:
         """Get Mounts
 
@@ -1032,6 +1079,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: install-mount
     def install_mount(self, ship_symbol: str, symbol: str) -> responses.InstallMount:
         """Install Mount
 
@@ -1057,6 +1105,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: remove-mount
     def remove_mount(self, ship_symbol: str, symbol: str) -> responses.RemoveMount:
         """Remove Mount
 
@@ -1081,6 +1130,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: get-ship-nav
     def ship_nav(self, ship_symbol: str) -> models.ShipNav:
         """Get Ship Nav
 
@@ -1096,6 +1146,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: patch-ship-nav
     def patch_ship_nav(self, ship_symbol: str, flight_mode: models.FlightMode | None = None) -> responses.PatchShipNav:
         """Patch Ship Nav
 
@@ -1121,6 +1172,7 @@ class Client(backend.Backend):
     # Systems
     #
 
+    # spec_name: get-systems
     def systems(self) -> Paged[models.System]:
         """List Systems
 
@@ -1133,6 +1185,7 @@ class Client(backend.Backend):
             '/systems',
         )
 
+    # spec_name: get-system
     def system(self, system_symbol: str) -> models.System:
         """Get System
 
@@ -1149,6 +1202,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: get-system-waypoints
     def system_waypoints(self, system_symbol: str, type: models.WaypointType | None = None, traits: list[models.WaypointTrait] | None = None) -> Paged[models.Waypoint]:
         """List Waypoints in System
 
@@ -1172,6 +1226,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: get-waypoint
     def waypoint(self, system_symbol: str, waypoint_symbol: str) -> models.Waypoint:
         """Get Waypoint
 
@@ -1191,6 +1246,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: get-construction
     def construction(self, system_symbol: str, waypoint_symbol: str) -> models.Construction:
         """Get Construction Site
 
@@ -1208,6 +1264,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: supply-construction
     def supply_construction(self, system_symbol: str, waypoint_symbol: str, ship_symbol: str, trade_symbol: models.TradeSymbol, units: int) -> responses.SupplyConstruction:
         """Supply Construction Site
 
@@ -1234,6 +1291,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: get-market
     def market(self, system_symbol: str, waypoint_symbol: str) -> models.Market:
         """Get Market
 
@@ -1257,6 +1315,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: get-jump-gate
     def jump_gate(self, system_symbol: str, waypoint_symbol: str) -> models.JumpGate:
         """Get Jump Gate
 
@@ -1277,6 +1336,7 @@ class Client(backend.Backend):
             },
         )
 
+    # spec_name: get-shipyard
     def shipyard(self, system_symbol: str, waypoint_symbol: str) -> models.Shipyard:
         """Get Shipyard
 
@@ -1300,6 +1360,7 @@ class Client(backend.Backend):
     # Global
     #
 
+    # spec_name: get-status
     def status(self) -> responses.ServerStatus:
         """Server status
 
@@ -1316,6 +1377,7 @@ class Client(backend.Backend):
             adhoc = True,
         )
 
+    # spec_name: get-error-codes
     def error_codes(self) -> responses.ErrorCodes:
         """Error code list
 

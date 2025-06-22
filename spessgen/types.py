@@ -102,15 +102,14 @@ class Resolver:
             raise NotImplementedError(f'unknown $ref: {ref!r}')
         return (leaf, self.spec.components.schemas[leaf])
 
-    def _resolve_array(self, spec_name: str, schema: spec.Schema, parent: str | None) -> str:
+    def _resolve_array(self, spec_name: str, schema: spec.Schema, parent: str | None, name_hint: str) -> str:
         if schema.items is None:
             raise ValueError('list schema with no items')
-        # kind of a hack
-        if spec_name.endswith('s'):
-            spec_name = spec_name[:-1]
+        if name_hint.endswith('s'):
+            name_hint = name_hint[:-1]
         else:
-            spec_name += 'Item'
-        sub = self.resolve(spec_name, schema.items, parent=parent)
+            name_hint += 'Item'
+        sub = self.resolve(spec_name, schema.items, parent=parent, name_hint=name_hint)
         return f'list[{sub}]'
 
     def _define_struct(self, spec_name: str, py_parent_name: str, schema: spec.Schema) -> Struct:
@@ -136,7 +135,7 @@ class Resolver:
             if py_name in KEYWORDS:
                 py_name += '_'
 
-            py_type = self.resolve(k, v, parent=py_parent_name)
+            py_type = self.resolve(spec_name + '.' + k, v, parent=py_parent_name)
             py_type = STRUCT_FIELD_TYPE.get(spec_name, {}).get(k, py_type)
 
             fields[py_name] = Struct.Field(
@@ -191,9 +190,10 @@ class Resolver:
             spec_name: str,
             schema: spec.SchemaLike,
             parent: str | None = None,
+            name_hint: str | None = None,
             define: bool = True,
     ) -> str:
-        return self.resolve_type(spec_name, schema, parent=parent, define=define, resolve_only=True)[0]
+        return self.resolve_type(spec_name, schema, parent=parent, name_hint=name_hint, define=define, resolve_only=True)[0]
 
     def _add_type(self, ty: Type, subtypes: list[TypeTree]) -> None:
         # we only care about conflicts with siblings
@@ -206,6 +206,7 @@ class Resolver:
             spec_name: str,
             schema: spec.SchemaLike,
             parent: str | None = None,
+            name_hint: str | None = None,
             define: bool = True,
             resolve_only: bool = False,
             promote_orphans: bool = False,
@@ -219,10 +220,14 @@ class Resolver:
         if parent is None:
             parent = self.models_module
 
+        if name_hint is None:
+            name_hint = spec_name
+        name_hint = name_hint.rsplit('.', 1)[-1]
+
         try:
             py_name = TYPE_NAME[spec_name]
         except KeyError:
-            py_name = humps.pascalize(spec_name)
+            py_name = humps.pascalize(name_hint)
             if py_name in KEYWORDS:
                 py_name += '_'
         if parent is not None:
@@ -233,7 +238,7 @@ class Resolver:
 
         match schema.type:
             case schema.Type.ARRAY:
-                return (self._resolve_array(spec_name, schema, parent=parent), None)
+                return (self._resolve_array(spec_name, schema, parent=parent, name_hint=name_hint), None)
             case schema.Type.BOOLEAN:
                 return ('bool', None)
             case schema.Type.INTEGER:

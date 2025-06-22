@@ -58,6 +58,7 @@ class WriteMethods(write_types.WriteTypes):
             return_type = f'Paged[{return_type}]'
 
         self.print()
+        self.print(f'# spec_name: {method.spec_name}')
         with self.print(f'def {method.py_name}(self{method_args}) -> {return_type}:'):
             self.doc_string(method.doc)
 

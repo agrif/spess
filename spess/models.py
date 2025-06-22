@@ -30,6 +30,7 @@ __all__ = [
     'ShipModificationTransaction',
 ]
 
+# spec_name: Faction
 @dataclasses.dataclass
 class Faction:
     """Faction details."""
@@ -72,6 +73,7 @@ class Faction:
             headquarters = from_json(str, v['headquarters']) if 'headquarters' in v else None,
         )
 
+# spec_name: FactionSymbol
 class FactionSymbol(Enum):
     """The symbol of the faction."""
 
@@ -95,6 +97,7 @@ class FactionSymbol(Enum):
     SHADOW = 'SHADOW'
     ETHEREAL = 'ETHEREAL'
 
+# spec_name: FactionTrait
 @dataclasses.dataclass
 class FactionTraitInfo:
     #: The unique identifier of the trait.
@@ -122,6 +125,7 @@ class FactionTraitInfo:
             description = from_json(str, v['description']),
         )
 
+# spec_name: FactionTraitSymbol
 class FactionTrait(Enum):
     """The unique identifier of the trait."""
 
@@ -185,6 +189,7 @@ class FactionTrait(Enum):
     FREE_MARKETS = 'FREE_MARKETS'
     ENTREPRENEURIAL = 'ENTREPRENEURIAL'
 
+# spec_name: Meta
 @dataclasses.dataclass
 class Meta:
     """Meta details for pagination."""
@@ -216,6 +221,7 @@ class Meta:
             limit = from_json(int, v['limit']),
         )
 
+# spec_name: PublicAgent
 @dataclasses.dataclass
 class PublicAgent:
     """Public agent details."""
@@ -254,6 +260,7 @@ class PublicAgent:
             ship_count = from_json(int, v['shipCount']),
         )
 
+# spec_name: System
 @dataclasses.dataclass
 class System:
     """System details."""
@@ -309,6 +316,7 @@ class System:
             name = from_json(str, v['name']) if 'name' in v else None,
         )
 
+# spec_name: SystemType
 class SystemType(Enum):
     """The type of system."""
 
@@ -323,6 +331,7 @@ class SystemType(Enum):
     NEBULA = 'NEBULA'
     UNSTABLE = 'UNSTABLE'
 
+# spec_name: SystemWaypoint
 @dataclasses.dataclass
 class SystemWaypoint:
     """Waypoint details."""
@@ -368,6 +377,7 @@ class SystemWaypoint:
             orbits = from_json(str, v['orbits']) if 'orbits' in v else None,
         )
 
+# spec_name: WaypointType
 class WaypointType(Enum):
     """The type of waypoint."""
 
@@ -386,6 +396,7 @@ class WaypointType(Enum):
     ARTIFICIAL_GRAVITY_WELL = 'ARTIFICIAL_GRAVITY_WELL'
     FUEL_STATION = 'FUEL_STATION'
 
+# spec_name: WaypointOrbital
 @dataclasses.dataclass
 class WaypointOrbital:
     """An orbital is another waypoint that orbits a parent
@@ -409,6 +420,7 @@ class WaypointOrbital:
             symbol = from_json(str, v['symbol']),
         )
 
+# spec_name: SystemFaction
 @dataclasses.dataclass
 class SystemFaction:
     #: The symbol of the faction.
@@ -428,6 +440,7 @@ class SystemFaction:
             symbol = from_json(FactionSymbol, v['symbol']),
         )
 
+# spec_name: Waypoint
 @dataclasses.dataclass
 class Waypoint:
     """A waypoint is a location that ships can travel to such as
@@ -503,6 +516,7 @@ class Waypoint:
             chart = from_json(Chart, v['chart']) if 'chart' in v else None,
         )
 
+# spec_name: WaypointFaction
 @dataclasses.dataclass
 class WaypointFaction:
     """The faction that controls the waypoint."""
@@ -524,6 +538,7 @@ class WaypointFaction:
             symbol = from_json(FactionSymbol, v['symbol']),
         )
 
+# spec_name: WaypointTrait
 @dataclasses.dataclass
 class WaypointTraitInfo:
     #: The unique identifier of the trait.
@@ -551,6 +566,7 @@ class WaypointTraitInfo:
             description = from_json(str, v['description']),
         )
 
+# spec_name: WaypointTraitSymbol
 class WaypointTrait(Enum):
     """The unique identifier of the trait."""
 
@@ -624,6 +640,7 @@ class WaypointTrait(Enum):
     HOLLOWED_INTERIOR = 'HOLLOWED_INTERIOR'
     STRIPPED = 'STRIPPED'
 
+# spec_name: WaypointModifier
 @dataclasses.dataclass
 class WaypointModifierInfo:
     #: The unique identifier of the modifier.
@@ -651,6 +668,7 @@ class WaypointModifierInfo:
             description = from_json(str, v['description']),
         )
 
+# spec_name: WaypointModifierSymbol
 class WaypointModifier(Enum):
     """The unique identifier of the modifier."""
 
@@ -660,6 +678,7 @@ class WaypointModifier(Enum):
     CRITICAL_LIMIT = 'CRITICAL_LIMIT'
     CIVIL_UNREST = 'CIVIL_UNREST'
 
+# spec_name: Chart
 @dataclasses.dataclass
 class Chart:
     """The chart of a system or waypoint, which makes the
@@ -691,6 +710,7 @@ class Chart:
             submitted_on = from_json(datetime, v['submittedOn']),
         )
 
+# spec_name: Construction
 @dataclasses.dataclass
 class Construction:
     """The construction details of a waypoint."""
@@ -720,6 +740,7 @@ class Construction:
             is_complete = from_json(bool, v['isComplete']),
         )
 
+# spec_name: ConstructionMaterial
 @dataclasses.dataclass
 class ConstructionMaterial:
     """The details of the required construction materials for a
@@ -751,6 +772,7 @@ class ConstructionMaterial:
             fulfilled = from_json(int, v['fulfilled']),
         )
 
+# spec_name: TradeSymbol
 class TradeSymbol(Enum):
     """The good's symbol."""
 
@@ -900,6 +922,7 @@ class TradeSymbol(Enum):
     SHIP_SURVEYOR = 'SHIP_SURVEYOR'
     SHIP_BULK_FREIGHTER = 'SHIP_BULK_FREIGHTER'
 
+# spec_name: ShipCargo
 @dataclasses.dataclass
 class ShipCargo:
     """Ship cargo details."""
@@ -929,6 +952,7 @@ class ShipCargo:
             inventory = from_json(list[ShipCargoItem], v['inventory']),
         )
 
+# spec_name: ShipCargoItem
 @dataclasses.dataclass
 class ShipCargoItem:
     """The type of cargo item and the number of units."""
@@ -962,6 +986,7 @@ class ShipCargoItem:
             units = from_json(int, v['units']),
         )
 
+# spec_name: Market
 @dataclasses.dataclass
 class Market:
     """Market details."""
@@ -1009,6 +1034,7 @@ class Market:
             trade_goods = from_json(list[MarketTradeGood], v['tradeGoods']) if 'tradeGoods' in v else None,
         )
 
+# spec_name: TradeGood
 @dataclasses.dataclass
 class TradeGood:
     """A good that can be traded for other goods or currency."""
@@ -1038,10 +1064,12 @@ class TradeGood:
             description = from_json(str, v['description']),
         )
 
+# spec_name: MarketTransaction
 @dataclasses.dataclass
 class MarketTransaction:
     """Result of a transaction with a market."""
 
+    # spec_name: MarketTransaction.type
     class Type(Enum):
         """The type of transaction."""
 
@@ -1093,8 +1121,10 @@ class MarketTransaction:
             timestamp = from_json(datetime, v['timestamp']),
         )
 
+# spec_name: MarketTradeGood
 @dataclasses.dataclass
 class MarketTradeGood:
+    # spec_name: MarketTradeGood.type
     class Type(Enum):
         """The type of trade good (export, import, or exchange)."""
 
@@ -1153,6 +1183,7 @@ class MarketTradeGood:
             activity = from_json(ActivityLevel, v['activity']) if 'activity' in v else None,
         )
 
+# spec_name: SupplyLevel
 class SupplyLevel(Enum):
     """The supply level of a trade good."""
 
@@ -1162,6 +1193,7 @@ class SupplyLevel(Enum):
     HIGH = 'HIGH'
     ABUNDANT = 'ABUNDANT'
 
+# spec_name: ActivityLevel
 class ActivityLevel(Enum):
     """The activity level of a trade good. If the good is an
     import, this represents how strong consumption is. If the good is
@@ -1176,6 +1208,7 @@ class ActivityLevel(Enum):
     STRONG = 'STRONG'
     RESTRICTED = 'RESTRICTED'
 
+# spec_name: JumpGate
 @dataclasses.dataclass
 class JumpGate:
     """Details of a jump gate waypoint."""
@@ -1201,10 +1234,12 @@ class JumpGate:
             connections = from_json(list[str], v['connections']),
         )
 
+# spec_name: Shipyard
 @dataclasses.dataclass
 class Shipyard:
     """Shipyard details."""
 
+    # spec_name: Shipyard.shipTypes
     @dataclasses.dataclass
     class ShipType:
         #: Type of ship
@@ -1264,6 +1299,7 @@ class Shipyard:
             ships = from_json(list[ShipyardShip], v['ships']) if 'ships' in v else None,
         )
 
+# spec_name: ShipType
 class ShipType(Enum):
     """Type of ship"""
 
@@ -1281,6 +1317,7 @@ class ShipType(Enum):
     SURVEYOR = 'SHIP_SURVEYOR'
     BULK_FREIGHTER = 'SHIP_BULK_FREIGHTER'
 
+# spec_name: ShipyardTransaction
 @dataclasses.dataclass
 class ShipyardTransaction:
     """Results of a transaction with a shipyard."""
@@ -1325,10 +1362,12 @@ class ShipyardTransaction:
             timestamp = from_json(datetime, v['timestamp']),
         )
 
+# spec_name: ShipyardShip
 @dataclasses.dataclass
 class ShipyardShip:
     """Ship details available at a shipyard."""
 
+    # spec_name: ShipyardShip.crew
     @dataclasses.dataclass
     class Crew:
         #: The minimum number of crew members required to maintain the
@@ -1424,6 +1463,7 @@ class ShipyardShip:
             activity = from_json(ActivityLevel, v['activity']) if 'activity' in v else None,
         )
 
+# spec_name: ShipFrame
 @dataclasses.dataclass
 class ShipFrame:
     """The frame of the ship. The frame determines the number of
@@ -1432,6 +1472,7 @@ class ShipFrame:
     will become more sluggish and less maneuverable.
     """
 
+    # spec_name: ShipFrame.symbol
     class Symbol(Enum):
         """Symbol of the frame."""
 
@@ -1526,6 +1567,7 @@ class ShipFrame:
             quality = from_json(float, v['quality']),
         )
 
+# spec_name: ShipRequirements
 @dataclasses.dataclass
 class ShipRequirements:
     """The requirements for installation on a ship"""
@@ -1558,12 +1600,14 @@ class ShipRequirements:
             slots = from_json(int, v['slots']) if 'slots' in v else None,
         )
 
+# spec_name: ShipReactor
 @dataclasses.dataclass
 class ShipReactor:
     """The reactor of the ship. The reactor is responsible for
     powering the ship's systems and weapons.
     """
 
+    # spec_name: ShipReactor.symbol
     class Symbol(Enum):
         """Symbol of the reactor."""
 
@@ -1634,12 +1678,14 @@ class ShipReactor:
             quality = from_json(float, v['quality']),
         )
 
+# spec_name: ShipEngine
 @dataclasses.dataclass
 class ShipEngine:
     """The engine determines how quickly a ship travels between
     waypoints.
     """
 
+    # spec_name: ShipEngine.symbol
     class Symbol(Enum):
         """The symbol of the engine."""
 
@@ -1709,6 +1755,7 @@ class ShipEngine:
             quality = from_json(float, v['quality']),
         )
 
+# spec_name: ShipModule
 @dataclasses.dataclass
 class ShipModule:
     """A module can be installed in a ship and provides a set of
@@ -1716,6 +1763,7 @@ class ShipModule:
     installations are permanent.
     """
 
+    # spec_name: ShipModule.symbol
     class Symbol(Enum):
         """The symbol of the module."""
 
@@ -1783,10 +1831,12 @@ class ShipModule:
             range = from_json(int, v['range']) if 'range' in v else None,
         )
 
+# spec_name: ShipMount
 @dataclasses.dataclass
 class ShipMount:
     """A mount is installed on the exterier of a ship."""
 
+    # spec_name: ShipMount.symbol
     class Symbol(Enum):
         """Symbol of this mount."""
 
@@ -1806,6 +1856,7 @@ class ShipMount:
         MISSILE_LAUNCHER_I = 'MOUNT_MISSILE_LAUNCHER_I'
         TURRET_I = 'MOUNT_TURRET_I'
 
+    # spec_name: ShipMount.deposits
     class Deposit(Enum):
         QUARTZ_SAND = 'QUARTZ_SAND'
         SILICON_CRYSTALS = 'SILICON_CRYSTALS'
@@ -1863,10 +1914,12 @@ class ShipMount:
             deposits = from_json(list[ShipMount.Deposit], v['deposits']) if 'deposits' in v else None,
         )
 
+# spec_name: Contract
 @dataclasses.dataclass
 class Contract:
     """Contract details."""
 
+    # spec_name: Contract.type
     class Type(Enum):
         """Type of contract."""
 
@@ -1921,6 +1974,7 @@ class Contract:
             deadline_to_accept = from_json(datetime, v['deadlineToAccept']) if 'deadlineToAccept' in v else None,
         )
 
+# spec_name: ContractTerms
 @dataclasses.dataclass
 class ContractTerms:
     """The terms to fulfill the contract."""
@@ -1951,6 +2005,7 @@ class ContractTerms:
             deliver = from_json(list[ContractDeliverGood], v['deliver']) if 'deliver' in v else None,
         )
 
+# spec_name: ContractPayment
 @dataclasses.dataclass
 class ContractPayment:
     """Payments for the contract."""
@@ -1977,6 +2032,7 @@ class ContractPayment:
             on_fulfilled = from_json(int, v['onFulfilled']),
         )
 
+# spec_name: ContractDeliverGood
 @dataclasses.dataclass
 class ContractDeliverGood:
     """The details of a delivery contract. Includes the type of
@@ -2012,6 +2068,7 @@ class ContractDeliverGood:
             units_fulfilled = from_json(int, v['unitsFulfilled']),
         )
 
+# spec_name: Agent
 @dataclasses.dataclass
 class Agent:
     """Agent details."""
@@ -2055,6 +2112,7 @@ class Agent:
             ship_count = from_json(int, v['shipCount']),
         )
 
+# spec_name: AgentEvent
 @dataclasses.dataclass
 class AgentEvent:
     """Agent event details."""
@@ -2088,6 +2146,7 @@ class AgentEvent:
             data = v['data'] if 'data' in v else None,
         )
 
+# spec_name: Ship
 @dataclasses.dataclass
 class Ship:
     """Ship details."""
@@ -2162,6 +2221,7 @@ class Ship:
             cooldown = from_json(Cooldown, v['cooldown']),
         )
 
+# spec_name: ShipRegistration
 @dataclasses.dataclass
 class ShipRegistration:
     """The public registration information of the ship"""
@@ -2191,6 +2251,7 @@ class ShipRegistration:
             role = from_json(ShipRole, v['role']),
         )
 
+# spec_name: ShipRole
 class ShipRole(Enum):
     """The registered role of the ship"""
 
@@ -2209,6 +2270,7 @@ class ShipRole(Enum):
     EXPLORER = 'EXPLORER'
     REFINERY = 'REFINERY'
 
+# spec_name: ShipNav
 @dataclasses.dataclass
 class ShipNav:
     """The navigation information of the ship."""
@@ -2248,6 +2310,7 @@ class ShipNav:
             flight_mode = from_json(FlightMode, v['flightMode']),
         )
 
+# spec_name: ShipNavRoute
 @dataclasses.dataclass
 class ShipNavRoute:
     """The routing information for the ship's most recent
@@ -2284,6 +2347,7 @@ class ShipNavRoute:
             arrival = from_json(datetime, v['arrival']),
         )
 
+# spec_name: ShipNavRouteWaypoint
 @dataclasses.dataclass
 class ShipNavRouteWaypoint:
     """The destination or departure of a ships nav route."""
@@ -2321,6 +2385,7 @@ class ShipNavRouteWaypoint:
             y = from_json(int, v['y']),
         )
 
+# spec_name: ShipNavStatus
 class ShipStatus(Enum):
     """The current status of the ship"""
 
@@ -2328,6 +2393,7 @@ class ShipStatus(Enum):
     IN_ORBIT = 'IN_ORBIT'
     DOCKED = 'DOCKED'
 
+# spec_name: ShipNavFlightMode
 class FlightMode(Enum):
     """The ship's set speed when traveling between waypoints or
     systems.
@@ -2338,12 +2404,14 @@ class FlightMode(Enum):
     CRUISE = 'CRUISE'
     BURN = 'BURN'
 
+# spec_name: ShipCrew
 @dataclasses.dataclass
 class ShipCrew:
     """The ship's crew service and maintain the ship's systems
     and equipment.
     """
 
+    # spec_name: ShipCrew.rotation
     class Rotation(Enum):
         """The rotation of crew shifts. A stricter shift
         improves the ship's performance. A more relaxed shift improves
@@ -2396,12 +2464,14 @@ class ShipCrew:
             wages = from_json(int, v['wages']),
         )
 
+# spec_name: ShipFuel
 @dataclasses.dataclass
 class ShipFuel:
     """Details of the ship's fuel tanks including how much fuel
     was consumed during the last transit or action.
     """
 
+    # spec_name: ShipFuel.consumed
     @dataclasses.dataclass
     class Consumed:
         """An object that only shows up when an action has
@@ -2457,6 +2527,7 @@ class ShipFuel:
             consumed = from_json(ShipFuel.Consumed, v['consumed']) if 'consumed' in v else None,
         )
 
+# spec_name: Cooldown
 @dataclasses.dataclass
 class Cooldown:
     """A cooldown is a period of time in which a ship cannot
@@ -2493,6 +2564,7 @@ class Cooldown:
             expiration = from_json(datetime, v['expiration']) if 'expiration' in v else None,
         )
 
+# spec_name: ChartTransaction
 @dataclasses.dataclass
 class ChartTransaction:
     """Result of a chart transaction."""
@@ -2526,6 +2598,7 @@ class ChartTransaction:
             timestamp = from_json(datetime, v['timestamp']),
         )
 
+# spec_name: Extraction
 @dataclasses.dataclass
 class Extraction:
     """Extraction details."""
@@ -2551,6 +2624,7 @@ class Extraction:
             yield_ = from_json(ExtractionYield, v['yield']),
         )
 
+# spec_name: ExtractionYield
 @dataclasses.dataclass
 class ExtractionYield:
     """A yield from the extraction operation."""
@@ -2577,12 +2651,14 @@ class ExtractionYield:
             units = from_json(int, v['units']),
         )
 
+# spec_name: ShipConditionEvent
 @dataclasses.dataclass
 class ShipConditionEvent:
     """An event that represents damage or wear to a ship's
     reactor, frame, or engine, reducing the condition of the ship.
     """
 
+    # spec_name: ShipConditionEvent.symbol
     class Symbol(Enum):
         """The symbol of the event that occurred."""
 
@@ -2614,6 +2690,7 @@ class ShipConditionEvent:
         ELECTROMAGNETIC_SURGE_EFFECTS = 'ELECTROMAGNETIC_SURGE_EFFECTS'
         ATMOSPHERIC_ENTRY_HEAT = 'ATMOSPHERIC_ENTRY_HEAT'
 
+    # spec_name: ShipConditionEvent.component
     class Component(Enum):
         FRAME = 'FRAME'
         REACTOR = 'REACTOR'
@@ -2647,6 +2724,7 @@ class ShipConditionEvent:
             description = from_json(str, v['description']),
         )
 
+# spec_name: Survey
 @dataclasses.dataclass
 class Survey:
     """A resource survey of a waypoint, detailing a specific
@@ -2694,6 +2772,7 @@ class Survey:
             size = from_json(SurveySize, v['size']),
         )
 
+# spec_name: SurveyDeposit
 @dataclasses.dataclass
 class SurveyDeposit:
     """A surveyed deposit of a mineral or resource available for
@@ -2717,6 +2796,7 @@ class SurveyDeposit:
             symbol = from_json(TradeSymbol, v['symbol']),
         )
 
+# spec_name: SurveySize
 class SurveySize(Enum):
     """The size of the deposit. This value indicates how much
     can be extracted from the survey before it is exhausted.
@@ -2726,6 +2806,7 @@ class SurveySize(Enum):
     MODERATE = 'MODERATE'
     LARGE = 'LARGE'
 
+# spec_name: ScannedSystem
 @dataclasses.dataclass
 class ScannedSystem:
     """Details of a system was that scanned."""
@@ -2767,6 +2848,7 @@ class ScannedSystem:
             distance = from_json(int, v['distance']),
         )
 
+# spec_name: ScannedWaypoint
 @dataclasses.dataclass
 class ScannedWaypoint:
     """A waypoint that was scanned by a ship."""
@@ -2823,12 +2905,14 @@ class ScannedWaypoint:
             chart = from_json(Chart, v['chart']) if 'chart' in v else None,
         )
 
+# spec_name: ScannedShip
 @dataclasses.dataclass
 class ScannedShip:
     """The ship that was scanned. Details include information
     about the ship that could be detected by the scanner.
     """
 
+    # spec_name: ScannedShip.engine
     @dataclasses.dataclass
     class Engine:
         """The engine of the ship."""
@@ -2850,6 +2934,7 @@ class ScannedShip:
                 symbol = from_json(str, v['symbol']),
             )
 
+    # spec_name: ScannedShip.frame
     @dataclasses.dataclass
     class Frame:
         """The frame of the ship."""
@@ -2871,6 +2956,7 @@ class ScannedShip:
                 symbol = from_json(str, v['symbol']),
             )
 
+    # spec_name: ScannedShip.reactor
     @dataclasses.dataclass
     class Reactor:
         """The reactor of the ship."""
@@ -2892,6 +2978,7 @@ class ScannedShip:
                 symbol = from_json(str, v['symbol']),
             )
 
+    # spec_name: ScannedShip.mounts
     @dataclasses.dataclass
     class Mount:
         #: The symbol of the mount.
@@ -2955,6 +3042,7 @@ class ScannedShip:
             mounts = from_json(list[ScannedShip.Mount], v['mounts']) if 'mounts' in v else None,
         )
 
+# spec_name: ScrapTransaction
 @dataclasses.dataclass
 class ScrapTransaction:
     """Result of a scrap transaction."""
@@ -2988,6 +3076,7 @@ class ScrapTransaction:
             timestamp = from_json(datetime, v['timestamp']),
         )
 
+# spec_name: RepairTransaction
 @dataclasses.dataclass
 class RepairTransaction:
     """Result of a repair transaction."""
@@ -3021,6 +3110,7 @@ class RepairTransaction:
             timestamp = from_json(datetime, v['timestamp']),
         )
 
+# spec_name: Siphon
 @dataclasses.dataclass
 class Siphon:
     """Siphon details."""
@@ -3046,6 +3136,7 @@ class Siphon:
             yield_ = from_json(SiphonYield, v['yield']),
         )
 
+# spec_name: SiphonYield
 @dataclasses.dataclass
 class SiphonYield:
     """A yield from the siphon operation."""
@@ -3072,6 +3163,7 @@ class SiphonYield:
             units = from_json(int, v['units']),
         )
 
+# spec_name: ShipModificationTransaction
 @dataclasses.dataclass
 class ShipModificationTransaction:
     """Result of a transaction for a ship modification, such as
