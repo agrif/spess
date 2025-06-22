@@ -113,7 +113,7 @@ class Resolver:
         sub = self.resolve(spec_name, schema.items, parent=parent)
         return f'list[{sub}]'
 
-    def _define_struct(self, py_parent_name: str, schema: spec.Schema) -> Struct:
+    def _define_struct(self, spec_name: str, py_parent_name: str, schema: spec.Schema) -> Struct:
         if schema.properties is None:
             raise ValueError('struct schema with no properties')
 
@@ -136,10 +136,13 @@ class Resolver:
             if py_name in KEYWORDS:
                 py_name += '_'
 
+            py_type = self.resolve(k, v, parent=py_parent_name)
+            py_type = STRUCT_FIELD_TYPE.get(spec_name, {}).get(k, py_type)
+
             fields[py_name] = Struct.Field(
                 py_name = py_name,
                 json_name = k,
-                py_type = self.resolve(k, v, parent=py_parent_name),
+                py_type = py_type,
                 doc = self.resolve_schema(v).description,
                 optional = k not in required,
             )
@@ -216,9 +219,12 @@ class Resolver:
         if parent is None:
             parent = self.models_module
 
-        py_name = humps.pascalize(spec_name)
-        if py_name in KEYWORDS:
-            py_name += '_'
+        try:
+            py_name = TYPE_NAME[spec_name]
+        except KeyError:
+            py_name = humps.pascalize(spec_name)
+            if py_name in KEYWORDS:
+                py_name += '_'
         if parent is not None:
             py_name = parent + '.' + py_name
 
@@ -240,7 +246,7 @@ class Resolver:
                 if resolve_only and not define:
                     return (py_name, None)
                 with self._subtypes() as subtypes:
-                    definition = self._define_struct(py_name, schema)
+                    definition = self._define_struct(spec_name, py_name, schema)
             case schema.Type.STRING if schema.format == schema.Format.DATE_TIME:
                 return ('datetime', None)
             case schema.Type.STRING if schema.enum is not None:

@@ -9,11 +9,11 @@ import typing
 from spess.json import Json, from_json, to_json, Enum, datetime
 
 __all__ = [
-    'Faction', 'FactionSymbol', 'FactionTrait', 'FactionTraitSymbol',
+    'Faction', 'FactionSymbol', 'FactionTraitInfo', 'FactionTrait',
     'Meta', 'PublicAgent', 'System', 'SystemType', 'SystemWaypoint',
     'WaypointType', 'WaypointOrbital', 'SystemFaction', 'Waypoint',
-    'WaypointFaction', 'WaypointTrait', 'WaypointTraitSymbol',
-    'WaypointModifier', 'WaypointModifierSymbol', 'Chart', 'Construction',
+    'WaypointFaction', 'WaypointTraitInfo', 'WaypointTrait',
+    'WaypointModifierInfo', 'WaypointModifier', 'Chart', 'Construction',
     'ConstructionMaterial', 'TradeSymbol', 'ShipCargo', 'ShipCargoItem',
     'Market', 'TradeGood', 'MarketTransaction', 'MarketTradeGood',
     'SupplyLevel', 'ActivityLevel', 'JumpGate', 'Shipyard', 'ShipType',
@@ -22,8 +22,8 @@ __all__ = [
     'ShipMount', 'Contract', 'ContractTerms', 'ContractPayment',
     'ContractDeliverGood', 'Agent', 'AgentEvent', 'Ship',
     'ShipRegistration', 'ShipRole', 'ShipNav', 'ShipNavRoute',
-    'ShipNavRouteWaypoint', 'ShipNavStatus', 'ShipNavFlightMode',
-    'ShipCrew', 'ShipFuel', 'Cooldown', 'ChartTransaction', 'Extraction',
+    'ShipNavRouteWaypoint', 'ShipStatus', 'FlightMode', 'ShipCrew',
+    'ShipFuel', 'Cooldown', 'ChartTransaction', 'Extraction',
     'ExtractionYield', 'ShipConditionEvent', 'Survey', 'SurveyDeposit',
     'SurveySize', 'ScannedSystem', 'ScannedWaypoint', 'ScannedShip',
     'ScrapTransaction', 'RepairTransaction', 'Siphon', 'SiphonYield',
@@ -41,7 +41,7 @@ class Faction:
     #: Description of the faction.
     description: str
     #: List of traits that define this faction.
-    traits: list[FactionTrait]
+    traits: list[FactionTraitInfo]
     #: Whether or not the faction is currently recruiting new agents.
     is_recruiting: bool
     #: The waypoint in which the faction's HQ is located in.
@@ -67,7 +67,7 @@ class Faction:
             symbol = from_json(FactionSymbol, v['symbol']),
             name = from_json(str, v['name']),
             description = from_json(str, v['description']),
-            traits = from_json(list[FactionTrait], v['traits']),
+            traits = from_json(list[FactionTraitInfo], v['traits']),
             is_recruiting = from_json(bool, v['isRecruiting']),
             headquarters = from_json(str, v['headquarters']) if 'headquarters' in v else None,
         )
@@ -96,9 +96,9 @@ class FactionSymbol(Enum):
     ETHEREAL = 'ETHEREAL'
 
 @dataclasses.dataclass
-class FactionTrait:
+class FactionTraitInfo:
     #: The unique identifier of the trait.
-    symbol: FactionTraitSymbol
+    symbol: FactionTrait
     #: The name of the trait.
     name: str
     #: A description of the trait.
@@ -117,12 +117,12 @@ class FactionTrait:
         if not isinstance(v, dict):
             raise TypeError(type(v))
         return cls(
-            symbol = from_json(FactionTraitSymbol, v['symbol']),
+            symbol = from_json(FactionTrait, v['symbol']),
             name = from_json(str, v['name']),
             description = from_json(str, v['description']),
         )
 
-class FactionTraitSymbol(Enum):
+class FactionTrait(Enum):
     """The unique identifier of the trait."""
 
     BUREAUCRATIC = 'BUREAUCRATIC'
@@ -228,7 +228,7 @@ class PublicAgent:
     #: negative if funds have been overdrawn.
     credits: int
     #: The faction the agent started with.
-    starting_faction: str
+    starting_faction: FactionSymbol
     #: How many ships are owned by the agent.
     ship_count: int
 
@@ -250,7 +250,7 @@ class PublicAgent:
             symbol = from_json(str, v['symbol']),
             headquarters = from_json(str, v['headquarters']),
             credits = from_json(int, v['credits']),
-            starting_faction = from_json(str, v['startingFaction']),
+            starting_faction = from_json(FactionSymbol, v['startingFaction']),
             ship_count = from_json(int, v['shipCount']),
         )
 
@@ -449,7 +449,7 @@ class Waypoint:
     #: Waypoints that orbit this waypoint.
     orbitals: list[WaypointOrbital]
     #: The traits of the waypoint.
-    traits: list[WaypointTrait]
+    traits: list[WaypointTraitInfo]
     #: True if the waypoint is under construction.
     is_under_construction: bool
     #: The symbol of the parent waypoint, if this waypoint is in orbit
@@ -458,7 +458,7 @@ class Waypoint:
     #: The faction that controls the waypoint.
     faction: WaypointFaction | None = None
     #: The modifiers of the waypoint.
-    modifiers: list[WaypointModifier] | None = None
+    modifiers: list[WaypointModifierInfo] | None = None
     #: The chart of a system or waypoint, which makes the location
     #: visible to other agents.
     chart: Chart | None = None
@@ -495,11 +495,11 @@ class Waypoint:
             x = from_json(int, v['x']),
             y = from_json(int, v['y']),
             orbitals = from_json(list[WaypointOrbital], v['orbitals']),
-            traits = from_json(list[WaypointTrait], v['traits']),
+            traits = from_json(list[WaypointTraitInfo], v['traits']),
             is_under_construction = from_json(bool, v['isUnderConstruction']),
             orbits = from_json(str, v['orbits']) if 'orbits' in v else None,
             faction = from_json(WaypointFaction, v['faction']) if 'faction' in v else None,
-            modifiers = from_json(list[WaypointModifier], v['modifiers']) if 'modifiers' in v else None,
+            modifiers = from_json(list[WaypointModifierInfo], v['modifiers']) if 'modifiers' in v else None,
             chart = from_json(Chart, v['chart']) if 'chart' in v else None,
         )
 
@@ -525,9 +525,9 @@ class WaypointFaction:
         )
 
 @dataclasses.dataclass
-class WaypointTrait:
+class WaypointTraitInfo:
     #: The unique identifier of the trait.
-    symbol: WaypointTraitSymbol
+    symbol: WaypointTrait
     #: The name of the trait.
     name: str
     #: A description of the trait.
@@ -546,12 +546,12 @@ class WaypointTrait:
         if not isinstance(v, dict):
             raise TypeError(type(v))
         return cls(
-            symbol = from_json(WaypointTraitSymbol, v['symbol']),
+            symbol = from_json(WaypointTrait, v['symbol']),
             name = from_json(str, v['name']),
             description = from_json(str, v['description']),
         )
 
-class WaypointTraitSymbol(Enum):
+class WaypointTrait(Enum):
     """The unique identifier of the trait."""
 
     UNCHARTED = 'UNCHARTED'
@@ -625,9 +625,9 @@ class WaypointTraitSymbol(Enum):
     STRIPPED = 'STRIPPED'
 
 @dataclasses.dataclass
-class WaypointModifier:
+class WaypointModifierInfo:
     #: The unique identifier of the modifier.
-    symbol: WaypointModifierSymbol
+    symbol: WaypointModifier
     #: The name of the trait.
     name: str
     #: A description of the trait.
@@ -646,12 +646,12 @@ class WaypointModifier:
         if not isinstance(v, dict):
             raise TypeError(type(v))
         return cls(
-            symbol = from_json(WaypointModifierSymbol, v['symbol']),
+            symbol = from_json(WaypointModifier, v['symbol']),
             name = from_json(str, v['name']),
             description = from_json(str, v['description']),
         )
 
-class WaypointModifierSymbol(Enum):
+class WaypointModifier(Enum):
     """The unique identifier of the modifier."""
 
     STRIPPED = 'STRIPPED'
@@ -1877,7 +1877,7 @@ class Contract:
     #: ID of the contract.
     id: str
     #: The symbol of the faction that this contract is for.
-    faction_symbol: str
+    faction_symbol: FactionSymbol
     #: Type of contract.
     type: Contract.Type
     #: The terms to fulfill the contract.
@@ -1912,7 +1912,7 @@ class Contract:
             raise TypeError(type(v))
         return cls(
             id = from_json(str, v['id']),
-            faction_symbol = from_json(str, v['factionSymbol']),
+            faction_symbol = from_json(FactionSymbol, v['factionSymbol']),
             type = from_json(Contract.Type, v['type']),
             terms = from_json(ContractTerms, v['terms']),
             accepted = from_json(bool, v['accepted']),
@@ -1984,7 +1984,7 @@ class ContractDeliverGood:
     """
 
     #: The symbol of the trade good to deliver.
-    trade_symbol: str
+    trade_symbol: TradeSymbol
     #: The destination where goods need to be delivered.
     destination_symbol: str
     #: The number of units that need to be delivered on this contract.
@@ -2006,7 +2006,7 @@ class ContractDeliverGood:
         if not isinstance(v, dict):
             raise TypeError(type(v))
         return cls(
-            trade_symbol = from_json(str, v['tradeSymbol']),
+            trade_symbol = from_json(TradeSymbol, v['tradeSymbol']),
             destination_symbol = from_json(str, v['destinationSymbol']),
             units_required = from_json(int, v['unitsRequired']),
             units_fulfilled = from_json(int, v['unitsFulfilled']),
@@ -2027,7 +2027,7 @@ class Agent:
     #: negative if funds have been overdrawn.
     credits: int
     #: The faction the agent started with.
-    starting_faction: str
+    starting_faction: FactionSymbol
     #: How many ships are owned by the agent.
     ship_count: int
 
@@ -2051,7 +2051,7 @@ class Agent:
             symbol = from_json(str, v['symbol']),
             headquarters = from_json(str, v['headquarters']),
             credits = from_json(int, v['credits']),
-            starting_faction = from_json(str, v['startingFaction']),
+            starting_faction = from_json(FactionSymbol, v['startingFaction']),
             ship_count = from_json(int, v['shipCount']),
         )
 
@@ -2169,7 +2169,7 @@ class ShipRegistration:
     #: The agent's registered name of the ship
     name: str
     #: The symbol of the faction the ship is registered with
-    faction_symbol: str
+    faction_symbol: FactionSymbol
     #: The registered role of the ship
     role: ShipRole
 
@@ -2187,7 +2187,7 @@ class ShipRegistration:
             raise TypeError(type(v))
         return cls(
             name = from_json(str, v['name']),
-            faction_symbol = from_json(str, v['factionSymbol']),
+            faction_symbol = from_json(FactionSymbol, v['factionSymbol']),
             role = from_json(ShipRole, v['role']),
         )
 
@@ -2221,10 +2221,10 @@ class ShipNav:
     #: current location.
     route: ShipNavRoute
     #: The current status of the ship
-    status: ShipNavStatus
+    status: ShipStatus
     #: The ship's set speed when traveling between waypoints or
     #: systems.
-    flight_mode: ShipNavFlightMode
+    flight_mode: FlightMode
 
     def to_json(self) -> Json:
         v = {
@@ -2244,8 +2244,8 @@ class ShipNav:
             system_symbol = from_json(str, v['systemSymbol']),
             waypoint_symbol = from_json(str, v['waypointSymbol']),
             route = from_json(ShipNavRoute, v['route']),
-            status = from_json(ShipNavStatus, v['status']),
-            flight_mode = from_json(ShipNavFlightMode, v['flightMode']),
+            status = from_json(ShipStatus, v['status']),
+            flight_mode = from_json(FlightMode, v['flightMode']),
         )
 
 @dataclasses.dataclass
@@ -2321,14 +2321,14 @@ class ShipNavRouteWaypoint:
             y = from_json(int, v['y']),
         )
 
-class ShipNavStatus(Enum):
+class ShipStatus(Enum):
     """The current status of the ship"""
 
     IN_TRANSIT = 'IN_TRANSIT'
     IN_ORBIT = 'IN_ORBIT'
     DOCKED = 'DOCKED'
 
-class ShipNavFlightMode(Enum):
+class FlightMode(Enum):
     """The ship's set speed when traveling between waypoints or
     systems.
     """
@@ -2784,7 +2784,7 @@ class ScannedWaypoint:
     #: List of waypoints that orbit this waypoint.
     orbitals: list[WaypointOrbital]
     #: The traits of the waypoint.
-    traits: list[WaypointTrait]
+    traits: list[WaypointTraitInfo]
     #: The faction that controls the waypoint.
     faction: WaypointFaction | None = None
     #: The chart of a system or waypoint, which makes the location
@@ -2818,7 +2818,7 @@ class ScannedWaypoint:
             x = from_json(int, v['x']),
             y = from_json(int, v['y']),
             orbitals = from_json(list[WaypointOrbital], v['orbitals']),
-            traits = from_json(list[WaypointTrait], v['traits']),
+            traits = from_json(list[WaypointTraitInfo], v['traits']),
             faction = from_json(WaypointFaction, v['faction']) if 'faction' in v else None,
             chart = from_json(Chart, v['chart']) if 'chart' in v else None,
         )
@@ -3083,7 +3083,7 @@ class ShipModificationTransaction:
     #: The symbol of the ship that made the transaction.
     ship_symbol: str
     #: The symbol of the trade good.
-    trade_symbol: str
+    trade_symbol: TradeSymbol
     #: The total price of the transaction.
     total_price: int
     #: The timestamp of the transaction.
@@ -3106,7 +3106,7 @@ class ShipModificationTransaction:
         return cls(
             waypoint_symbol = from_json(str, v['waypointSymbol']),
             ship_symbol = from_json(str, v['shipSymbol']),
-            trade_symbol = from_json(str, v['tradeSymbol']),
+            trade_symbol = from_json(TradeSymbol, v['tradeSymbol']),
             total_price = from_json(int, v['totalPrice']),
             timestamp = from_json(datetime, v['timestamp']),
         )

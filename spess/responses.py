@@ -10,7 +10,7 @@ from spess.json import Json, from_json, to_json, Enum, datetime
 import spess.models as models
 
 __all__ = [
-    'Status', 'ErrorCodes', 'SupplyConstruction', 'AcceptContract',
+    'ServerStatus', 'ErrorCodes', 'SupplyConstruction', 'AcceptContract',
     'FulfillContract', 'DeliverContract', 'MyFaction', 'PurchaseShip',
     'MyAccount', 'CreateChart', 'NegotiateContract', 'DockShip',
     'ExtractResources', 'ExtractResourcesWithSurvey', 'Jettison',
@@ -24,7 +24,7 @@ __all__ = [
 ]
 
 @dataclasses.dataclass
-class Status:
+class ServerStatus:
     """Fetched status successfully."""
 
     @dataclasses.dataclass
@@ -66,7 +66,7 @@ class Status:
     @dataclasses.dataclass
     class Health:
         #: The date/time when the market was last updated.
-        last_market_update: str | None = None
+        last_market_update: datetime | None = None
 
         def to_json(self) -> Json:
             v = {
@@ -80,7 +80,7 @@ class Status:
             if not isinstance(v, dict):
                 raise TypeError(type(v))
             return cls(
-                last_market_update = from_json(str, v['lastMarketUpdate']) if 'lastMarketUpdate' in v else None,
+                last_market_update = from_json(datetime, v['lastMarketUpdate']) if 'lastMarketUpdate' in v else None,
             )
 
     @dataclasses.dataclass
@@ -132,9 +132,9 @@ class Status:
                 )
 
         #: Top agents with the most credits.
-        most_credits: list[Status.Leaderboards.MostCredit]
+        most_credits: list[ServerStatus.Leaderboards.MostCredit]
         #: Top agents with the most charted submitted.
-        most_submitted_charts: list[Status.Leaderboards.MostSubmittedChart]
+        most_submitted_charts: list[ServerStatus.Leaderboards.MostSubmittedChart]
 
         def to_json(self) -> Json:
             v = {
@@ -148,14 +148,14 @@ class Status:
             if not isinstance(v, dict):
                 raise TypeError(type(v))
             return cls(
-                most_credits = from_json(list[Status.Leaderboards.MostCredit], v['mostCredits']),
-                most_submitted_charts = from_json(list[Status.Leaderboards.MostSubmittedChart], v['mostSubmittedCharts']),
+                most_credits = from_json(list[ServerStatus.Leaderboards.MostCredit], v['mostCredits']),
+                most_submitted_charts = from_json(list[ServerStatus.Leaderboards.MostSubmittedChart], v['mostSubmittedCharts']),
             )
 
     @dataclasses.dataclass
     class ServerResets:
         #: The date and time when the game server will reset.
-        next: str
+        next: datetime
         #: How often we intend to reset the game server.
         frequency: str
 
@@ -171,7 +171,7 @@ class Status:
             if not isinstance(v, dict):
                 raise TypeError(type(v))
             return cls(
-                next = from_json(str, v['next']),
+                next = from_json(datetime, v['next']),
                 frequency = from_json(str, v['frequency']),
             )
 
@@ -224,12 +224,12 @@ class Status:
     #: The date when the game server was last reset.
     reset_date: str
     description: str
-    stats: Status.Stats
-    health: Status.Health
-    leaderboards: Status.Leaderboards
-    server_resets: Status.ServerResets
-    announcements: list[Status.Announcement]
-    links: list[Status.Link]
+    stats: ServerStatus.Stats
+    health: ServerStatus.Health
+    leaderboards: ServerStatus.Leaderboards
+    server_resets: ServerStatus.ServerResets
+    announcements: list[ServerStatus.Announcement]
+    links: list[ServerStatus.Link]
 
     def to_json(self) -> Json:
         v = {
@@ -255,12 +255,12 @@ class Status:
             version = from_json(str, v['version']),
             reset_date = from_json(str, v['resetDate']),
             description = from_json(str, v['description']),
-            stats = from_json(Status.Stats, v['stats']),
-            health = from_json(Status.Health, v['health']),
-            leaderboards = from_json(Status.Leaderboards, v['leaderboards']),
-            server_resets = from_json(Status.ServerResets, v['serverResets']),
-            announcements = from_json(list[Status.Announcement], v['announcements']),
-            links = from_json(list[Status.Link], v['links']),
+            stats = from_json(ServerStatus.Stats, v['stats']),
+            health = from_json(ServerStatus.Health, v['health']),
+            leaderboards = from_json(ServerStatus.Leaderboards, v['leaderboards']),
+            server_resets = from_json(ServerStatus.ServerResets, v['serverResets']),
+            announcements = from_json(list[ServerStatus.Announcement], v['announcements']),
+            links = from_json(list[ServerStatus.Link], v['links']),
         )
 
 @dataclasses.dataclass
@@ -269,7 +269,7 @@ class ErrorCodes:
 
     @dataclasses.dataclass
     class ErrorCode:
-        code: float
+        code: int
         name: str
 
         def to_json(self) -> Json:
@@ -284,7 +284,7 @@ class ErrorCodes:
             if not isinstance(v, dict):
                 raise TypeError(type(v))
             return cls(
-                code = from_json(float, v['code']),
+                code = from_json(int, v['code']),
                 name = from_json(str, v['name']),
             )
 
@@ -406,7 +406,7 @@ class DeliverContract:
 
 @dataclasses.dataclass
 class MyFaction:
-    symbol: str
+    symbol: models.FactionSymbol
     reputation: int
 
     def to_json(self) -> Json:
@@ -421,7 +421,7 @@ class MyFaction:
         if not isinstance(v, dict):
             raise TypeError(type(v))
         return cls(
-            symbol = from_json(str, v['symbol']),
+            symbol = from_json(models.FactionSymbol, v['symbol']),
             reputation = from_json(int, v['reputation']),
         )
 
@@ -591,7 +591,7 @@ class ExtractResources:
     #: Ship cargo details.
     cargo: models.ShipCargo
     events: list[models.ShipConditionEvent]
-    modifiers: list[models.WaypointModifier] | None = None
+    modifiers: list[models.WaypointModifierInfo] | None = None
 
     def to_json(self) -> Json:
         v = {
@@ -613,7 +613,7 @@ class ExtractResources:
             cooldown = from_json(models.Cooldown, v['cooldown']),
             cargo = from_json(models.ShipCargo, v['cargo']),
             events = from_json(list[models.ShipConditionEvent], v['events']),
-            modifiers = from_json(list[models.WaypointModifier], v['modifiers']) if 'modifiers' in v else None,
+            modifiers = from_json(list[models.WaypointModifierInfo], v['modifiers']) if 'modifiers' in v else None,
         )
 
 @dataclasses.dataclass
@@ -628,7 +628,7 @@ class ExtractResourcesWithSurvey:
     #: Ship cargo details.
     cargo: models.ShipCargo
     events: list[models.ShipConditionEvent]
-    modifiers: list[models.WaypointModifier] | None = None
+    modifiers: list[models.WaypointModifierInfo] | None = None
 
     def to_json(self) -> Json:
         v = {
@@ -650,7 +650,7 @@ class ExtractResourcesWithSurvey:
             cooldown = from_json(models.Cooldown, v['cooldown']),
             cargo = from_json(models.ShipCargo, v['cargo']),
             events = from_json(list[models.ShipConditionEvent], v['events']),
-            modifiers = from_json(list[models.WaypointModifier], v['modifiers']) if 'modifiers' in v else None,
+            modifiers = from_json(list[models.WaypointModifierInfo], v['modifiers']) if 'modifiers' in v else None,
         )
 
 @dataclasses.dataclass

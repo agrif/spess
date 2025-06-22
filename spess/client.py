@@ -1096,7 +1096,7 @@ class Client(backend.Backend):
             },
         )
 
-    def patch_ship_nav(self, ship_symbol: str, flight_mode: models.ShipNavFlightMode | None = None) -> responses.PatchShipNav:
+    def patch_ship_nav(self, ship_symbol: str, flight_mode: models.FlightMode | None = None) -> responses.PatchShipNav:
         """Patch Ship Nav
 
         Update the nav configuration of a ship.
@@ -1149,7 +1149,7 @@ class Client(backend.Backend):
             },
         )
 
-    def system_waypoints(self, system_symbol: str, type: models.WaypointType | None = None, traits: list[models.WaypointTraitSymbol] | None = None) -> Paged[models.Waypoint]:
+    def system_waypoints(self, system_symbol: str, type: models.WaypointType | None = None, traits: list[models.WaypointTrait] | None = None) -> Paged[models.Waypoint]:
         """List Waypoints in System
 
         Return a paginated list of all of the waypoints for a given
@@ -1300,7 +1300,7 @@ class Client(backend.Backend):
     # Global
     #
 
-    def status(self) -> responses.Status:
+    def status(self) -> responses.ServerStatus:
         """Server status
 
         Return the status of the game server.
@@ -1310,7 +1310,7 @@ class Client(backend.Backend):
         """
 
         return self._call(
-            responses.Status,
+            responses.ServerStatus,
             'get',
             '/',
             adhoc = True,
