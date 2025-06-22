@@ -41,6 +41,9 @@ FromJson: typing.TypeAlias = JsonFormat | dt.datetime | JsonLayer['FromJson']
 
 def from_json[T: FromJson](cls: type[T], v: Json) -> T:
     args = typing.get_args(cls)
+    origin = typing.get_origin(cls)
+    if origin is not None:
+        cls = origin
 
     # lots of casts to help checker know that cls(...) has type T
 
