@@ -4,8 +4,8 @@ import typing
 
 import requests
 
-import spess.json
-import spess.ratelimit
+import spess._json
+import spess._rate_limit
 
 # any sort of error
 class Error(Exception):
@@ -55,23 +55,23 @@ class Backend:
 
         # spacetrader limits to 2 per second, 30 in 60s
         # put a 5% margin on it to be safe
-        self._limit = spess.ratelimit.Any(
-            spess.ratelimit.ConstantRate(2, margin=0.05),
-            spess.ratelimit.Windowed(30, 60.0, margin=0.05),
+        self._limit = spess._rate_limit.Any(
+            spess._rate_limit.ConstantRate(2, margin=0.05),
+            spess._rate_limit.Windowed(30, 60.0, margin=0.05),
         ).synced()
 
     def _debug(self, *args, **kwargs):
         if self.debug:
             print(*args, file=sys.stderr, **kwargs)
 
-    def _call[T: spess.json.FromJson](
+    def _call[T: spess._json.FromJson](
             self,
             ty: type[T],
             method: typing.Literal['get', 'post', 'patch'],
             path: str,
             path_args: dict[str, str | None] = {},
             query_args: dict[str, str | None] = {},
-            body: spess.json.Json = None,
+            body: spess._json.Json = None,
             adhoc: bool = False,
     ) -> T:
         # filter out Nones from values, which indicate absent optionals
@@ -124,7 +124,7 @@ class Backend:
             # parse json
             if not adhoc:
                 json = json['data']
-            return spess.json.from_json(ty, json)
+            return spess._json.from_json(ty, json)
 
         # otherwise, an error
         err = json.get('error', {})
@@ -148,7 +148,7 @@ class Backend:
             path: str,
             path_args: dict[str, str | None] = {},
             query_args: dict[str, str | None] = {},
-            body: spess.json.Json = None,
+            body: spess._json.Json = None,
     ) -> Paged[T]:
         # filter out Nones from values, which indicate absent optionals
         path_args = {k: v for k, v in path_args.items() if v is not None}
