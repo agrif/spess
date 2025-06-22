@@ -88,7 +88,7 @@ class Writer:
 
     def doc_comment(self, doc: str | None) -> None:
         if doc:
-            lines = self.textwrap(doc, indent='# ')
+            lines = self.textwrap(doc, indent='#: ')
             for line in lines:
                 self.print(line)
 

@@ -29,15 +29,15 @@ class Status:
 
     @dataclasses.dataclass
     class Stats:
-        # Number of registered agents in the game.
+        #: Number of registered agents in the game.
         agents: int
-        # Total number of ships in the game.
+        #: Total number of ships in the game.
         ships: int
-        # Total number of systems in the game.
+        #: Total number of systems in the game.
         systems: int
-        # Total number of waypoints in the game.
+        #: Total number of waypoints in the game.
         waypoints: int
-        # Total number of accounts registered on the game server.
+        #: Total number of accounts registered on the game server.
         accounts: int | None = None
 
         def to_json(self) -> Json:
@@ -65,7 +65,7 @@ class Status:
 
     @dataclasses.dataclass
     class Health:
-        # The date/time when the market was last updated.
+        #: The date/time when the market was last updated.
         last_market_update: str | None = None
 
         def to_json(self) -> Json:
@@ -88,9 +88,9 @@ class Status:
 
         @dataclasses.dataclass
         class MostCredit:
-            # Symbol of the agent.
+            #: Symbol of the agent.
             agent_symbol: str
-            # Amount of credits.
+            #: Amount of credits.
             credits: int
 
             def to_json(self) -> Json:
@@ -111,9 +111,9 @@ class Status:
 
         @dataclasses.dataclass
         class MostSubmittedChart:
-            # Symbol of the agent.
+            #: Symbol of the agent.
             agent_symbol: str
-            # Amount of charts done by the agent.
+            #: Amount of charts done by the agent.
             chart_count: int
 
             def to_json(self) -> Json:
@@ -131,9 +131,9 @@ class Status:
                     agent_symbol = from_json(str, v['agentSymbol']),
                     chart_count = from_json(int, v['chartCount']),
                 )
-        # Top agents with the most credits.
+        #: Top agents with the most credits.
         most_credits: list[Status.Leaderboards.MostCredit]
-        # Top agents with the most charted submitted.
+        #: Top agents with the most charted submitted.
         most_submitted_charts: list[Status.Leaderboards.MostSubmittedChart]
 
         def to_json(self) -> Json:
@@ -154,9 +154,9 @@ class Status:
 
     @dataclasses.dataclass
     class ServerResets:
-        # The date and time when the game server will reset.
+        #: The date and time when the game server will reset.
         next: str
-        # How often we intend to reset the game server.
+        #: How often we intend to reset the game server.
         frequency: str
 
         def to_json(self) -> Json:
@@ -216,11 +216,11 @@ class Status:
                 name = from_json(str, v['name']),
                 url = from_json(str, v['url']),
             )
-    # The current status of the game server.
+    #: The current status of the game server.
     status: str
-    # The current version of the API.
+    #: The current version of the API.
     version: str
-    # The date when the game server was last reset.
+    #: The date when the game server was last reset.
     reset_date: str
     description: str
     stats: Status.Stats
@@ -304,9 +304,9 @@ class ErrorCodes:
 
 @dataclasses.dataclass
 class SupplyConstruction:
-    # The construction details of a waypoint.
+    #: The construction details of a waypoint.
     construction: models.Construction
-    # Ship cargo details.
+    #: Ship cargo details.
     cargo: models.ShipCargo
 
     def to_json(self) -> Json:
@@ -327,9 +327,9 @@ class SupplyConstruction:
 
 @dataclasses.dataclass
 class AcceptContract:
-    # Contract details.
+    #: Contract details.
     contract: models.Contract
-    # Agent details.
+    #: Agent details.
     agent: models.Agent
 
     def to_json(self) -> Json:
@@ -350,9 +350,9 @@ class AcceptContract:
 
 @dataclasses.dataclass
 class FulfillContract:
-    # Contract details.
+    #: Contract details.
     contract: models.Contract
-    # Agent details.
+    #: Agent details.
     agent: models.Agent
 
     def to_json(self) -> Json:
@@ -373,9 +373,9 @@ class FulfillContract:
 
 @dataclasses.dataclass
 class DeliverContract:
-    # Contract details.
+    #: Contract details.
     contract: models.Contract
-    # Ship cargo details.
+    #: Ship cargo details.
     cargo: models.ShipCargo
 
     def to_json(self) -> Json:
@@ -417,11 +417,11 @@ class MyFaction:
 
 @dataclasses.dataclass
 class PurchaseShip:
-    # Ship details.
+    #: Ship details.
     ship: models.Ship
-    # Agent details.
+    #: Agent details.
     agent: models.Agent
-    # Results of a transaction with a shipyard.
+    #: Results of a transaction with a shipyard.
     transaction: models.ShipyardTransaction
 
     def to_json(self) -> Json:
@@ -490,15 +490,15 @@ class MyAccount:
 
 @dataclasses.dataclass
 class CreateChart:
-    # The chart of a system or waypoint, which makes the location
-    # visible to other agents.
+    #: The chart of a system or waypoint, which makes the location
+    #: visible to other agents.
     chart: models.Chart
-    # A waypoint is a location that ships can travel to such as a
-    # Planet, Moon or Space Station.
+    #: A waypoint is a location that ships can travel to such as a
+    #: Planet, Moon or Space Station.
     waypoint: models.Waypoint
-    # Result of a chart transaction.
+    #: Result of a chart transaction.
     transaction: models.ChartTransaction
-    # Agent details.
+    #: Agent details.
     agent: models.Agent
 
     def to_json(self) -> Json:
@@ -523,7 +523,7 @@ class CreateChart:
 
 @dataclasses.dataclass
 class NegotiateContract:
-    # Contract details.
+    #: Contract details.
     contract: models.Contract
 
     def to_json(self) -> Json:
@@ -542,7 +542,7 @@ class NegotiateContract:
 
 @dataclasses.dataclass
 class DockShip:
-    # The navigation information of the ship.
+    #: The navigation information of the ship.
     nav: models.ShipNav
 
     def to_json(self) -> Json:
@@ -561,12 +561,12 @@ class DockShip:
 
 @dataclasses.dataclass
 class ExtractResources:
-    # Extraction details.
+    #: Extraction details.
     extraction: models.Extraction
-    # A cooldown is a period of time in which a ship cannot perform
-    # certain actions.
+    #: A cooldown is a period of time in which a ship cannot perform
+    #: certain actions.
     cooldown: models.Cooldown
-    # Ship cargo details.
+    #: Ship cargo details.
     cargo: models.ShipCargo
     events: list[models.ShipConditionEvent]
     modifiers: list[models.WaypointModifier] | None = None
@@ -596,12 +596,12 @@ class ExtractResources:
 
 @dataclasses.dataclass
 class ExtractResourcesWithSurvey:
-    # Extraction details.
+    #: Extraction details.
     extraction: models.Extraction
-    # A cooldown is a period of time in which a ship cannot perform
-    # certain actions.
+    #: A cooldown is a period of time in which a ship cannot perform
+    #: certain actions.
     cooldown: models.Cooldown
-    # Ship cargo details.
+    #: Ship cargo details.
     cargo: models.ShipCargo
     events: list[models.ShipConditionEvent]
     modifiers: list[models.WaypointModifier] | None = None
@@ -631,7 +631,7 @@ class ExtractResourcesWithSurvey:
 
 @dataclasses.dataclass
 class Jettison:
-    # Ship cargo details.
+    #: Ship cargo details.
     cargo: models.ShipCargo
 
     def to_json(self) -> Json:
@@ -650,14 +650,14 @@ class Jettison:
 
 @dataclasses.dataclass
 class JumpShip:
-    # The navigation information of the ship.
+    #: The navigation information of the ship.
     nav: models.ShipNav
-    # A cooldown is a period of time in which a ship cannot perform
-    # certain actions.
+    #: A cooldown is a period of time in which a ship cannot perform
+    #: certain actions.
     cooldown: models.Cooldown
-    # Result of a transaction with a market.
+    #: Result of a transaction with a market.
     transaction: models.MarketTransaction
-    # Agent details.
+    #: Agent details.
     agent: models.Agent
 
     def to_json(self) -> Json:
@@ -682,10 +682,10 @@ class JumpShip:
 
 @dataclasses.dataclass
 class CreateShipSystemScan:
-    # A cooldown is a period of time in which a ship cannot perform
-    # certain actions.
+    #: A cooldown is a period of time in which a ship cannot perform
+    #: certain actions.
     cooldown: models.Cooldown
-    # List of scanned systems.
+    #: List of scanned systems.
     systems: list[models.ScannedSystem]
 
     def to_json(self) -> Json:
@@ -706,10 +706,10 @@ class CreateShipSystemScan:
 
 @dataclasses.dataclass
 class CreateShipWaypointScan:
-    # A cooldown is a period of time in which a ship cannot perform
-    # certain actions.
+    #: A cooldown is a period of time in which a ship cannot perform
+    #: certain actions.
     cooldown: models.Cooldown
-    # List of scanned waypoints.
+    #: List of scanned waypoints.
     waypoints: list[models.ScannedWaypoint]
 
     def to_json(self) -> Json:
@@ -730,10 +730,10 @@ class CreateShipWaypointScan:
 
 @dataclasses.dataclass
 class CreateShipShipScan:
-    # A cooldown is a period of time in which a ship cannot perform
-    # certain actions.
+    #: A cooldown is a period of time in which a ship cannot perform
+    #: certain actions.
     cooldown: models.Cooldown
-    # List of scanned ships.
+    #: List of scanned ships.
     ships: list[models.ScannedShip]
 
     def to_json(self) -> Json:
@@ -754,9 +754,9 @@ class CreateShipShipScan:
 
 @dataclasses.dataclass
 class ScrapShip:
-    # Agent details.
+    #: Agent details.
     agent: models.Agent
-    # Result of a scrap transaction.
+    #: Result of a scrap transaction.
     transaction: models.ScrapTransaction
 
     def to_json(self) -> Json:
@@ -777,7 +777,7 @@ class ScrapShip:
 
 @dataclasses.dataclass
 class GetScrapShip:
-    # Result of a scrap transaction.
+    #: Result of a scrap transaction.
     transaction: models.ScrapTransaction
 
     def to_json(self) -> Json:
@@ -796,10 +796,10 @@ class GetScrapShip:
 
 @dataclasses.dataclass
 class NavigateShip:
-    # The navigation information of the ship.
+    #: The navigation information of the ship.
     nav: models.ShipNav
-    # Details of the ship's fuel tanks including how much fuel was
-    # consumed during the last transit or action.
+    #: Details of the ship's fuel tanks including how much fuel was
+    #: consumed during the last transit or action.
     fuel: models.ShipFuel
     events: list[models.ShipConditionEvent]
 
@@ -823,10 +823,10 @@ class NavigateShip:
 
 @dataclasses.dataclass
 class WarpShip:
-    # The navigation information of the ship.
+    #: The navigation information of the ship.
     nav: models.ShipNav
-    # Details of the ship's fuel tanks including how much fuel was
-    # consumed during the last transit or action.
+    #: Details of the ship's fuel tanks including how much fuel was
+    #: consumed during the last transit or action.
     fuel: models.ShipFuel
     events: list[models.ShipConditionEvent]
 
@@ -850,7 +850,7 @@ class WarpShip:
 
 @dataclasses.dataclass
 class OrbitShip:
-    # The navigation information of the ship.
+    #: The navigation information of the ship.
     nav: models.ShipNav
 
     def to_json(self) -> Json:
@@ -869,11 +869,11 @@ class OrbitShip:
 
 @dataclasses.dataclass
 class PurchaseCargo:
-    # Ship cargo details.
+    #: Ship cargo details.
     cargo: models.ShipCargo
-    # Result of a transaction with a market.
+    #: Result of a transaction with a market.
     transaction: models.MarketTransaction
-    # Agent details.
+    #: Agent details.
     agent: models.Agent
 
     def to_json(self) -> Json:
@@ -919,9 +919,9 @@ class ShipRefine:
 
     @dataclasses.dataclass
     class ProducedItem:
-        # The good's symbol.
+        #: The good's symbol.
         trade_symbol: models.TradeSymbol
-        # Amount of units of the good.
+        #: Amount of units of the good.
         units: int
 
         def to_json(self) -> Json:
@@ -942,9 +942,9 @@ class ShipRefine:
 
     @dataclasses.dataclass
     class ConsumedItem:
-        # The good's symbol.
+        #: The good's symbol.
         trade_symbol: models.TradeSymbol
-        # Amount of units of the good.
+        #: Amount of units of the good.
         units: int
 
         def to_json(self) -> Json:
@@ -962,14 +962,14 @@ class ShipRefine:
                 trade_symbol = from_json(models.TradeSymbol, v['tradeSymbol']),
                 units = from_json(int, v['units']),
             )
-    # Ship cargo details.
+    #: Ship cargo details.
     cargo: models.ShipCargo
-    # A cooldown is a period of time in which a ship cannot perform
-    # certain actions.
+    #: A cooldown is a period of time in which a ship cannot perform
+    #: certain actions.
     cooldown: models.Cooldown
-    # Goods that were produced by this refining process.
+    #: Goods that were produced by this refining process.
     produced: list[ShipRefine.ProducedItem]
-    # Goods that were consumed during this refining process.
+    #: Goods that were consumed during this refining process.
     consumed: list[ShipRefine.ConsumedItem]
 
     def to_json(self) -> Json:
@@ -994,14 +994,14 @@ class ShipRefine:
 
 @dataclasses.dataclass
 class RefuelShip:
-    # Agent details.
+    #: Agent details.
     agent: models.Agent
-    # Details of the ship's fuel tanks including how much fuel was
-    # consumed during the last transit or action.
+    #: Details of the ship's fuel tanks including how much fuel was
+    #: consumed during the last transit or action.
     fuel: models.ShipFuel
-    # Result of a transaction with a market.
+    #: Result of a transaction with a market.
     transaction: models.MarketTransaction
-    # Ship cargo details.
+    #: Ship cargo details.
     cargo: models.ShipCargo | None = None
 
     def to_json(self) -> Json:
@@ -1027,11 +1027,11 @@ class RefuelShip:
 
 @dataclasses.dataclass
 class RepairShip:
-    # Agent details.
+    #: Agent details.
     agent: models.Agent
-    # Ship details.
+    #: Ship details.
     ship: models.Ship
-    # Result of a repair transaction.
+    #: Result of a repair transaction.
     transaction: models.RepairTransaction
 
     def to_json(self) -> Json:
@@ -1054,7 +1054,7 @@ class RepairShip:
 
 @dataclasses.dataclass
 class GetRepairShip:
-    # Result of a repair transaction.
+    #: Result of a repair transaction.
     transaction: models.RepairTransaction
 
     def to_json(self) -> Json:
@@ -1073,11 +1073,11 @@ class GetRepairShip:
 
 @dataclasses.dataclass
 class SellCargo:
-    # Ship cargo details.
+    #: Ship cargo details.
     cargo: models.ShipCargo
-    # Result of a transaction with a market.
+    #: Result of a transaction with a market.
     transaction: models.MarketTransaction
-    # Agent details.
+    #: Agent details.
     agent: models.Agent
 
     def to_json(self) -> Json:
@@ -1100,12 +1100,12 @@ class SellCargo:
 
 @dataclasses.dataclass
 class SiphonResources:
-    # Siphon details.
+    #: Siphon details.
     siphon: models.Siphon
-    # A cooldown is a period of time in which a ship cannot perform
-    # certain actions.
+    #: A cooldown is a period of time in which a ship cannot perform
+    #: certain actions.
     cooldown: models.Cooldown
-    # Ship cargo details.
+    #: Ship cargo details.
     cargo: models.ShipCargo
     events: list[models.ShipConditionEvent]
 
@@ -1131,10 +1131,10 @@ class SiphonResources:
 
 @dataclasses.dataclass
 class CreateSurvey:
-    # A cooldown is a period of time in which a ship cannot perform
-    # certain actions.
+    #: A cooldown is a period of time in which a ship cannot perform
+    #: certain actions.
     cooldown: models.Cooldown
-    # Surveys created by this action.
+    #: Surveys created by this action.
     surveys: list[models.Survey]
 
     def to_json(self) -> Json:
@@ -1155,9 +1155,9 @@ class CreateSurvey:
 
 @dataclasses.dataclass
 class TransferCargo:
-    # Ship cargo details.
+    #: Ship cargo details.
     cargo: models.ShipCargo
-    # Ship cargo details.
+    #: Ship cargo details.
     target_cargo: models.ShipCargo
 
     def to_json(self) -> Json:
@@ -1178,13 +1178,13 @@ class TransferCargo:
 
 @dataclasses.dataclass
 class InstallShipModule:
-    # Agent details.
+    #: Agent details.
     agent: models.Agent
     modules: list[models.ShipModule]
-    # Ship cargo details.
+    #: Ship cargo details.
     cargo: models.ShipCargo
-    # Result of a transaction for a ship modification, such as
-    # installing a mount or a module.
+    #: Result of a transaction for a ship modification, such as
+    #: installing a mount or a module.
     transaction: models.ShipModificationTransaction
 
     def to_json(self) -> Json:
@@ -1209,13 +1209,13 @@ class InstallShipModule:
 
 @dataclasses.dataclass
 class RemoveShipModule:
-    # Agent details.
+    #: Agent details.
     agent: models.Agent
     modules: list[models.ShipModule]
-    # Ship cargo details.
+    #: Ship cargo details.
     cargo: models.ShipCargo
-    # Result of a transaction for a ship modification, such as
-    # installing a mount or a module.
+    #: Result of a transaction for a ship modification, such as
+    #: installing a mount or a module.
     transaction: models.ShipModificationTransaction
 
     def to_json(self) -> Json:
@@ -1240,15 +1240,15 @@ class RemoveShipModule:
 
 @dataclasses.dataclass
 class InstallMount:
-    # Agent details.
+    #: Agent details.
     agent: models.Agent
-    # List of installed mounts after the installation of the new
-    # mount.
+    #: List of installed mounts after the installation of the new
+    #: mount.
     mounts: list[models.ShipMount]
-    # Ship cargo details.
+    #: Ship cargo details.
     cargo: models.ShipCargo
-    # Result of a transaction for a ship modification, such as
-    # installing a mount or a module.
+    #: Result of a transaction for a ship modification, such as
+    #: installing a mount or a module.
     transaction: models.ShipModificationTransaction
 
     def to_json(self) -> Json:
@@ -1273,15 +1273,15 @@ class InstallMount:
 
 @dataclasses.dataclass
 class RemoveMount:
-    # Agent details.
+    #: Agent details.
     agent: models.Agent
-    # List of installed mounts after the removal of the selected
-    # mount.
+    #: List of installed mounts after the removal of the selected
+    #: mount.
     mounts: list[models.ShipMount]
-    # Ship cargo details.
+    #: Ship cargo details.
     cargo: models.ShipCargo
-    # Result of a transaction for a ship modification, such as
-    # installing a mount or a module.
+    #: Result of a transaction for a ship modification, such as
+    #: installing a mount or a module.
     transaction: models.ShipModificationTransaction
 
     def to_json(self) -> Json:
@@ -1306,10 +1306,10 @@ class RemoveMount:
 
 @dataclasses.dataclass
 class PatchShipNav:
-    # The navigation information of the ship.
+    #: The navigation information of the ship.
     nav: models.ShipNav
-    # Details of the ship's fuel tanks including how much fuel was
-    # consumed during the last transit or action.
+    #: Details of the ship's fuel tanks including how much fuel was
+    #: consumed during the last transit or action.
     fuel: models.ShipFuel
     events: list[models.ShipConditionEvent]
 
@@ -1333,13 +1333,13 @@ class PatchShipNav:
 
 @dataclasses.dataclass
 class Register:
-    # A Bearer token for accessing secured API endpoints.
+    #: A Bearer token for accessing secured API endpoints.
     token: str
-    # Agent details.
+    #: Agent details.
     agent: models.Agent
-    # Faction details.
+    #: Faction details.
     faction: models.Faction
-    # Contract details.
+    #: Contract details.
     contract: models.Contract
     ships: list[models.Ship]
 

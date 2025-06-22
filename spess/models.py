@@ -34,17 +34,17 @@ __all__ = [
 class Faction:
     """Faction details."""
 
-    # The symbol of the faction.
+    #: The symbol of the faction.
     symbol: FactionSymbol
-    # Name of the faction.
+    #: Name of the faction.
     name: str
-    # Description of the faction.
+    #: Description of the faction.
     description: str
-    # List of traits that define this faction.
+    #: List of traits that define this faction.
     traits: list[FactionTrait]
-    # Whether or not the faction is currently recruiting new agents.
+    #: Whether or not the faction is currently recruiting new agents.
     is_recruiting: bool
-    # The waypoint in which the faction's HQ is located in.
+    #: The waypoint in which the faction's HQ is located in.
     headquarters: str | None = None
 
     def to_json(self) -> Json:
@@ -104,11 +104,11 @@ class FactionSymbol(Enum):
 
 @dataclasses.dataclass
 class FactionTrait:
-    # The unique identifier of the trait.
+    #: The unique identifier of the trait.
     symbol: FactionTraitSymbol
-    # The name of the trait.
+    #: The name of the trait.
     name: str
-    # A description of the trait.
+    #: A description of the trait.
     description: str
 
     def to_json(self) -> Json:
@@ -203,13 +203,13 @@ class FactionTraitSymbol(Enum):
 class Meta:
     """Meta details for pagination."""
 
-    # Shows the total amount of items of this kind that exist.
+    #: Shows the total amount of items of this kind that exist.
     total: int
-    # A page denotes an amount of items, offset from the first item.
-    # Each page holds an amount of items equal to the `limit`.
+    #: A page denotes an amount of items, offset from the first item.
+    #: Each page holds an amount of items equal to the `limit`.
     page: int
-    # The amount of items in each page. Limits how many items can be
-    # fetched at once.
+    #: The amount of items in each page. Limits how many items can be
+    #: fetched at once.
     limit: int
 
     def to_json(self) -> Json:
@@ -234,16 +234,16 @@ class Meta:
 class PublicAgent:
     """Public agent details."""
 
-    # Symbol of the agent.
+    #: Symbol of the agent.
     symbol: str
-    # The headquarters of the agent.
+    #: The headquarters of the agent.
     headquarters: str
-    # The number of credits the agent has available. Credits can be
-    # negative if funds have been overdrawn.
+    #: The number of credits the agent has available. Credits can be
+    #: negative if funds have been overdrawn.
     credits: int
-    # The faction the agent started with.
+    #: The faction the agent started with.
     starting_faction: str
-    # How many ships are owned by the agent.
+    #: How many ships are owned by the agent.
     ship_count: int
 
     def to_json(self) -> Json:
@@ -272,23 +272,23 @@ class PublicAgent:
 class System:
     """System details."""
 
-    # The symbol of the system.
+    #: The symbol of the system.
     symbol: str
-    # The symbol of the sector.
+    #: The symbol of the sector.
     sector_symbol: str
-    # The type of system.
+    #: The type of system.
     type: SystemType
-    # Relative position of the system in the sector in the x axis.
+    #: Relative position of the system in the sector in the x axis.
     x: int
-    # Relative position of the system in the sector in the y axis.
+    #: Relative position of the system in the sector in the y axis.
     y: int
-    # Waypoints in this system.
+    #: Waypoints in this system.
     waypoints: list[SystemWaypoint]
-    # Factions that control this system.
+    #: Factions that control this system.
     factions: list[SystemFaction]
-    # The constellation that the system is part of.
+    #: The constellation that the system is part of.
     constellation: str | None = None
-    # The name of the system.
+    #: The name of the system.
     name: str | None = None
 
     def to_json(self) -> Json:
@@ -348,20 +348,20 @@ class SystemType(Enum):
 class SystemWaypoint:
     """Waypoint details."""
 
-    # The symbol of the waypoint.
+    #: The symbol of the waypoint.
     symbol: str
-    # The type of waypoint.
+    #: The type of waypoint.
     type: WaypointType
-    # Relative position of the waypoint on the system's x axis. This
-    # is not an absolute position in the universe.
+    #: Relative position of the waypoint on the system's x axis. This
+    #: is not an absolute position in the universe.
     x: int
-    # Relative position of the waypoint on the system's y axis. This
-    # is not an absolute position in the universe.
+    #: Relative position of the waypoint on the system's y axis. This
+    #: is not an absolute position in the universe.
     y: int
-    # Waypoints that orbit this waypoint.
+    #: Waypoints that orbit this waypoint.
     orbitals: list[WaypointOrbital]
-    # The symbol of the parent waypoint, if this waypoint is in orbit
-    # around another waypoint. Otherwise this value is undefined.
+    #: The symbol of the parent waypoint, if this waypoint is in orbit
+    #: around another waypoint. Otherwise this value is undefined.
     orbits: str | None = None
 
     def to_json(self) -> Json:
@@ -420,7 +420,7 @@ class WaypointOrbital:
     waypoint.
     """
 
-    # The symbol of the orbiting waypoint.
+    #: The symbol of the orbiting waypoint.
     symbol: str
 
     def to_json(self) -> Json:
@@ -439,7 +439,7 @@ class WaypointOrbital:
 
 @dataclasses.dataclass
 class SystemFaction:
-    # The symbol of the faction.
+    #: The symbol of the faction.
     symbol: FactionSymbol
 
     def to_json(self) -> Json:
@@ -462,33 +462,33 @@ class Waypoint:
     a Planet, Moon or Space Station.
     """
 
-    # The symbol of the waypoint.
+    #: The symbol of the waypoint.
     symbol: str
-    # The type of waypoint.
+    #: The type of waypoint.
     type: WaypointType
-    # The symbol of the system.
+    #: The symbol of the system.
     system_symbol: str
-    # Relative position of the waypoint on the system's x axis. This
-    # is not an absolute position in the universe.
+    #: Relative position of the waypoint on the system's x axis. This
+    #: is not an absolute position in the universe.
     x: int
-    # Relative position of the waypoint on the system's y axis. This
-    # is not an absolute position in the universe.
+    #: Relative position of the waypoint on the system's y axis. This
+    #: is not an absolute position in the universe.
     y: int
-    # Waypoints that orbit this waypoint.
+    #: Waypoints that orbit this waypoint.
     orbitals: list[WaypointOrbital]
-    # The traits of the waypoint.
+    #: The traits of the waypoint.
     traits: list[WaypointTrait]
-    # True if the waypoint is under construction.
+    #: True if the waypoint is under construction.
     is_under_construction: bool
-    # The symbol of the parent waypoint, if this waypoint is in orbit
-    # around another waypoint. Otherwise this value is undefined.
+    #: The symbol of the parent waypoint, if this waypoint is in orbit
+    #: around another waypoint. Otherwise this value is undefined.
     orbits: str | None = None
-    # The faction that controls the waypoint.
+    #: The faction that controls the waypoint.
     faction: WaypointFaction | None = None
-    # The modifiers of the waypoint.
+    #: The modifiers of the waypoint.
     modifiers: list[WaypointModifier] | None = None
-    # The chart of a system or waypoint, which makes the location
-    # visible to other agents.
+    #: The chart of a system or waypoint, which makes the location
+    #: visible to other agents.
     chart: Chart | None = None
 
     def to_json(self) -> Json:
@@ -535,7 +535,7 @@ class Waypoint:
 class WaypointFaction:
     """The faction that controls the waypoint."""
 
-    # The symbol of the faction.
+    #: The symbol of the faction.
     symbol: FactionSymbol
 
     def to_json(self) -> Json:
@@ -554,11 +554,11 @@ class WaypointFaction:
 
 @dataclasses.dataclass
 class WaypointTrait:
-    # The unique identifier of the trait.
+    #: The unique identifier of the trait.
     symbol: WaypointTraitSymbol
-    # The name of the trait.
+    #: The name of the trait.
     name: str
-    # A description of the trait.
+    #: A description of the trait.
     description: str
 
     def to_json(self) -> Json:
@@ -661,11 +661,11 @@ class WaypointTraitSymbol(Enum):
 
 @dataclasses.dataclass
 class WaypointModifier:
-    # The unique identifier of the modifier.
+    #: The unique identifier of the modifier.
     symbol: WaypointModifierSymbol
-    # The name of the trait.
+    #: The name of the trait.
     name: str
-    # A description of the trait.
+    #: A description of the trait.
     description: str
 
     def to_json(self) -> Json:
@@ -708,11 +708,11 @@ class Chart:
     location visible to other agents.
     """
 
-    # The symbol of the waypoint.
+    #: The symbol of the waypoint.
     waypoint_symbol: str
-    # The agent that submitted the chart for this waypoint.
+    #: The agent that submitted the chart for this waypoint.
     submitted_by: str
-    # The time the chart for this waypoint was submitted.
+    #: The time the chart for this waypoint was submitted.
     submitted_on: datetime
 
     def to_json(self) -> Json:
@@ -737,11 +737,11 @@ class Chart:
 class Construction:
     """The construction details of a waypoint."""
 
-    # The symbol of the waypoint.
+    #: The symbol of the waypoint.
     symbol: str
-    # The materials required to construct the waypoint.
+    #: The materials required to construct the waypoint.
     materials: list[ConstructionMaterial]
-    # Whether the waypoint has been constructed.
+    #: Whether the waypoint has been constructed.
     is_complete: bool
 
     def to_json(self) -> Json:
@@ -768,11 +768,11 @@ class ConstructionMaterial:
     given waypoint under construction.
     """
 
-    # The good's symbol.
+    #: The good's symbol.
     trade_symbol: TradeSymbol
-    # The number of units required.
+    #: The number of units required.
     required: int
-    # The number of units fulfilled toward the required amount.
+    #: The number of units fulfilled toward the required amount.
     fulfilled: int
 
     def to_json(self) -> Json:
@@ -953,11 +953,11 @@ class TradeSymbol(Enum):
 class ShipCargo:
     """Ship cargo details."""
 
-    # The max number of items that can be stored in the cargo hold.
+    #: The max number of items that can be stored in the cargo hold.
     capacity: int
-    # The number of items currently stored in the cargo hold.
+    #: The number of items currently stored in the cargo hold.
     units: int
-    # The items currently in the cargo hold.
+    #: The items currently in the cargo hold.
     inventory: list[ShipCargoItem]
 
     def to_json(self) -> Json:
@@ -982,13 +982,13 @@ class ShipCargo:
 class ShipCargoItem:
     """The type of cargo item and the number of units."""
 
-    # The good's symbol.
+    #: The good's symbol.
     symbol: TradeSymbol
-    # The name of the cargo item type.
+    #: The name of the cargo item type.
     name: str
-    # The description of the cargo item type.
+    #: The description of the cargo item type.
     description: str
-    # The number of units of the cargo item.
+    #: The number of units of the cargo item.
     units: int
 
     def to_json(self) -> Json:
@@ -1015,21 +1015,21 @@ class ShipCargoItem:
 class Market:
     """Market details."""
 
-    # The symbol of the market. The symbol is the same as the waypoint
-    # where the market is located.
+    #: The symbol of the market. The symbol is the same as the
+    #: waypoint where the market is located.
     symbol: str
-    # The list of goods that are exported from this market.
+    #: The list of goods that are exported from this market.
     exports: list[TradeGood]
-    # The list of goods that are sought as imports in this market.
+    #: The list of goods that are sought as imports in this market.
     imports: list[TradeGood]
-    # The list of goods that are bought and sold between agents at
-    # this market.
+    #: The list of goods that are bought and sold between agents at
+    #: this market.
     exchange: list[TradeGood]
-    # The list of recent transactions at this market. Visible only
-    # when a ship is present at the market.
+    #: The list of recent transactions at this market. Visible only
+    #: when a ship is present at the market.
     transactions: list[MarketTransaction] | None = None
-    # The list of goods that are traded at this market. Visible only
-    # when a ship is present at the market.
+    #: The list of goods that are traded at this market. Visible only
+    #: when a ship is present at the market.
     trade_goods: list[MarketTradeGood] | None = None
 
     def to_json(self) -> Json:
@@ -1062,11 +1062,11 @@ class Market:
 class TradeGood:
     """A good that can be traded for other goods or currency."""
 
-    # The good's symbol.
+    #: The good's symbol.
     symbol: TradeSymbol
-    # The name of the good.
+    #: The name of the good.
     name: str
-    # The description of the good.
+    #: The description of the good.
     description: str
 
     def to_json(self) -> Json:
@@ -1103,21 +1103,21 @@ class MarketTransaction:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
-    # The symbol of the waypoint.
+    #: The symbol of the waypoint.
     waypoint_symbol: str
-    # The symbol of the ship that made the transaction.
+    #: The symbol of the ship that made the transaction.
     ship_symbol: str
-    # The symbol of the trade good.
+    #: The symbol of the trade good.
     trade_symbol: str
-    # The type of transaction.
+    #: The type of transaction.
     type: MarketTransaction.Type
-    # The number of units of the transaction.
+    #: The number of units of the transaction.
     units: int
-    # The price per unit of the transaction.
+    #: The price per unit of the transaction.
     price_per_unit: int
-    # The total price of the transaction.
+    #: The total price of the transaction.
     total_price: int
-    # The timestamp of the transaction.
+    #: The timestamp of the transaction.
     timestamp: datetime
 
     def to_json(self) -> Json:
@@ -1164,28 +1164,28 @@ class MarketTradeGood:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
-    # The good's symbol.
+    #: The good's symbol.
     symbol: TradeSymbol
-    # The type of trade good (export, import, or exchange).
+    #: The type of trade good (export, import, or exchange).
     type: MarketTradeGood.Type
-    # This is the maximum number of units that can be purchased or
-    # sold at this market in a single trade for this good. Trade
-    # volume also gives an indication of price volatility. A market
-    # with a low trade volume will have large price swings, while high
-    # trade volume will be more resilient to price changes.
+    #: This is the maximum number of units that can be purchased or
+    #: sold at this market in a single trade for this good. Trade
+    #: volume also gives an indication of price volatility. A market
+    #: with a low trade volume will have large price swings, while
+    #: high trade volume will be more resilient to price changes.
     trade_volume: int
-    # The supply level of a trade good.
+    #: The supply level of a trade good.
     supply: SupplyLevel
-    # The price at which this good can be purchased from the market.
+    #: The price at which this good can be purchased from the market.
     purchase_price: int
-    # The price at which this good can be sold to the market.
+    #: The price at which this good can be sold to the market.
     sell_price: int
-    # The activity level of a trade good. If the good is an import,
-    # this represents how strong consumption is. If the good is an
-    # export, this represents how strong the production is for the
-    # good. When activity is strong, consumption or production is near
-    # maximum capacity. When activity is weak, consumption or
-    # production is near minimum capacity.
+    #: The activity level of a trade good. If the good is an import,
+    #: this represents how strong consumption is. If the good is an
+    #: export, this represents how strong the production is for the
+    #: good. When activity is strong, consumption or production is
+    #: near maximum capacity. When activity is weak, consumption or
+    #: production is near minimum capacity.
     activity: ActivityLevel | None = None
 
     def to_json(self) -> Json:
@@ -1256,9 +1256,9 @@ class ActivityLevel(Enum):
 class JumpGate:
     """Details of a jump gate waypoint."""
 
-    # The symbol of the waypoint.
+    #: The symbol of the waypoint.
     symbol: str
-    # All the gates that are connected to this waypoint.
+    #: All the gates that are connected to this waypoint.
     connections: list[str]
 
     def to_json(self) -> Json:
@@ -1283,7 +1283,7 @@ class Shipyard:
 
     @dataclasses.dataclass
     class ShipType:
-        # Type of ship
+        #: Type of ship
         type: ShipType
 
         def to_json(self) -> Json:
@@ -1299,20 +1299,20 @@ class Shipyard:
             return cls(
                 type = from_json(ShipType, v['type']),
             )
-    # The symbol of the shipyard. The symbol is the same as the
-    # waypoint where the shipyard is located.
+    #: The symbol of the shipyard. The symbol is the same as the
+    #: waypoint where the shipyard is located.
     symbol: str
-    # The list of ship types available for purchase at this shipyard.
+    #: The list of ship types available for purchase at this shipyard.
     ship_types: list[Shipyard.ShipType]
-    # The fee to modify a ship at this shipyard. This includes
-    # installing or removing modules and mounts on a ship. In the case
-    # of mounts, the fee is a flat rate per mount. In the case of
-    # modules, the fee is per slot the module occupies.
+    #: The fee to modify a ship at this shipyard. This includes
+    #: installing or removing modules and mounts on a ship. In the
+    #: case of mounts, the fee is a flat rate per mount. In the case
+    #: of modules, the fee is per slot the module occupies.
     modifications_fee: int
-    # The list of recent transactions at this shipyard.
+    #: The list of recent transactions at this shipyard.
     transactions: list[ShipyardTransaction] | None = None
-    # The ships that are currently available for purchase at the
-    # shipyard.
+    #: The ships that are currently available for purchase at the
+    #: shipyard.
     ships: list[ShipyardShip] | None = None
 
     def to_json(self) -> Json:
@@ -1367,20 +1367,20 @@ class ShipType(Enum):
 class ShipyardTransaction:
     """Results of a transaction with a shipyard."""
 
-    # The symbol of the waypoint.
+    #: The symbol of the waypoint.
     waypoint_symbol: str
-    # The symbol of the ship type (e.g. SHIP_MINING_DRONE) that was
-    # the subject of the transaction. Contrary to what the name
-    # implies, this is NOT the symbol of the ship that was purchased.
+    #: The symbol of the ship type (e.g. SHIP_MINING_DRONE) that was
+    #: the subject of the transaction. Contrary to what the name
+    #: implies, this is NOT the symbol of the ship that was purchased.
     ship_symbol: str
-    # The symbol of the ship type (e.g. SHIP_MINING_DRONE) that was
-    # the subject of the transaction.
+    #: The symbol of the ship type (e.g. SHIP_MINING_DRONE) that was
+    #: the subject of the transaction.
     ship_type: str
-    # The price of the transaction.
+    #: The price of the transaction.
     price: int
-    # The symbol of the agent that made the transaction.
+    #: The symbol of the agent that made the transaction.
     agent_symbol: str
-    # The timestamp of the transaction.
+    #: The timestamp of the transaction.
     timestamp: datetime
 
     def to_json(self) -> Json:
@@ -1413,10 +1413,10 @@ class ShipyardShip:
 
     @dataclasses.dataclass
     class Crew:
-        # The minimum number of crew members required to maintain the
-        # ship.
+        #: The minimum number of crew members required to maintain the
+        #: ship.
         required: int
-        # The maximum number of crew members the ship can support.
+        #: The maximum number of crew members the ship can support.
         capacity: int
 
         def to_json(self) -> Json:
@@ -1434,38 +1434,38 @@ class ShipyardShip:
                 required = from_json(int, v['required']),
                 capacity = from_json(int, v['capacity']),
             )
-    # Type of ship
+    #: Type of ship
     type: ShipType
-    # Name of the ship.
+    #: Name of the ship.
     name: str
-    # Description of the ship.
+    #: Description of the ship.
     description: str
-    # The supply level of a trade good.
+    #: The supply level of a trade good.
     supply: SupplyLevel
-    # The purchase price of the ship.
+    #: The purchase price of the ship.
     purchase_price: int
-    # The frame of the ship. The frame determines the number of
-    # modules and mounting points of the ship, as well as base fuel
-    # capacity. As the condition of the frame takes more wear, the
-    # ship will become more sluggish and less maneuverable.
+    #: The frame of the ship. The frame determines the number of
+    #: modules and mounting points of the ship, as well as base fuel
+    #: capacity. As the condition of the frame takes more wear, the
+    #: ship will become more sluggish and less maneuverable.
     frame: ShipFrame
-    # The reactor of the ship. The reactor is responsible for powering
-    # the ship's systems and weapons.
+    #: The reactor of the ship. The reactor is responsible for
+    #: powering the ship's systems and weapons.
     reactor: ShipReactor
-    # The engine determines how quickly a ship travels between
-    # waypoints.
+    #: The engine determines how quickly a ship travels between
+    #: waypoints.
     engine: ShipEngine
-    # Modules installed in this ship.
+    #: Modules installed in this ship.
     modules: list[ShipModule]
-    # Mounts installed in this ship.
+    #: Mounts installed in this ship.
     mounts: list[ShipMount]
     crew: ShipyardShip.Crew
-    # The activity level of a trade good. If the good is an import,
-    # this represents how strong consumption is. If the good is an
-    # export, this represents how strong the production is for the
-    # good. When activity is strong, consumption or production is near
-    # maximum capacity. When activity is weak, consumption or
-    # production is near minimum capacity.
+    #: The activity level of a trade good. If the good is an import,
+    #: this represents how strong consumption is. If the good is an
+    #: export, this represents how strong the production is for the
+    #: good. When activity is strong, consumption or production is
+    #: near maximum capacity. When activity is weak, consumption or
+    #: production is near minimum capacity.
     activity: ActivityLevel | None = None
 
     def to_json(self) -> Json:
@@ -1539,46 +1539,46 @@ class ShipFrame:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
-    # Symbol of the frame.
+    #: Symbol of the frame.
     symbol: ShipFrame.Symbol
-    # Name of the frame.
+    #: Name of the frame.
     name: str
-    # The repairable condition of a component. A value of 0 indicates
-    # the component needs significant repairs, while a value of 1
-    # indicates the component is in near perfect condition. As the
-    # condition of a component is repaired, the overall integrity of
-    # the component decreases.
+    #: The repairable condition of a component. A value of 0 indicates
+    #: the component needs significant repairs, while a value of 1
+    #: indicates the component is in near perfect condition. As the
+    #: condition of a component is repaired, the overall integrity of
+    #: the component decreases.
     condition: float
-    # The overall integrity of the component, which determines the
-    # performance of the component. A value of 0 indicates that the
-    # component is almost completely degraded, while a value of 1
-    # indicates that the component is in near perfect condition. The
-    # integrity of the component is non-repairable, and represents
-    # permanent wear over time.
+    #: The overall integrity of the component, which determines the
+    #: performance of the component. A value of 0 indicates that the
+    #: component is almost completely degraded, while a value of 1
+    #: indicates that the component is in near perfect condition. The
+    #: integrity of the component is non-repairable, and represents
+    #: permanent wear over time.
     integrity: float
-    # Description of the frame.
+    #: Description of the frame.
     description: str
-    # The amount of slots that can be dedicated to modules installed
-    # in the ship. Each installed module take up a number of slots,
-    # and once there are no more slots, no new modules can be
-    # installed.
+    #: The amount of slots that can be dedicated to modules installed
+    #: in the ship. Each installed module take up a number of slots,
+    #: and once there are no more slots, no new modules can be
+    #: installed.
     module_slots: int
-    # The amount of slots that can be dedicated to mounts installed in
-    # the ship. Each installed mount takes up a number of points, and
-    # once there are no more points remaining, no new mounts can be
-    # installed.
+    #: The amount of slots that can be dedicated to mounts installed
+    #: in the ship. Each installed mount takes up a number of points,
+    #: and once there are no more points remaining, no new mounts can
+    #: be installed.
     mounting_points: int
-    # The maximum amount of fuel that can be stored in this ship. When
-    # refueling, the ship will be refueled to this amount.
+    #: The maximum amount of fuel that can be stored in this ship.
+    #: When refueling, the ship will be refueled to this amount.
     fuel_capacity: int
-    # The requirements for installation on a ship
+    #: The requirements for installation on a ship
     requirements: ShipRequirements
-    # The overall quality of the component, which determines the
-    # quality of the component. High quality components return more
-    # ships parts and ship plating when a ship is scrapped. But also
-    # require more of these parts to repair. This is transparent to
-    # the player, as the parts are bought from/sold to the
-    # marketplace.
+    #: The overall quality of the component, which determines the
+    #: quality of the component. High quality components return more
+    #: ships parts and ship plating when a ship is scrapped. But also
+    #: require more of these parts to repair. This is transparent to
+    #: the player, as the parts are bought from/sold to the
+    #: marketplace.
     quality: float
 
     def to_json(self) -> Json:
@@ -1617,11 +1617,11 @@ class ShipFrame:
 class ShipRequirements:
     """The requirements for installation on a ship"""
 
-    # The amount of power required from the reactor.
+    #: The amount of power required from the reactor.
     power: int | None = None
-    # The number of crew required for operation.
+    #: The number of crew required for operation.
     crew: int | None = None
-    # The number of module slots required for installation.
+    #: The number of module slots required for installation.
     slots: int | None = None
 
     def to_json(self) -> Json:
@@ -1666,37 +1666,37 @@ class ShipReactor:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
-    # Symbol of the reactor.
+    #: Symbol of the reactor.
     symbol: ShipReactor.Symbol
-    # Name of the reactor.
+    #: Name of the reactor.
     name: str
-    # The repairable condition of a component. A value of 0 indicates
-    # the component needs significant repairs, while a value of 1
-    # indicates the component is in near perfect condition. As the
-    # condition of a component is repaired, the overall integrity of
-    # the component decreases.
+    #: The repairable condition of a component. A value of 0 indicates
+    #: the component needs significant repairs, while a value of 1
+    #: indicates the component is in near perfect condition. As the
+    #: condition of a component is repaired, the overall integrity of
+    #: the component decreases.
     condition: float
-    # The overall integrity of the component, which determines the
-    # performance of the component. A value of 0 indicates that the
-    # component is almost completely degraded, while a value of 1
-    # indicates that the component is in near perfect condition. The
-    # integrity of the component is non-repairable, and represents
-    # permanent wear over time.
+    #: The overall integrity of the component, which determines the
+    #: performance of the component. A value of 0 indicates that the
+    #: component is almost completely degraded, while a value of 1
+    #: indicates that the component is in near perfect condition. The
+    #: integrity of the component is non-repairable, and represents
+    #: permanent wear over time.
     integrity: float
-    # Description of the reactor.
+    #: Description of the reactor.
     description: str
-    # The amount of power provided by this reactor. The more power a
-    # reactor provides to the ship, the lower the cooldown it gets
-    # when using a module or mount that taxes the ship's power.
+    #: The amount of power provided by this reactor. The more power a
+    #: reactor provides to the ship, the lower the cooldown it gets
+    #: when using a module or mount that taxes the ship's power.
     power_output: int
-    # The requirements for installation on a ship
+    #: The requirements for installation on a ship
     requirements: ShipRequirements
-    # The overall quality of the component, which determines the
-    # quality of the component. High quality components return more
-    # ships parts and ship plating when a ship is scrapped. But also
-    # require more of these parts to repair. This is transparent to
-    # the player, as the parts are bought from/sold to the
-    # marketplace.
+    #: The overall quality of the component, which determines the
+    #: quality of the component. High quality components return more
+    #: ships parts and ship plating when a ship is scrapped. But also
+    #: require more of these parts to repair. This is transparent to
+    #: the player, as the parts are bought from/sold to the
+    #: marketplace.
     quality: float
 
     def to_json(self) -> Json:
@@ -1747,37 +1747,37 @@ class ShipEngine:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
-    # The symbol of the engine.
+    #: The symbol of the engine.
     symbol: ShipEngine.Symbol
-    # The name of the engine.
+    #: The name of the engine.
     name: str
-    # The repairable condition of a component. A value of 0 indicates
-    # the component needs significant repairs, while a value of 1
-    # indicates the component is in near perfect condition. As the
-    # condition of a component is repaired, the overall integrity of
-    # the component decreases.
+    #: The repairable condition of a component. A value of 0 indicates
+    #: the component needs significant repairs, while a value of 1
+    #: indicates the component is in near perfect condition. As the
+    #: condition of a component is repaired, the overall integrity of
+    #: the component decreases.
     condition: float
-    # The overall integrity of the component, which determines the
-    # performance of the component. A value of 0 indicates that the
-    # component is almost completely degraded, while a value of 1
-    # indicates that the component is in near perfect condition. The
-    # integrity of the component is non-repairable, and represents
-    # permanent wear over time.
+    #: The overall integrity of the component, which determines the
+    #: performance of the component. A value of 0 indicates that the
+    #: component is almost completely degraded, while a value of 1
+    #: indicates that the component is in near perfect condition. The
+    #: integrity of the component is non-repairable, and represents
+    #: permanent wear over time.
     integrity: float
-    # The description of the engine.
+    #: The description of the engine.
     description: str
-    # The speed stat of this engine. The higher the speed, the faster
-    # a ship can travel from one point to another. Reduces the time of
-    # arrival when navigating the ship.
+    #: The speed stat of this engine. The higher the speed, the faster
+    #: a ship can travel from one point to another. Reduces the time
+    #: of arrival when navigating the ship.
     speed: int
-    # The requirements for installation on a ship
+    #: The requirements for installation on a ship
     requirements: ShipRequirements
-    # The overall quality of the component, which determines the
-    # quality of the component. High quality components return more
-    # ships parts and ship plating when a ship is scrapped. But also
-    # require more of these parts to repair. This is transparent to
-    # the player, as the parts are bought from/sold to the
-    # marketplace.
+    #: The overall quality of the component, which determines the
+    #: quality of the component. High quality components return more
+    #: ships parts and ship plating when a ship is scrapped. But also
+    #: require more of these parts to repair. This is transparent to
+    #: the player, as the parts are bought from/sold to the
+    #: marketplace.
     quality: float
 
     def to_json(self) -> Json:
@@ -1845,21 +1845,21 @@ class ShipModule:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
-    # The symbol of the module.
+    #: The symbol of the module.
     symbol: ShipModule.Symbol
-    # Name of this module.
+    #: Name of this module.
     name: str
-    # Description of this module.
+    #: Description of this module.
     description: str
-    # The requirements for installation on a ship
+    #: The requirements for installation on a ship
     requirements: ShipRequirements
-    # Modules that provide capacity, such as cargo hold or crew
-    # quarters will show this value to denote how much of a bonus the
-    # module grants.
+    #: Modules that provide capacity, such as cargo hold or crew
+    #: quarters will show this value to denote how much of a bonus the
+    #: module grants.
     capacity: int | None = None
-    # Modules that have a range will such as a sensor array show this
-    # value to denote how far can the module reach with its
-    # capabilities.
+    #: Modules that have a range will such as a sensor array show this
+    #: value to denote how far can the module reach with its
+    #: capabilities.
     range: int | None = None
 
     def to_json(self) -> Json:
@@ -1940,19 +1940,19 @@ class ShipMount:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
-    # Symbol of this mount.
+    #: Symbol of this mount.
     symbol: ShipMount.Symbol
-    # Name of this mount.
+    #: Name of this mount.
     name: str
-    # Description of this mount.
+    #: Description of this mount.
     description: str
-    # The requirements for installation on a ship
+    #: The requirements for installation on a ship
     requirements: ShipRequirements
-    # Mounts that have this value, such as mining lasers, denote how
-    # powerful this mount's capabilities are.
+    #: Mounts that have this value, such as mining lasers, denote how
+    #: powerful this mount's capabilities are.
     strength: int | None = None
-    # Mounts that have this value denote what goods can be produced
-    # from using the mount.
+    #: Mounts that have this value denote what goods can be produced
+    #: from using the mount.
     deposits: list[ShipMount.Deposit] | None = None
 
     def to_json(self) -> Json:
@@ -1998,22 +1998,22 @@ class Contract:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
-    # ID of the contract.
+    #: ID of the contract.
     id: str
-    # The symbol of the faction that this contract is for.
+    #: The symbol of the faction that this contract is for.
     faction_symbol: str
-    # Type of contract.
+    #: Type of contract.
     type: Contract.Type
-    # The terms to fulfill the contract.
+    #: The terms to fulfill the contract.
     terms: ContractTerms
-    # Whether the contract has been accepted by the agent
+    #: Whether the contract has been accepted by the agent
     accepted: bool
-    # Whether the contract has been fulfilled
+    #: Whether the contract has been fulfilled
     fulfilled: bool
-    # Deprecated in favor of deadlineToAccept
+    #: Deprecated in favor of deadlineToAccept
     expiration: datetime
-    # The time at which the contract is no longer available to be
-    # accepted
+    #: The time at which the contract is no longer available to be
+    #: accepted
     deadline_to_accept: datetime | None = None
 
     def to_json(self) -> Json:
@@ -2049,11 +2049,11 @@ class Contract:
 class ContractTerms:
     """The terms to fulfill the contract."""
 
-    # The deadline for the contract.
+    #: The deadline for the contract.
     deadline: datetime
-    # Payments for the contract.
+    #: Payments for the contract.
     payment: ContractPayment
-    # The cargo that needs to be delivered to fulfill the contract.
+    #: The cargo that needs to be delivered to fulfill the contract.
     deliver: list[ContractDeliverGood] | None = None
 
     def to_json(self) -> Json:
@@ -2079,10 +2079,10 @@ class ContractTerms:
 class ContractPayment:
     """Payments for the contract."""
 
-    # The amount of credits received up front for accepting the
-    # contract.
+    #: The amount of credits received up front for accepting the
+    #: contract.
     on_accepted: int
-    # The amount of credits received when the contract is fulfilled.
+    #: The amount of credits received when the contract is fulfilled.
     on_fulfilled: int
 
     def to_json(self) -> Json:
@@ -2107,13 +2107,13 @@ class ContractDeliverGood:
     good, units needed, and the destination.
     """
 
-    # The symbol of the trade good to deliver.
+    #: The symbol of the trade good to deliver.
     trade_symbol: str
-    # The destination where goods need to be delivered.
+    #: The destination where goods need to be delivered.
     destination_symbol: str
-    # The number of units that need to be delivered on this contract.
+    #: The number of units that need to be delivered on this contract.
     units_required: int
-    # The number of units fulfilled on this contract.
+    #: The number of units fulfilled on this contract.
     units_fulfilled: int
 
     def to_json(self) -> Json:
@@ -2140,19 +2140,19 @@ class ContractDeliverGood:
 class Agent:
     """Agent details."""
 
-    # Account ID that is tied to this agent. Only included on your own
-    # agent.
+    #: Account ID that is tied to this agent. Only included on your
+    #: own agent.
     account_id: str
-    # Symbol of the agent.
+    #: Symbol of the agent.
     symbol: str
-    # The headquarters of the agent.
+    #: The headquarters of the agent.
     headquarters: str
-    # The number of credits the agent has available. Credits can be
-    # negative if funds have been overdrawn.
+    #: The number of credits the agent has available. Credits can be
+    #: negative if funds have been overdrawn.
     credits: int
-    # The faction the agent started with.
+    #: The faction the agent started with.
     starting_faction: str
-    # How many ships are owned by the agent.
+    #: How many ships are owned by the agent.
     ship_count: int
 
     def to_json(self) -> Json:
@@ -2216,38 +2216,38 @@ class AgentEvent:
 class Ship:
     """Ship details."""
 
-    # The globally unique identifier of the ship in the following
-    # format: `[AGENT_SYMBOL]-[HEX_ID]`
+    #: The globally unique identifier of the ship in the following
+    #: format: `[AGENT_SYMBOL]-[HEX_ID]`
     symbol: str
-    # The public registration information of the ship
+    #: The public registration information of the ship
     registration: ShipRegistration
-    # The navigation information of the ship.
+    #: The navigation information of the ship.
     nav: ShipNav
-    # The ship's crew service and maintain the ship's systems and
-    # equipment.
+    #: The ship's crew service and maintain the ship's systems and
+    #: equipment.
     crew: ShipCrew
-    # The frame of the ship. The frame determines the number of
-    # modules and mounting points of the ship, as well as base fuel
-    # capacity. As the condition of the frame takes more wear, the
-    # ship will become more sluggish and less maneuverable.
+    #: The frame of the ship. The frame determines the number of
+    #: modules and mounting points of the ship, as well as base fuel
+    #: capacity. As the condition of the frame takes more wear, the
+    #: ship will become more sluggish and less maneuverable.
     frame: ShipFrame
-    # The reactor of the ship. The reactor is responsible for powering
-    # the ship's systems and weapons.
+    #: The reactor of the ship. The reactor is responsible for
+    #: powering the ship's systems and weapons.
     reactor: ShipReactor
-    # The engine determines how quickly a ship travels between
-    # waypoints.
+    #: The engine determines how quickly a ship travels between
+    #: waypoints.
     engine: ShipEngine
-    # Modules installed in this ship.
+    #: Modules installed in this ship.
     modules: list[ShipModule]
-    # Mounts installed in this ship.
+    #: Mounts installed in this ship.
     mounts: list[ShipMount]
-    # Ship cargo details.
+    #: Ship cargo details.
     cargo: ShipCargo
-    # Details of the ship's fuel tanks including how much fuel was
-    # consumed during the last transit or action.
+    #: Details of the ship's fuel tanks including how much fuel was
+    #: consumed during the last transit or action.
     fuel: ShipFuel
-    # A cooldown is a period of time in which a ship cannot perform
-    # certain actions.
+    #: A cooldown is a period of time in which a ship cannot perform
+    #: certain actions.
     cooldown: Cooldown
 
     def to_json(self) -> Json:
@@ -2290,11 +2290,11 @@ class Ship:
 class ShipRegistration:
     """The public registration information of the ship"""
 
-    # The agent's registered name of the ship
+    #: The agent's registered name of the ship
     name: str
-    # The symbol of the faction the ship is registered with
+    #: The symbol of the faction the ship is registered with
     faction_symbol: str
-    # The registered role of the ship
+    #: The registered role of the ship
     role: ShipRole
 
     def to_json(self) -> Json:
@@ -2344,17 +2344,17 @@ class ShipRole(Enum):
 class ShipNav:
     """The navigation information of the ship."""
 
-    # The symbol of the system.
+    #: The symbol of the system.
     system_symbol: str
-    # The symbol of the waypoint.
+    #: The symbol of the waypoint.
     waypoint_symbol: str
-    # The routing information for the ship's most recent transit or
-    # current location.
+    #: The routing information for the ship's most recent transit or
+    #: current location.
     route: ShipNavRoute
-    # The current status of the ship
+    #: The current status of the ship
     status: ShipNavStatus
-    # The ship's set speed when traveling between waypoints or
-    # systems.
+    #: The ship's set speed when traveling between waypoints or
+    #: systems.
     flight_mode: ShipNavFlightMode
 
     def to_json(self) -> Json:
@@ -2385,14 +2385,14 @@ class ShipNavRoute:
     transit or current location.
     """
 
-    # The destination or departure of a ships nav route.
+    #: The destination or departure of a ships nav route.
     destination: ShipNavRouteWaypoint
-    # The destination or departure of a ships nav route.
+    #: The destination or departure of a ships nav route.
     origin: ShipNavRouteWaypoint
-    # The date time of the ship's departure.
+    #: The date time of the ship's departure.
     departure_time: datetime
-    # The date time of the ship's arrival. If the ship is in-transit,
-    # this is the expected time of arrival.
+    #: The date time of the ship's arrival. If the ship is in-transit,
+    #: this is the expected time of arrival.
     arrival: datetime
 
     def to_json(self) -> Json:
@@ -2419,15 +2419,15 @@ class ShipNavRoute:
 class ShipNavRouteWaypoint:
     """The destination or departure of a ships nav route."""
 
-    # The symbol of the waypoint.
+    #: The symbol of the waypoint.
     symbol: str
-    # The type of waypoint.
+    #: The type of waypoint.
     type: WaypointType
-    # The symbol of the system.
+    #: The symbol of the system.
     system_symbol: str
-    # Position in the universe in the x axis.
+    #: Position in the universe in the x axis.
     x: int
-    # Position in the universe in the y axis.
+    #: Position in the universe in the y axis.
     y: int
 
     def to_json(self) -> Json:
@@ -2504,23 +2504,23 @@ class ShipCrew:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
-    # The current number of crew members on the ship.
+    #: The current number of crew members on the ship.
     current: int
-    # The minimum number of crew members required to maintain the
-    # ship.
+    #: The minimum number of crew members required to maintain the
+    #: ship.
     required: int
-    # The maximum number of crew members the ship can support.
+    #: The maximum number of crew members the ship can support.
     capacity: int
-    # The rotation of crew shifts. A stricter shift improves the
-    # ship's performance. A more relaxed shift improves the crew's
-    # morale.
+    #: The rotation of crew shifts. A stricter shift improves the
+    #: ship's performance. A more relaxed shift improves the crew's
+    #: morale.
     rotation: ShipCrew.Rotation
-    # A rough measure of the crew's morale. A higher morale means the
-    # crew is happier and more productive. A lower morale means the
-    # ship is more prone to accidents.
+    #: A rough measure of the crew's morale. A higher morale means the
+    #: crew is happier and more productive. A lower morale means the
+    #: ship is more prone to accidents.
     morale: int
-    # The amount of credits per crew member paid per hour. Wages are
-    # paid when a ship docks at a civilized waypoint.
+    #: The amount of credits per crew member paid per hour. Wages are
+    #: paid when a ship docks at a civilized waypoint.
     wages: int
 
     def to_json(self) -> Json:
@@ -2559,10 +2559,10 @@ class ShipFuel:
         consumed fuel in the process. Shows the fuel consumption data.
         """
 
-        # The amount of fuel consumed by the most recent transit or
-        # action.
+        #: The amount of fuel consumed by the most recent transit or
+        #: action.
         amount: int
-        # The time at which the fuel was consumed.
+        #: The time at which the fuel was consumed.
         timestamp: datetime
 
         def to_json(self) -> Json:
@@ -2580,12 +2580,12 @@ class ShipFuel:
                 amount = from_json(int, v['amount']),
                 timestamp = from_json(datetime, v['timestamp']),
             )
-    # The current amount of fuel in the ship's tanks.
+    #: The current amount of fuel in the ship's tanks.
     current: int
-    # The maximum amount of fuel the ship's tanks can hold.
+    #: The maximum amount of fuel the ship's tanks can hold.
     capacity: int
-    # An object that only shows up when an action has consumed fuel in
-    # the process. Shows the fuel consumption data.
+    #: An object that only shows up when an action has consumed fuel
+    #: in the process. Shows the fuel consumption data.
     consumed: ShipFuel.Consumed | None = None
 
     def to_json(self) -> Json:
@@ -2613,13 +2613,13 @@ class Cooldown:
     perform certain actions.
     """
 
-    # The symbol of the ship that is on cooldown
+    #: The symbol of the ship that is on cooldown
     ship_symbol: str
-    # The total duration of the cooldown in seconds
+    #: The total duration of the cooldown in seconds
     total_seconds: int
-    # The remaining duration of the cooldown in seconds
+    #: The remaining duration of the cooldown in seconds
     remaining_seconds: int
-    # The date and time when the cooldown expires in ISO 8601 format
+    #: The date and time when the cooldown expires in ISO 8601 format
     expiration: datetime | None = None
 
     def to_json(self) -> Json:
@@ -2647,13 +2647,13 @@ class Cooldown:
 class ChartTransaction:
     """Result of a chart transaction."""
 
-    # The symbol of the waypoint.
+    #: The symbol of the waypoint.
     waypoint_symbol: str
-    # The symbol of the ship.
+    #: The symbol of the ship.
     ship_symbol: str
-    # The total price of the transaction.
+    #: The total price of the transaction.
     total_price: int
-    # The timestamp of the transaction.
+    #: The timestamp of the transaction.
     timestamp: datetime
 
     def to_json(self) -> Json:
@@ -2680,9 +2680,9 @@ class ChartTransaction:
 class Extraction:
     """Extraction details."""
 
-    # Symbol of the ship that executed the extraction.
+    #: Symbol of the ship that executed the extraction.
     ship_symbol: str
-    # A yield from the extraction operation.
+    #: A yield from the extraction operation.
     yield_: ExtractionYield
 
     def to_json(self) -> Json:
@@ -2705,10 +2705,10 @@ class Extraction:
 class ExtractionYield:
     """A yield from the extraction operation."""
 
-    # The good's symbol.
+    #: The good's symbol.
     symbol: TradeSymbol
-    # The number of units extracted that were placed into the ship's
-    # cargo hold.
+    #: The number of units extracted that were placed into the ship's
+    #: cargo hold.
     units: int
 
     def to_json(self) -> Json:
@@ -2782,12 +2782,12 @@ class ShipConditionEvent:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
-    # The symbol of the event that occurred.
+    #: The symbol of the event that occurred.
     symbol: ShipConditionEvent.Symbol
     component: ShipConditionEvent.Component
-    # The name of the event.
+    #: The name of the event.
     name: str
-    # A description of the event.
+    #: A description of the event.
     description: str
 
     def to_json(self) -> Json:
@@ -2817,22 +2817,22 @@ class Survey:
     there.
     """
 
-    # A unique signature for the location of this survey. This
-    # signature is verified when attempting an extraction using this
-    # survey.
+    #: A unique signature for the location of this survey. This
+    #: signature is verified when attempting an extraction using this
+    #: survey.
     signature: str
-    # The symbol of the waypoint that this survey is for.
+    #: The symbol of the waypoint that this survey is for.
     symbol: str
-    # A list of deposits that can be found at this location. A ship
-    # will extract one of these deposits when using this survey in an
-    # extraction request. If multiple deposits of the same type are
-    # present, the chance of extracting that deposit is increased.
+    #: A list of deposits that can be found at this location. A ship
+    #: will extract one of these deposits when using this survey in an
+    #: extraction request. If multiple deposits of the same type are
+    #: present, the chance of extracting that deposit is increased.
     deposits: list[SurveyDeposit]
-    # The date and time when the survey expires. After this date and
-    # time, the survey will no longer be available for extraction.
+    #: The date and time when the survey expires. After this date and
+    #: time, the survey will no longer be available for extraction.
     expiration: datetime
-    # The size of the deposit. This value indicates how much can be
-    # extracted from the survey before it is exhausted.
+    #: The size of the deposit. This value indicates how much can be
+    #: extracted from the survey before it is exhausted.
     size: SurveySize
 
     def to_json(self) -> Json:
@@ -2863,7 +2863,7 @@ class SurveyDeposit:
     extraction.
     """
 
-    # The good's symbol.
+    #: The good's symbol.
     symbol: TradeSymbol
 
     def to_json(self) -> Json:
@@ -2900,17 +2900,17 @@ class SurveySize(Enum):
 class ScannedSystem:
     """Details of a system was that scanned."""
 
-    # Symbol of the system.
+    #: Symbol of the system.
     symbol: str
-    # Symbol of the system's sector.
+    #: Symbol of the system's sector.
     sector_symbol: str
-    # The type of system.
+    #: The type of system.
     type: SystemType
-    # Position in the universe in the x axis.
+    #: Position in the universe in the x axis.
     x: int
-    # Position in the universe in the y axis.
+    #: Position in the universe in the y axis.
     y: int
-    # The system's distance from the scanning ship.
+    #: The system's distance from the scanning ship.
     distance: int
 
     def to_json(self) -> Json:
@@ -2941,24 +2941,24 @@ class ScannedSystem:
 class ScannedWaypoint:
     """A waypoint that was scanned by a ship."""
 
-    # The symbol of the waypoint.
+    #: The symbol of the waypoint.
     symbol: str
-    # The type of waypoint.
+    #: The type of waypoint.
     type: WaypointType
-    # The symbol of the system.
+    #: The symbol of the system.
     system_symbol: str
-    # Position in the universe in the x axis.
+    #: Position in the universe in the x axis.
     x: int
-    # Position in the universe in the y axis.
+    #: Position in the universe in the y axis.
     y: int
-    # List of waypoints that orbit this waypoint.
+    #: List of waypoints that orbit this waypoint.
     orbitals: list[WaypointOrbital]
-    # The traits of the waypoint.
+    #: The traits of the waypoint.
     traits: list[WaypointTrait]
-    # The faction that controls the waypoint.
+    #: The faction that controls the waypoint.
     faction: WaypointFaction | None = None
-    # The chart of a system or waypoint, which makes the location
-    # visible to other agents.
+    #: The chart of a system or waypoint, which makes the location
+    #: visible to other agents.
     chart: Chart | None = None
 
     def to_json(self) -> Json:
@@ -3003,7 +3003,7 @@ class ScannedShip:
     class Engine:
         """The engine of the ship."""
 
-        # The symbol of the engine.
+        #: The symbol of the engine.
         symbol: str
 
         def to_json(self) -> Json:
@@ -3024,7 +3024,7 @@ class ScannedShip:
     class Frame:
         """The frame of the ship."""
 
-        # The symbol of the frame.
+        #: The symbol of the frame.
         symbol: str
 
         def to_json(self) -> Json:
@@ -3045,7 +3045,7 @@ class ScannedShip:
     class Reactor:
         """The reactor of the ship."""
 
-        # The symbol of the reactor.
+        #: The symbol of the reactor.
         symbol: str
 
         def to_json(self) -> Json:
@@ -3064,7 +3064,7 @@ class ScannedShip:
 
     @dataclasses.dataclass
     class Mount:
-        # The symbol of the mount.
+        #: The symbol of the mount.
         symbol: str
 
         def to_json(self) -> Json:
@@ -3080,19 +3080,19 @@ class ScannedShip:
             return cls(
                 symbol = from_json(str, v['symbol']),
             )
-    # The globally unique identifier of the ship.
+    #: The globally unique identifier of the ship.
     symbol: str
-    # The public registration information of the ship
+    #: The public registration information of the ship
     registration: ShipRegistration
-    # The navigation information of the ship.
+    #: The navigation information of the ship.
     nav: ShipNav
-    # The engine of the ship.
+    #: The engine of the ship.
     engine: ScannedShip.Engine
-    # The frame of the ship.
+    #: The frame of the ship.
     frame: ScannedShip.Frame | None = None
-    # The reactor of the ship.
+    #: The reactor of the ship.
     reactor: ScannedShip.Reactor | None = None
-    # List of mounts installed in the ship.
+    #: List of mounts installed in the ship.
     mounts: list[ScannedShip.Mount] | None = None
 
     def to_json(self) -> Json:
@@ -3128,13 +3128,13 @@ class ScannedShip:
 class ScrapTransaction:
     """Result of a scrap transaction."""
 
-    # The symbol of the waypoint.
+    #: The symbol of the waypoint.
     waypoint_symbol: str
-    # The symbol of the ship.
+    #: The symbol of the ship.
     ship_symbol: str
-    # The total price of the transaction.
+    #: The total price of the transaction.
     total_price: int
-    # The timestamp of the transaction.
+    #: The timestamp of the transaction.
     timestamp: datetime
 
     def to_json(self) -> Json:
@@ -3161,13 +3161,13 @@ class ScrapTransaction:
 class RepairTransaction:
     """Result of a repair transaction."""
 
-    # The symbol of the waypoint.
+    #: The symbol of the waypoint.
     waypoint_symbol: str
-    # The symbol of the ship.
+    #: The symbol of the ship.
     ship_symbol: str
-    # The total price of the transaction.
+    #: The total price of the transaction.
     total_price: int
-    # The timestamp of the transaction.
+    #: The timestamp of the transaction.
     timestamp: datetime
 
     def to_json(self) -> Json:
@@ -3194,9 +3194,9 @@ class RepairTransaction:
 class Siphon:
     """Siphon details."""
 
-    # Symbol of the ship that executed the siphon.
+    #: Symbol of the ship that executed the siphon.
     ship_symbol: str
-    # A yield from the siphon operation.
+    #: A yield from the siphon operation.
     yield_: SiphonYield
 
     def to_json(self) -> Json:
@@ -3219,10 +3219,10 @@ class Siphon:
 class SiphonYield:
     """A yield from the siphon operation."""
 
-    # The good's symbol.
+    #: The good's symbol.
     symbol: TradeSymbol
-    # The number of units siphoned that were placed into the ship's
-    # cargo hold.
+    #: The number of units siphoned that were placed into the ship's
+    #: cargo hold.
     units: int
 
     def to_json(self) -> Json:
@@ -3247,15 +3247,15 @@ class ShipModificationTransaction:
     installing a mount or a module.
     """
 
-    # The symbol of the waypoint where the transaction took place.
+    #: The symbol of the waypoint where the transaction took place.
     waypoint_symbol: str
-    # The symbol of the ship that made the transaction.
+    #: The symbol of the ship that made the transaction.
     ship_symbol: str
-    # The symbol of the trade good.
+    #: The symbol of the trade good.
     trade_symbol: str
-    # The total price of the transaction.
+    #: The total price of the transaction.
     total_price: int
-    # The timestamp of the transaction.
+    #: The timestamp of the transaction.
     timestamp: datetime
 
     def to_json(self) -> Json:
