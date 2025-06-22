@@ -7,7 +7,7 @@ spess`.
 
 ```py
 me = c.my_agent()
-ship = c.ship(me.symbol + '-1')
+ship = c.my_ship(f'{me.symbol}-1')
 wp = c.system_waypoints(ship, traits=[WaypointTrait.SHIPYARD]).first()
 ship.orbit()
 ship.navigate(wp)
