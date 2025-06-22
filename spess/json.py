@@ -93,13 +93,20 @@ def from_json[T: FromJson](cls: type[T], v: Json) -> T:
     else:
         raise TypeError(cls)
 
-# for custom repr and str
+# for custom repr and str, common json impl
 class Enum(enum.Enum):
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}.{self.name}'
 
     def __str__(self) -> str:
         return str(self.value)
+
+    def to_json(self) -> Json:
+        return self.value
+
+    @classmethod
+    def from_json(cls, v: Json) -> typing.Self:
+        return cls(v)
 
 # for custom repr
 class datetime(dt.datetime):

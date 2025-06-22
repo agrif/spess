@@ -963,13 +963,6 @@ class Produce(Enum):
     MERITIUM = 'MERITIUM'
     FUEL = 'FUEL'
 
-    def to_json(self) -> Json:
-        return self.value
-
-    @classmethod
-    def from_json(cls, v: Json) -> typing.Self:
-        return cls(v)
-
 @dataclasses.dataclass
 class ShipRefine:
     """The ship has successfully refined goods."""

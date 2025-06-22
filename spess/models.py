@@ -95,13 +95,6 @@ class FactionSymbol(Enum):
     SHADOW = 'SHADOW'
     ETHEREAL = 'ETHEREAL'
 
-    def to_json(self) -> Json:
-        return self.value
-
-    @classmethod
-    def from_json(cls, v: Json) -> typing.Self:
-        return cls(v)
-
 @dataclasses.dataclass
 class FactionTrait:
     #: The unique identifier of the trait.
@@ -191,13 +184,6 @@ class FactionTraitSymbol(Enum):
     COMMERCIAL = 'COMMERCIAL'
     FREE_MARKETS = 'FREE_MARKETS'
     ENTREPRENEURIAL = 'ENTREPRENEURIAL'
-
-    def to_json(self) -> Json:
-        return self.value
-
-    @classmethod
-    def from_json(cls, v: Json) -> typing.Self:
-        return cls(v)
 
 @dataclasses.dataclass
 class Meta:
@@ -337,13 +323,6 @@ class SystemType(Enum):
     NEBULA = 'NEBULA'
     UNSTABLE = 'UNSTABLE'
 
-    def to_json(self) -> Json:
-        return self.value
-
-    @classmethod
-    def from_json(cls, v: Json) -> typing.Self:
-        return cls(v)
-
 @dataclasses.dataclass
 class SystemWaypoint:
     """Waypoint details."""
@@ -406,13 +385,6 @@ class WaypointType(Enum):
     GRAVITY_WELL = 'GRAVITY_WELL'
     ARTIFICIAL_GRAVITY_WELL = 'ARTIFICIAL_GRAVITY_WELL'
     FUEL_STATION = 'FUEL_STATION'
-
-    def to_json(self) -> Json:
-        return self.value
-
-    @classmethod
-    def from_json(cls, v: Json) -> typing.Self:
-        return cls(v)
 
 @dataclasses.dataclass
 class WaypointOrbital:
@@ -652,13 +624,6 @@ class WaypointTraitSymbol(Enum):
     HOLLOWED_INTERIOR = 'HOLLOWED_INTERIOR'
     STRIPPED = 'STRIPPED'
 
-    def to_json(self) -> Json:
-        return self.value
-
-    @classmethod
-    def from_json(cls, v: Json) -> typing.Self:
-        return cls(v)
-
 @dataclasses.dataclass
 class WaypointModifier:
     #: The unique identifier of the modifier.
@@ -694,13 +659,6 @@ class WaypointModifierSymbol(Enum):
     RADIATION_LEAK = 'RADIATION_LEAK'
     CRITICAL_LIMIT = 'CRITICAL_LIMIT'
     CIVIL_UNREST = 'CIVIL_UNREST'
-
-    def to_json(self) -> Json:
-        return self.value
-
-    @classmethod
-    def from_json(cls, v: Json) -> typing.Self:
-        return cls(v)
 
 @dataclasses.dataclass
 class Chart:
@@ -942,13 +900,6 @@ class TradeSymbol(Enum):
     SHIP_SURVEYOR = 'SHIP_SURVEYOR'
     SHIP_BULK_FREIGHTER = 'SHIP_BULK_FREIGHTER'
 
-    def to_json(self) -> Json:
-        return self.value
-
-    @classmethod
-    def from_json(cls, v: Json) -> typing.Self:
-        return cls(v)
-
 @dataclasses.dataclass
 class ShipCargo:
     """Ship cargo details."""
@@ -1097,13 +1048,6 @@ class MarketTransaction:
         PURCHASE = 'PURCHASE'
         SELL = 'SELL'
 
-        def to_json(self) -> Json:
-            return self.value
-
-        @classmethod
-        def from_json(cls, v: Json) -> typing.Self:
-            return cls(v)
-
     #: The symbol of the waypoint.
     waypoint_symbol: str
     #: The symbol of the ship that made the transaction.
@@ -1157,13 +1101,6 @@ class MarketTradeGood:
         EXPORT = 'EXPORT'
         IMPORT = 'IMPORT'
         EXCHANGE = 'EXCHANGE'
-
-        def to_json(self) -> Json:
-            return self.value
-
-        @classmethod
-        def from_json(cls, v: Json) -> typing.Self:
-            return cls(v)
 
     #: The good's symbol.
     symbol: TradeSymbol
@@ -1225,13 +1162,6 @@ class SupplyLevel(Enum):
     HIGH = 'HIGH'
     ABUNDANT = 'ABUNDANT'
 
-    def to_json(self) -> Json:
-        return self.value
-
-    @classmethod
-    def from_json(cls, v: Json) -> typing.Self:
-        return cls(v)
-
 class ActivityLevel(Enum):
     """The activity level of a trade good. If the good is an
     import, this represents how strong consumption is. If the good is
@@ -1245,13 +1175,6 @@ class ActivityLevel(Enum):
     GROWING = 'GROWING'
     STRONG = 'STRONG'
     RESTRICTED = 'RESTRICTED'
-
-    def to_json(self) -> Json:
-        return self.value
-
-    @classmethod
-    def from_json(cls, v: Json) -> typing.Self:
-        return cls(v)
 
 @dataclasses.dataclass
 class JumpGate:
@@ -1357,13 +1280,6 @@ class ShipType(Enum):
     REFINING_FREIGHTER = 'SHIP_REFINING_FREIGHTER'
     SURVEYOR = 'SHIP_SURVEYOR'
     BULK_FREIGHTER = 'SHIP_BULK_FREIGHTER'
-
-    def to_json(self) -> Json:
-        return self.value
-
-    @classmethod
-    def from_json(cls, v: Json) -> typing.Self:
-        return cls(v)
 
 @dataclasses.dataclass
 class ShipyardTransaction:
@@ -1536,13 +1452,6 @@ class ShipFrame:
         CARRIER = 'FRAME_CARRIER'
         BULK_FREIGHTER = 'FRAME_BULK_FREIGHTER'
 
-        def to_json(self) -> Json:
-            return self.value
-
-        @classmethod
-        def from_json(cls, v: Json) -> typing.Self:
-            return cls(v)
-
     #: Symbol of the frame.
     symbol: ShipFrame.Symbol
     #: Name of the frame.
@@ -1664,13 +1573,6 @@ class ShipReactor:
         CHEMICAL_I = 'REACTOR_CHEMICAL_I'
         ANTIMATTER_I = 'REACTOR_ANTIMATTER_I'
 
-        def to_json(self) -> Json:
-            return self.value
-
-        @classmethod
-        def from_json(cls, v: Json) -> typing.Self:
-            return cls(v)
-
     #: Symbol of the reactor.
     symbol: ShipReactor.Symbol
     #: Name of the reactor.
@@ -1745,13 +1647,6 @@ class ShipEngine:
         ION_DRIVE_I = 'ENGINE_ION_DRIVE_I'
         ION_DRIVE_II = 'ENGINE_ION_DRIVE_II'
         HYPER_DRIVE_I = 'ENGINE_HYPER_DRIVE_I'
-
-        def to_json(self) -> Json:
-            return self.value
-
-        @classmethod
-        def from_json(cls, v: Json) -> typing.Self:
-            return cls(v)
 
     #: The symbol of the engine.
     symbol: ShipEngine.Symbol
@@ -1845,13 +1740,6 @@ class ShipModule:
         SHIELD_GENERATOR_I = 'MODULE_SHIELD_GENERATOR_I'
         SHIELD_GENERATOR_II = 'MODULE_SHIELD_GENERATOR_II'
 
-        def to_json(self) -> Json:
-            return self.value
-
-        @classmethod
-        def from_json(cls, v: Json) -> typing.Self:
-            return cls(v)
-
     #: The symbol of the module.
     symbol: ShipModule.Symbol
     #: Name of this module.
@@ -1918,13 +1806,6 @@ class ShipMount:
         MISSILE_LAUNCHER_I = 'MOUNT_MISSILE_LAUNCHER_I'
         TURRET_I = 'MOUNT_TURRET_I'
 
-        def to_json(self) -> Json:
-            return self.value
-
-        @classmethod
-        def from_json(cls, v: Json) -> typing.Self:
-            return cls(v)
-
     class Deposit(Enum):
         QUARTZ_SAND = 'QUARTZ_SAND'
         SILICON_CRYSTALS = 'SILICON_CRYSTALS'
@@ -1940,13 +1821,6 @@ class ShipMount:
         DIAMONDS = 'DIAMONDS'
         URANITE_ORE = 'URANITE_ORE'
         MERITIUM_ORE = 'MERITIUM_ORE'
-
-        def to_json(self) -> Json:
-            return self.value
-
-        @classmethod
-        def from_json(cls, v: Json) -> typing.Self:
-            return cls(v)
 
     #: Symbol of this mount.
     symbol: ShipMount.Symbol
@@ -1999,13 +1873,6 @@ class Contract:
         PROCUREMENT = 'PROCUREMENT'
         TRANSPORT = 'TRANSPORT'
         SHUTTLE = 'SHUTTLE'
-
-        def to_json(self) -> Json:
-            return self.value
-
-        @classmethod
-        def from_json(cls, v: Json) -> typing.Self:
-            return cls(v)
 
     #: ID of the contract.
     id: str
@@ -2342,13 +2209,6 @@ class ShipRole(Enum):
     EXPLORER = 'EXPLORER'
     REFINERY = 'REFINERY'
 
-    def to_json(self) -> Json:
-        return self.value
-
-    @classmethod
-    def from_json(cls, v: Json) -> typing.Self:
-        return cls(v)
-
 @dataclasses.dataclass
 class ShipNav:
     """The navigation information of the ship."""
@@ -2468,13 +2328,6 @@ class ShipNavStatus(Enum):
     IN_ORBIT = 'IN_ORBIT'
     DOCKED = 'DOCKED'
 
-    def to_json(self) -> Json:
-        return self.value
-
-    @classmethod
-    def from_json(cls, v: Json) -> typing.Self:
-        return cls(v)
-
 class ShipNavFlightMode(Enum):
     """The ship's set speed when traveling between waypoints or
     systems.
@@ -2484,13 +2337,6 @@ class ShipNavFlightMode(Enum):
     STEALTH = 'STEALTH'
     CRUISE = 'CRUISE'
     BURN = 'BURN'
-
-    def to_json(self) -> Json:
-        return self.value
-
-    @classmethod
-    def from_json(cls, v: Json) -> typing.Self:
-        return cls(v)
 
 @dataclasses.dataclass
 class ShipCrew:
@@ -2506,13 +2352,6 @@ class ShipCrew:
 
         STRICT = 'STRICT'
         RELAXED = 'RELAXED'
-
-        def to_json(self) -> Json:
-            return self.value
-
-        @classmethod
-        def from_json(cls, v: Json) -> typing.Self:
-            return cls(v)
 
     #: The current number of crew members on the ship.
     current: int
@@ -2775,24 +2614,10 @@ class ShipConditionEvent:
         ELECTROMAGNETIC_SURGE_EFFECTS = 'ELECTROMAGNETIC_SURGE_EFFECTS'
         ATMOSPHERIC_ENTRY_HEAT = 'ATMOSPHERIC_ENTRY_HEAT'
 
-        def to_json(self) -> Json:
-            return self.value
-
-        @classmethod
-        def from_json(cls, v: Json) -> typing.Self:
-            return cls(v)
-
     class Component(Enum):
         FRAME = 'FRAME'
         REACTOR = 'REACTOR'
         ENGINE = 'ENGINE'
-
-        def to_json(self) -> Json:
-            return self.value
-
-        @classmethod
-        def from_json(cls, v: Json) -> typing.Self:
-            return cls(v)
 
     #: The symbol of the event that occurred.
     symbol: ShipConditionEvent.Symbol
@@ -2900,13 +2725,6 @@ class SurveySize(Enum):
     SMALL = 'SMALL'
     MODERATE = 'MODERATE'
     LARGE = 'LARGE'
-
-    def to_json(self) -> Json:
-        return self.value
-
-    @classmethod
-    def from_json(cls, v: Json) -> typing.Self:
-        return cls(v)
 
 @dataclasses.dataclass
 class ScannedSystem:

@@ -76,13 +76,3 @@ class WriteTypes(writer.Writer):
             self.print()
             for py_name, json_name in enum.variants.items():
                 self.print(f'{py_name} = {json_name!r}')
-            self._write_enum_json()
-
-    def _write_enum_json(self) -> None:
-        self.print()
-        with self.print('def to_json(self) -> Json:'):
-            self.print('return self.value')
-        self.print()
-        self.print('@classmethod')
-        with self.print('def from_json(cls, v: Json) -> typing.Self:'):
-            self.print('return cls(v)')
