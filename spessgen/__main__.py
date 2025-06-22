@@ -14,7 +14,7 @@ import spessgen.writer as writer
 
 def main() -> None:
     here = pathlib.Path(__file__).parent
-    spess = here / '..' / 'spess'
+    generated = here / '..' / 'spess' / '_generated'
     with open(here / 'spacetraders.json') as f:
         spec = spessgen.spec.Spec.from_json(json.load(f))
 
@@ -27,9 +27,9 @@ def main() -> None:
             writer.generate(f)
         checkfiles.append(str(path))
 
-    generate(spess / 'models.py', models.ModelWriter(converter, 'models'))
-    generate(spess / 'responses.py', models.ModelWriter(converter, 'responses'))
-    generate(spess / 'client.py', client.ClientWriter(converter, 'client'))
+    generate(generated / 'models.py', models.ModelWriter(converter, 'models'))
+    generate(generated / 'responses.py', models.ModelWriter(converter, 'responses'))
+    generate(generated / 'client.py', client.ClientWriter(converter, 'client'))
 
     #print(resolver.types)
     #print(converter.methods)
