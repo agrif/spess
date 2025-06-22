@@ -153,13 +153,14 @@ class Resolver:
             raise ValueError('enum schema with no enum')
 
         common = len(os.path.commonprefix(schema.enum))
-        variants = {}
+        variants = []
         for var in schema.enum:
             pyvar = humps.decamelize(var[common:])
             if pyvar in KEYWORDS:
                 pyvar += '_'
-            variants[pyvar] = var
-        return Enum(variants)
+            variants.append((pyvar, var))
+        variants.sort(key=lambda t: t[0])
+        return Enum(dict(variants))
 
     def resolve_schema(self, schema: spec.SchemaLike) -> spec.Schema:
         return self.resolve_schema_named(schema)[1]

@@ -24,6 +24,6 @@ class ModelWriter(write_types.WriteTypes):
 
         self.print()
         abs_types = self.resolver.iter_types(self.module, absolute=True)
-        self.dunder_all([t.py_name for t, _ in abs_types])
+        self.dunder_all(sorted(t.py_name for t, _ in abs_types))
 
         self.write_types(self.resolver.iter_types(self.module))

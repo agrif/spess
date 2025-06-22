@@ -10,17 +10,17 @@ from spess._json import Json, from_json, to_json, Enum, datetime, date
 import spess.models as models
 
 __all__ = [
-    'ServerStatus', 'ErrorCodes', 'SupplyConstruction', 'AcceptContract',
-    'FulfillContract', 'DeliverContract', 'MyFaction', 'PurchaseShip',
-    'MyAccount', 'CreateChart', 'NegotiateContract', 'DockShip',
-    'ExtractResources', 'ExtractResourcesWithSurvey', 'Jettison',
-    'JumpShip', 'CreateShipSystemScan', 'CreateShipWaypointScan',
-    'CreateShipShipScan', 'ScrapShip', 'GetScrapShip', 'NavigateShip',
-    'WarpShip', 'OrbitShip', 'PurchaseCargo', 'Produce', 'ShipRefine',
-    'RefuelShip', 'RepairShip', 'GetRepairShip', 'SellCargo',
-    'SiphonResources', 'CreateSurvey', 'TransferCargo',
-    'InstallShipModule', 'RemoveShipModule', 'InstallMount',
-    'RemoveMount', 'PatchShipNav', 'Register',
+    'AcceptContract', 'CreateChart', 'CreateShipShipScan',
+    'CreateShipSystemScan', 'CreateShipWaypointScan', 'CreateSurvey',
+    'DeliverContract', 'DockShip', 'ErrorCodes', 'ExtractResources',
+    'ExtractResourcesWithSurvey', 'FulfillContract', 'GetRepairShip',
+    'GetScrapShip', 'InstallMount', 'InstallShipModule', 'Jettison',
+    'JumpShip', 'MyAccount', 'MyFaction', 'NavigateShip',
+    'NegotiateContract', 'OrbitShip', 'PatchShipNav', 'Produce',
+    'PurchaseCargo', 'PurchaseShip', 'RefuelShip', 'Register',
+    'RemoveMount', 'RemoveShipModule', 'RepairShip', 'ScrapShip',
+    'SellCargo', 'ServerStatus', 'ShipRefine', 'SiphonResources',
+    'SupplyConstruction', 'TransferCargo', 'WarpShip',
 ]
 
 # spec_name: get-status.response
@@ -989,15 +989,15 @@ class PurchaseCargo:
 class Produce(Enum):
     """The type of good to produce out of the refining process."""
 
-    IRON = 'IRON'
-    COPPER = 'COPPER'
-    SILVER = 'SILVER'
-    GOLD = 'GOLD'
     ALUMINUM = 'ALUMINUM'
-    PLATINUM = 'PLATINUM'
-    URANITE = 'URANITE'
-    MERITIUM = 'MERITIUM'
+    COPPER = 'COPPER'
     FUEL = 'FUEL'
+    GOLD = 'GOLD'
+    IRON = 'IRON'
+    MERITIUM = 'MERITIUM'
+    PLATINUM = 'PLATINUM'
+    SILVER = 'SILVER'
+    URANITE = 'URANITE'
 
 # spec_name: ship-refine.response
 @dataclasses.dataclass
