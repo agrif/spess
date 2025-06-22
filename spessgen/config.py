@@ -67,9 +67,9 @@ STRUCT_FIELD_TYPE: dict[str, dict[str, str]] = {
         'symbol': 'models.FactionSymbol',
     },
     # this is a date, not a str
-    #'get-status.response': {
-    #    'resetDate': 'date',
-    #},
+    'get-status.response': {
+        'resetDate': 'date',
+    },
     # this is a datetime, not str
     'get-status.response.health': {
         'lastMarketUpdate': 'datetime',

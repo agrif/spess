@@ -35,7 +35,7 @@ import dataclasses
 import typing
 
 import spess.backend as backend
-from spess.json import Json, from_json, to_json, Enum, datetime
+from spess.json import Json, from_json, to_json, Enum, datetime, date
 import spess.models as models
 import spess.responses as responses
 

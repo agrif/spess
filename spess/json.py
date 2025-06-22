@@ -18,7 +18,7 @@ class JsonFormat(typing.Protocol):
     def from_json(cls, v: Json) -> typing.Self:
         raise NotImplementedError
 
-ToJson: typing.TypeAlias = JsonFormat | dt.datetime | JsonLayer['ToJson']
+ToJson: typing.TypeAlias = JsonFormat | dt.datetime | dt.date | JsonLayer['ToJson']
 
 def to_json(v: ToJson) -> Json:
     if isinstance(v, JsonFormat):
@@ -28,6 +28,8 @@ def to_json(v: ToJson) -> Json:
         if s.endswith('+00:00'):
             s = s[:-len('+00:00')] + 'Z'
         return s
+    elif isinstance(v, dt.date):
+        return v.isoformat()
     elif isinstance(v, dict):
         return {str(k): to_json(val) for k, val in v.items()}
     elif isinstance(v, list):
@@ -37,7 +39,7 @@ def to_json(v: ToJson) -> Json:
     else:
         raise TypeError(type(v))
 
-FromJson: typing.TypeAlias = JsonFormat | dt.datetime | JsonLayer['FromJson']
+FromJson: typing.TypeAlias = JsonFormat | dt.datetime | dt.date | JsonLayer['FromJson']
 
 def from_json[T: FromJson](cls: type[T], v: Json) -> T:
     args = typing.get_args(cls)
@@ -52,6 +54,11 @@ def from_json[T: FromJson](cls: type[T], v: Json) -> T:
     elif issubclass(cls, dt.datetime):
         if isinstance(v, str):
             return typing.cast(T, cls.fromisoformat(v).astimezone())
+        else:
+            raise TypeError('expected str')
+    elif issubclass(cls, dt.date):
+        if isinstance(v, str):
+            return typing.cast(T, cls.fromisoformat(v))
         else:
             raise TypeError('expected str')
     elif issubclass(cls, dict) and len(args) == 2 and issubclass(args[0], str):
@@ -112,3 +119,8 @@ class Enum(enum.Enum):
 class datetime(dt.datetime):
     def __repr__(self) -> str:
         return f'<{self:%Y-%m-%d %H:%M:%S UTC%:z}>'
+
+# for custom repr
+class date(dt.date):
+    def __repr__(self) -> str:
+        return f'<{self:%Y-%m-%d}>'

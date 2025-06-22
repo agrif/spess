@@ -6,7 +6,7 @@ from __future__ import annotations
 import dataclasses
 import typing
 
-from spess.json import Json, from_json, to_json, Enum, datetime
+from spess.json import Json, from_json, to_json, Enum, datetime, date
 import spess.models as models
 
 __all__ = [
@@ -231,7 +231,7 @@ class ServerStatus:
     #: The current version of the API.
     version: str
     #: The date when the game server was last reset.
-    reset_date: str
+    reset_date: date
     description: str
     stats: ServerStatus.Stats
     health: ServerStatus.Health
@@ -262,7 +262,7 @@ class ServerStatus:
         return cls(
             status = from_json(str, v['status']),
             version = from_json(str, v['version']),
-            reset_date = from_json(str, v['resetDate']),
+            reset_date = from_json(date, v['resetDate']),
             description = from_json(str, v['description']),
             stats = from_json(ServerStatus.Stats, v['stats']),
             health = from_json(ServerStatus.Health, v['health']),
