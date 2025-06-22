@@ -85,7 +85,6 @@ class Status:
 
     @dataclasses.dataclass
     class Leaderboards:
-
         @dataclasses.dataclass
         class MostCredit:
             #: Symbol of the agent.
@@ -131,6 +130,7 @@ class Status:
                     agent_symbol = from_json(str, v['agentSymbol']),
                     chart_count = from_json(int, v['chartCount']),
                 )
+
         #: Top agents with the most credits.
         most_credits: list[Status.Leaderboards.MostCredit]
         #: Top agents with the most charted submitted.
@@ -216,6 +216,7 @@ class Status:
                 name = from_json(str, v['name']),
                 url = from_json(str, v['url']),
             )
+
     #: The current status of the game server.
     status: str
     #: The current version of the API.
@@ -286,6 +287,7 @@ class ErrorCodes:
                 code = from_json(float, v['code']),
                 name = from_json(str, v['name']),
             )
+
     error_codes: list[ErrorCodes.ErrorCode]
 
     def to_json(self) -> Json:
@@ -444,7 +446,6 @@ class PurchaseShip:
 
 @dataclasses.dataclass
 class MyAccount:
-
     @dataclasses.dataclass
     class Account:
         id: str
@@ -472,6 +473,7 @@ class MyAccount:
                 created_at = from_json(datetime, v['createdAt']),
                 token = from_json(str, v['token']) if 'token' in v else None,
             )
+
     account: MyAccount.Account
 
     def to_json(self) -> Json:
@@ -916,7 +918,6 @@ class Produce(Enum):
 
 @dataclasses.dataclass
 class ShipRefine:
-
     @dataclasses.dataclass
     class ProducedItem:
         #: The good's symbol.
@@ -962,6 +963,7 @@ class ShipRefine:
                 trade_symbol = from_json(models.TradeSymbol, v['tradeSymbol']),
                 units = from_json(int, v['units']),
             )
+
     #: Ship cargo details.
     cargo: models.ShipCargo
     #: A cooldown is a period of time in which a ship cannot perform

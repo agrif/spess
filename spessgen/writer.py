@@ -35,6 +35,7 @@ class Writer:
         indent = self._indent
         try:
             self._indent += 4
+            self._allowed_blanks = 0
             yield
         finally:
             self._indent = indent

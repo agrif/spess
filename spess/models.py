@@ -1103,6 +1103,7 @@ class MarketTransaction:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
+
     #: The symbol of the waypoint.
     waypoint_symbol: str
     #: The symbol of the ship that made the transaction.
@@ -1150,7 +1151,6 @@ class MarketTransaction:
 
 @dataclasses.dataclass
 class MarketTradeGood:
-
     class Type(Enum):
         """The type of trade good (export, import, or exchange)."""
 
@@ -1164,6 +1164,7 @@ class MarketTradeGood:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
+
     #: The good's symbol.
     symbol: TradeSymbol
     #: The type of trade good (export, import, or exchange).
@@ -1299,6 +1300,7 @@ class Shipyard:
             return cls(
                 type = from_json(ShipType, v['type']),
             )
+
     #: The symbol of the shipyard. The symbol is the same as the
     #: waypoint where the shipyard is located.
     symbol: str
@@ -1434,6 +1436,7 @@ class ShipyardShip:
                 required = from_json(int, v['required']),
                 capacity = from_json(int, v['capacity']),
             )
+
     #: Type of ship
     type: ShipType
     #: Name of the ship.
@@ -1539,6 +1542,7 @@ class ShipFrame:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
+
     #: Symbol of the frame.
     symbol: ShipFrame.Symbol
     #: Name of the frame.
@@ -1666,6 +1670,7 @@ class ShipReactor:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
+
     #: Symbol of the reactor.
     symbol: ShipReactor.Symbol
     #: Name of the reactor.
@@ -1747,6 +1752,7 @@ class ShipEngine:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
+
     #: The symbol of the engine.
     symbol: ShipEngine.Symbol
     #: The name of the engine.
@@ -1845,6 +1851,7 @@ class ShipModule:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
+
     #: The symbol of the module.
     symbol: ShipModule.Symbol
     #: Name of this module.
@@ -1940,6 +1947,7 @@ class ShipMount:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
+
     #: Symbol of this mount.
     symbol: ShipMount.Symbol
     #: Name of this mount.
@@ -1998,6 +2006,7 @@ class Contract:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
+
     #: ID of the contract.
     id: str
     #: The symbol of the faction that this contract is for.
@@ -2504,6 +2513,7 @@ class ShipCrew:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
+
     #: The current number of crew members on the ship.
     current: int
     #: The minimum number of crew members required to maintain the
@@ -2580,6 +2590,7 @@ class ShipFuel:
                 amount = from_json(int, v['amount']),
                 timestamp = from_json(datetime, v['timestamp']),
             )
+
     #: The current amount of fuel in the ship's tanks.
     current: int
     #: The maximum amount of fuel the ship's tanks can hold.
@@ -2782,6 +2793,7 @@ class ShipConditionEvent:
         @classmethod
         def from_json(cls, v: Json) -> typing.Self:
             return cls(v)
+
     #: The symbol of the event that occurred.
     symbol: ShipConditionEvent.Symbol
     component: ShipConditionEvent.Component
@@ -3080,6 +3092,7 @@ class ScannedShip:
             return cls(
                 symbol = from_json(str, v['symbol']),
             )
+
     #: The globally unique identifier of the ship.
     symbol: str
     #: The public registration information of the ship

@@ -29,6 +29,7 @@ class WriteTypes(writer.Writer):
         with self.print(f'class {type.py_name}:'):
             self.doc_string(type.doc)
             self.write_types(children)
+            self.print()
             for field in struct.fields.values():
                 self._write_struct_field(field)
             self._write_struct_json(struct.fields)
@@ -72,6 +73,7 @@ class WriteTypes(writer.Writer):
         with self.print(f'class {type.py_name}(Enum):'):
             self.doc_string(type.doc)
             self.write_types(children)
+            self.print()
             for py_name, json_name in enum.variants.items():
                 self.print(f'{py_name} = {json_name!r}')
             self._write_enum_json()
