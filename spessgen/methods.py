@@ -149,9 +149,13 @@ class Converter:
             # accursed 204 FIXME
             del op.responses['204']
 
+        doc = None
+
         if len(op.responses) != 1:
             raise NotImplementedError(f'multiple response codes for {spec_name}')
         first, = op.responses.values()
+        if first.description and not doc:
+            doc = first.description
         schema = self._json_schema(f'{spec_name} response', first.content)
 
         adhoc = True
@@ -163,6 +167,10 @@ class Converter:
                     if props.issubset({'data', 'meta'}):
                         adhoc = False
                         schema = schema.properties['data']
+
+        if isinstance(schema, spec.Schema):
+            if doc and not schema.description:
+                schema.description = doc
 
         py_result = self.resolver.resolve(py_name, schema, parent=self.responses_module)
         return (py_result, adhoc)

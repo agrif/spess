@@ -306,6 +306,8 @@ class ErrorCodes:
 
 @dataclasses.dataclass
 class SupplyConstruction:
+    """Successfully supplied construction site."""
+
     #: The construction details of a waypoint.
     construction: models.Construction
     #: Ship cargo details.
@@ -329,6 +331,8 @@ class SupplyConstruction:
 
 @dataclasses.dataclass
 class AcceptContract:
+    """Successfully accepted contract."""
+
     #: Contract details.
     contract: models.Contract
     #: Agent details.
@@ -352,6 +356,8 @@ class AcceptContract:
 
 @dataclasses.dataclass
 class FulfillContract:
+    """Successfully fulfilled a contract."""
+
     #: Contract details.
     contract: models.Contract
     #: Agent details.
@@ -375,6 +381,8 @@ class FulfillContract:
 
 @dataclasses.dataclass
 class DeliverContract:
+    """Successfully delivered cargo to contract."""
+
     #: Contract details.
     contract: models.Contract
     #: Ship cargo details.
@@ -419,6 +427,8 @@ class MyFaction:
 
 @dataclasses.dataclass
 class PurchaseShip:
+    """Purchased ship successfully."""
+
     #: Ship details.
     ship: models.Ship
     #: Agent details.
@@ -446,6 +456,8 @@ class PurchaseShip:
 
 @dataclasses.dataclass
 class MyAccount:
+    """Default Response"""
+
     @dataclasses.dataclass
     class Account:
         id: str
@@ -492,6 +504,8 @@ class MyAccount:
 
 @dataclasses.dataclass
 class CreateChart:
+    """Successfully charted waypoint."""
+
     #: The chart of a system or waypoint, which makes the location
     #: visible to other agents.
     chart: models.Chart
@@ -525,6 +539,8 @@ class CreateChart:
 
 @dataclasses.dataclass
 class NegotiateContract:
+    """Successfully negotiated a new contract."""
+
     #: Contract details.
     contract: models.Contract
 
@@ -544,6 +560,8 @@ class NegotiateContract:
 
 @dataclasses.dataclass
 class DockShip:
+    """The ship has successfully docked at its current location."""
+
     #: The navigation information of the ship.
     nav: models.ShipNav
 
@@ -563,6 +581,8 @@ class DockShip:
 
 @dataclasses.dataclass
 class ExtractResources:
+    """Successfully extracted resources."""
+
     #: Extraction details.
     extraction: models.Extraction
     #: A cooldown is a period of time in which a ship cannot perform
@@ -598,6 +618,8 @@ class ExtractResources:
 
 @dataclasses.dataclass
 class ExtractResourcesWithSurvey:
+    """Successfully extracted resources."""
+
     #: Extraction details.
     extraction: models.Extraction
     #: A cooldown is a period of time in which a ship cannot perform
@@ -633,6 +655,8 @@ class ExtractResourcesWithSurvey:
 
 @dataclasses.dataclass
 class Jettison:
+    """Jettison successful."""
+
     #: Ship cargo details.
     cargo: models.ShipCargo
 
@@ -652,6 +676,8 @@ class Jettison:
 
 @dataclasses.dataclass
 class JumpShip:
+    """Jump successful."""
+
     #: The navigation information of the ship.
     nav: models.ShipNav
     #: A cooldown is a period of time in which a ship cannot perform
@@ -684,6 +710,8 @@ class JumpShip:
 
 @dataclasses.dataclass
 class CreateShipSystemScan:
+    """Successfully scanned for nearby systems."""
+
     #: A cooldown is a period of time in which a ship cannot perform
     #: certain actions.
     cooldown: models.Cooldown
@@ -708,6 +736,8 @@ class CreateShipSystemScan:
 
 @dataclasses.dataclass
 class CreateShipWaypointScan:
+    """Successfully scanned for nearby waypoints."""
+
     #: A cooldown is a period of time in which a ship cannot perform
     #: certain actions.
     cooldown: models.Cooldown
@@ -732,6 +762,8 @@ class CreateShipWaypointScan:
 
 @dataclasses.dataclass
 class CreateShipShipScan:
+    """Successfully scanned for nearby ships."""
+
     #: A cooldown is a period of time in which a ship cannot perform
     #: certain actions.
     cooldown: models.Cooldown
@@ -756,6 +788,8 @@ class CreateShipShipScan:
 
 @dataclasses.dataclass
 class ScrapShip:
+    """Ship scrapped successfully."""
+
     #: Agent details.
     agent: models.Agent
     #: Result of a scrap transaction.
@@ -779,6 +813,10 @@ class ScrapShip:
 
 @dataclasses.dataclass
 class GetScrapShip:
+    """Successfully retrieved the amount of value that will be
+    returned when scrapping a ship.
+    """
+
     #: Result of a scrap transaction.
     transaction: models.ScrapTransaction
 
@@ -798,6 +836,11 @@ class GetScrapShip:
 
 @dataclasses.dataclass
 class NavigateShip:
+    """The successful transit information including the route
+    details and changes to ship fuel. The route includes the expected
+    time of arrival.
+    """
+
     #: The navigation information of the ship.
     nav: models.ShipNav
     #: Details of the ship's fuel tanks including how much fuel was
@@ -825,6 +868,11 @@ class NavigateShip:
 
 @dataclasses.dataclass
 class WarpShip:
+    """The successful transit information including the route
+    details and changes to ship fuel. The route includes the expected
+    time of arrival.
+    """
+
     #: The navigation information of the ship.
     nav: models.ShipNav
     #: Details of the ship's fuel tanks including how much fuel was
@@ -852,6 +900,10 @@ class WarpShip:
 
 @dataclasses.dataclass
 class OrbitShip:
+    """The ship has successfully moved into orbit at its current
+    location.
+    """
+
     #: The navigation information of the ship.
     nav: models.ShipNav
 
@@ -871,6 +923,8 @@ class OrbitShip:
 
 @dataclasses.dataclass
 class PurchaseCargo:
+    """Purchased goods successfully."""
+
     #: Ship cargo details.
     cargo: models.ShipCargo
     #: Result of a transaction with a market.
@@ -918,6 +972,8 @@ class Produce(Enum):
 
 @dataclasses.dataclass
 class ShipRefine:
+    """The ship has successfully refined goods."""
+
     @dataclasses.dataclass
     class ProducedItem:
         #: The good's symbol.
@@ -996,6 +1052,8 @@ class ShipRefine:
 
 @dataclasses.dataclass
 class RefuelShip:
+    """Refueled successfully."""
+
     #: Agent details.
     agent: models.Agent
     #: Details of the ship's fuel tanks including how much fuel was
@@ -1029,6 +1087,8 @@ class RefuelShip:
 
 @dataclasses.dataclass
 class RepairShip:
+    """Ship repaired successfully."""
+
     #: Agent details.
     agent: models.Agent
     #: Ship details.
@@ -1056,6 +1116,8 @@ class RepairShip:
 
 @dataclasses.dataclass
 class GetRepairShip:
+    """Successfully retrieved the cost of repairing a ship."""
+
     #: Result of a repair transaction.
     transaction: models.RepairTransaction
 
@@ -1075,6 +1137,8 @@ class GetRepairShip:
 
 @dataclasses.dataclass
 class SellCargo:
+    """Cargo was successfully sold."""
+
     #: Ship cargo details.
     cargo: models.ShipCargo
     #: Result of a transaction with a market.
@@ -1102,6 +1166,8 @@ class SellCargo:
 
 @dataclasses.dataclass
 class SiphonResources:
+    """Siphon successful."""
+
     #: Siphon details.
     siphon: models.Siphon
     #: A cooldown is a period of time in which a ship cannot perform
@@ -1133,6 +1199,8 @@ class SiphonResources:
 
 @dataclasses.dataclass
 class CreateSurvey:
+    """Surveys has been created."""
+
     #: A cooldown is a period of time in which a ship cannot perform
     #: certain actions.
     cooldown: models.Cooldown
@@ -1157,6 +1225,8 @@ class CreateSurvey:
 
 @dataclasses.dataclass
 class TransferCargo:
+    """Cargo transferred successfully."""
+
     #: Ship cargo details.
     cargo: models.ShipCargo
     #: Ship cargo details.
@@ -1180,6 +1250,8 @@ class TransferCargo:
 
 @dataclasses.dataclass
 class InstallShipModule:
+    """Successfully installed the module on the ship."""
+
     #: Agent details.
     agent: models.Agent
     modules: list[models.ShipModule]
@@ -1211,6 +1283,8 @@ class InstallShipModule:
 
 @dataclasses.dataclass
 class RemoveShipModule:
+    """Successfully removed the module from the ship."""
+
     #: Agent details.
     agent: models.Agent
     modules: list[models.ShipModule]
@@ -1242,6 +1316,8 @@ class RemoveShipModule:
 
 @dataclasses.dataclass
 class InstallMount:
+    """Successfully installed the mount."""
+
     #: Agent details.
     agent: models.Agent
     #: List of installed mounts after the installation of the new
@@ -1275,6 +1351,8 @@ class InstallMount:
 
 @dataclasses.dataclass
 class RemoveMount:
+    """Successfully removed the mount."""
+
     #: Agent details.
     agent: models.Agent
     #: List of installed mounts after the removal of the selected
@@ -1308,6 +1386,10 @@ class RemoveMount:
 
 @dataclasses.dataclass
 class PatchShipNav:
+    """Success response for updating the nav configuration of a
+    ship.
+    """
+
     #: The navigation information of the ship.
     nav: models.ShipNav
     #: Details of the ship's fuel tanks including how much fuel was
@@ -1335,6 +1417,8 @@ class PatchShipNav:
 
 @dataclasses.dataclass
 class Register:
+    """Successfully registered."""
+
     #: A Bearer token for accessing secured API endpoints.
     token: str
     #: Agent details.
