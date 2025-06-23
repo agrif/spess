@@ -1,3 +1,5 @@
+import dataclasses
+
 # Many of these overrides refer to an item by spec_name. These are derived
 # from the name of the item in the OpenAPI spec file, but it gets a bit
 # hard to follow. In the generated source, each item is preceded by a
@@ -130,11 +132,11 @@ METHOD_ARG_NAME: dict[str, dict[str, str]] = {
 # Extensions. Unlike above, *these* work in python names
 #
 
-# types with keys, python.Name to either key_name or (local_key, foreign_key)
-KEYED_TYPES: dict[str, tuple[str, str]] = {
-    'models.Agent': ('symbol', 'agent_symbol'),
-    'models.Contract': ('id', 'contract_id'),
-    'models.Ship': ('symbol', 'ship_symbol'),
-    'models.System': ('symbol', 'system_symbol'),
-    'models.Waypoint': ('symbol', 'waypoint_symbol'),
+# types with keys, python.Name to (new_arg_name, local_name, foreign/arg_name)
+KEYED_TYPES: dict[str, tuple[str, str, str]] = {
+    'models.Agent': ('agent', 'symbol', 'agent_symbol'),
+    'models.Contract': ('contract', 'id', 'contract_id'),
+    'models.Ship': ('ship', 'symbol', 'ship_symbol'),
+    'models.System': ('system', 'symbol', 'system_symbol'),
+    'models.Waypoint': ('waypoint', 'symbol', 'waypoint_symbol'),
 }

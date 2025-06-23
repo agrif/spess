@@ -37,6 +37,7 @@ class Type:
     @dataclasses.dataclass
     class Keyed:
         name: str
+        arg: str
         local: str
         foreign: str
 

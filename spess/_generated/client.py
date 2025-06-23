@@ -122,17 +122,17 @@ class Client(backend.Backend):
         )
 
     # spec_name: get-agent
-    def agent(self, agent_symbol: str | models.AgentLike) -> models.PublicAgent:
+    def agent(self, agent: str | models.AgentLike) -> models.PublicAgent:
         """Get public details for a specific agent."""
 
-        agent_symbol = models.Agent._resolve(agent_symbol)
+        agent = models.Agent._resolve(agent)
 
         return self._call(
             models.PublicAgent,
             'get',
             '/agents/{agentSymbol:s}',
             path_args = {
-                'agentSymbol': agent_symbol,
+                'agentSymbol': agent,
             },
         )
 
@@ -171,58 +171,58 @@ class Client(backend.Backend):
         )
 
     # spec_name: get-contract
-    def contract(self, contract_id: str | models.ContractLike) -> models.Contract:
+    def contract(self, contract: str | models.ContractLike) -> models.Contract:
         """Get the details of a specific contract."""
 
-        contract_id = models.Contract._resolve(contract_id)
+        contract = models.Contract._resolve(contract)
 
         return self._call(
             models.Contract,
             'get',
             '/my/contracts/{contractId:s}',
             path_args = {
-                'contractId': contract_id,
+                'contractId': contract,
             },
         )
 
     # spec_name: accept-contract
-    def accept_contract(self, contract_id: str | models.ContractLike) -> responses.AcceptContract:
+    def accept_contract(self, contract: str | models.ContractLike) -> responses.AcceptContract:
         """Accept a contract by ID.
 
         You can only accept contracts that were offered to you, were
         not accepted yet, and whose deadlines has not passed yet.
         """
 
-        contract_id = models.Contract._resolve(contract_id)
+        contract = models.Contract._resolve(contract)
 
         return self._call(
             responses.AcceptContract,
             'post',
             '/my/contracts/{contractId:s}/accept',
             path_args = {
-                'contractId': contract_id,
+                'contractId': contract,
             },
         )
 
     # spec_name: fulfill-contract
-    def fulfill_contract(self, contract_id: str | models.ContractLike) -> responses.FulfillContract:
+    def fulfill_contract(self, contract: str | models.ContractLike) -> responses.FulfillContract:
         """Fulfill a contract. Can only be used on contracts
         that have all of their delivery terms fulfilled.
         """
 
-        contract_id = models.Contract._resolve(contract_id)
+        contract = models.Contract._resolve(contract)
 
         return self._call(
             responses.FulfillContract,
             'post',
             '/my/contracts/{contractId:s}/fulfill',
             path_args = {
-                'contractId': contract_id,
+                'contractId': contract,
             },
         )
 
     # spec_name: deliver-contract
-    def deliver_contract(self, contract_id: str | models.ContractLike, ship_symbol: str | models.ShipLike, trade_symbol: str, units: int) -> responses.DeliverContract:
+    def deliver_contract(self, contract: str | models.ContractLike, ship: str | models.ShipLike, trade_symbol: str, units: int) -> responses.DeliverContract:
         """Deliver cargo to a contract.
 
         In order to use this API, a ship must be at the delivery
@@ -234,25 +234,25 @@ class Client(backend.Backend):
         cargo.
         """
 
-        contract_id = models.Contract._resolve(contract_id)
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        contract = models.Contract._resolve(contract)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.DeliverContract,
             'post',
             '/my/contracts/{contractId:s}/deliver',
             path_args = {
-                'contractId': contract_id,
+                'contractId': contract,
             },
             body = {
-                'shipSymbol': to_json(ship_symbol),
+                'shipSymbol': to_json(ship),
                 'tradeSymbol': to_json(trade_symbol),
                 'units': to_json(units),
             },
         )
 
     # spec_name: negotiate-contract
-    def negotiate_contract(self, ship_symbol: str | models.ShipLike) -> responses.NegotiateContract:
+    def negotiate_contract(self, ship: str | models.ShipLike) -> responses.NegotiateContract:
         """Negotiate a new contract with the HQ.
 
         In order to negotiate a new contract, an agent must not have
@@ -268,14 +268,14 @@ class Client(backend.Backend):
         present to negotiate a contract with that faction.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.NegotiateContract,
             'post',
             '/my/ships/{shipSymbol:s}/negotiate/contract',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
@@ -337,7 +337,7 @@ class Client(backend.Backend):
         )
 
     # spec_name: purchase-ship
-    def purchase_ship(self, ship_type: models.ShipType, waypoint_symbol: str | models.WaypointLike) -> responses.PurchaseShip:
+    def purchase_ship(self, ship_type: models.ShipType, waypoint: str | models.WaypointLike) -> responses.PurchaseShip:
         """Purchase a ship from a Shipyard. In order to use this
         function, a ship under your agent's ownership must be in a
         waypoint that has the ``Shipyard`` trait, and the Shipyard
@@ -349,7 +349,7 @@ class Client(backend.Backend):
         also include a few modules and mounts.
         """
 
-        waypoint_symbol = models.Waypoint._resolve(waypoint_symbol)
+        waypoint = models.Waypoint._resolve(waypoint)
 
         return self._call(
             responses.PurchaseShip,
@@ -357,29 +357,29 @@ class Client(backend.Backend):
             '/my/ships',
             body = {
                 'shipType': to_json(ship_type),
-                'waypointSymbol': to_json(waypoint_symbol),
+                'waypointSymbol': to_json(waypoint),
             },
         )
 
     # spec_name: get-my-ship
-    def ship(self, ship_symbol: str | models.ShipLike) -> models.Ship:
+    def ship(self, ship: str | models.ShipLike) -> models.Ship:
         """Retrieve the details of a ship under your agent's
         ownership.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             models.Ship,
             'get',
             '/my/ships/{shipSymbol:s}',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
     # spec_name: create-chart
-    def create_chart(self, ship_symbol: str | models.ShipLike) -> responses.CreateChart:
+    def create_chart(self, ship: str | models.ShipLike) -> responses.CreateChart:
         """Command a ship to chart the waypoint at its current
         location.
 
@@ -394,19 +394,19 @@ class Client(backend.Backend):
         traits.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.CreateChart,
             'post',
             '/my/ships/{shipSymbol:s}/chart',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
     # spec_name: get-ship-cooldown
-    def ship_cooldown(self, ship_symbol: str | models.ShipLike) -> models.Cooldown:
+    def ship_cooldown(self, ship: str | models.ShipLike) -> models.Cooldown:
         """Retrieve the details of your ship's reactor cooldown.
         Some actions such as activating your jump drive, scanning, or
         extracting resources taxes your reactor and results in a
@@ -421,19 +421,19 @@ class Client(backend.Backend):
         has no cooldown.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             models.Cooldown,
             'get',
             '/my/ships/{shipSymbol:s}/cooldown',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
     # spec_name: dock-ship
-    def dock_ship(self, ship_symbol: str | models.ShipLike) -> responses.DockShip:
+    def dock_ship(self, ship: str | models.ShipLike) -> responses.DockShip:
         """Attempt to dock your ship at its current location.
         Docking will only succeed if your ship is capable of docking
         at the time of the request.
@@ -447,19 +447,19 @@ class Client(backend.Backend):
         even if the ship is already docked.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.DockShip,
             'post',
             '/my/ships/{shipSymbol:s}/dock',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
     # spec_name: extract-resources
-    def extract_resources(self, ship_symbol: str | models.ShipLike) -> responses.ExtractResources:
+    def extract_resources(self, ship: str | models.ShipLike) -> responses.ExtractResources:
         """Extract resources from a waypoint that can be
         extracted, such as asteroid fields, into your ship. Send an
         optional survey as the payload to target specific yields.
@@ -473,19 +473,19 @@ class Client(backend.Backend):
         ``extract/survey`` endpoint for more details.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.ExtractResources,
             'post',
             '/my/ships/{shipSymbol:s}/extract',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
     # spec_name: extract-resources-with-survey
-    def extract_resources_with_survey(self, ship_symbol: str | models.ShipLike, survey: models.Survey | None = None) -> responses.ExtractResourcesWithSurvey:
+    def extract_resources_with_survey(self, ship: str | models.ShipLike, survey: models.Survey | None = None) -> responses.ExtractResourcesWithSurvey:
         """Use a survey when extracting resources from a
         waypoint. This endpoint requires a survey as the payload,
         which allows your ship to extract specific yields.
@@ -496,30 +496,30 @@ class Client(backend.Backend):
         request will fail.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.ExtractResourcesWithSurvey,
             'post',
             '/my/ships/{shipSymbol:s}/extract/survey',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
             body = to_json(survey),
         )
 
     # spec_name: jettison
-    def jettison(self, ship_symbol: str | models.ShipLike, symbol: models.TradeSymbol, units: int) -> responses.Jettison:
+    def jettison(self, ship: str | models.ShipLike, symbol: models.TradeSymbol, units: int) -> responses.Jettison:
         """Jettison cargo from your ship's cargo hold."""
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.Jettison,
             'post',
             '/my/ships/{shipSymbol:s}/jettison',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
             body = {
                 'symbol': to_json(symbol),
@@ -528,7 +528,7 @@ class Client(backend.Backend):
         )
 
     # spec_name: jump-ship
-    def jump_ship(self, ship_symbol: str | models.ShipLike, waypoint_symbol: str | models.WaypointLike) -> responses.JumpShip:
+    def jump_ship(self, ship: str | models.ShipLike, waypoint: str | models.WaypointLike) -> responses.JumpShip:
         """Jump your ship instantly to a target connected
         waypoint. The ship must be in orbit to execute a jump.
 
@@ -538,23 +538,23 @@ class Client(backend.Backend):
         connected waypoints
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
-        waypoint_symbol = models.Waypoint._resolve(waypoint_symbol)
+        ship = models.Ship._resolve(ship)
+        waypoint = models.Waypoint._resolve(waypoint)
 
         return self._call(
             responses.JumpShip,
             'post',
             '/my/ships/{shipSymbol:s}/jump',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
             body = {
-                'waypointSymbol': to_json(waypoint_symbol),
+                'waypointSymbol': to_json(waypoint),
             },
         )
 
     # spec_name: create-ship-system-scan
-    def create_ship_system_scan(self, ship_symbol: str | models.ShipLike) -> responses.CreateShipSystemScan:
+    def create_ship_system_scan(self, ship: str | models.ShipLike) -> responses.CreateShipSystemScan:
         """Scan for nearby systems, retrieving information on
         the systems' distance from the ship and their waypoints.
         Requires a ship to have the ``Sensor Array`` mount installed
@@ -564,19 +564,19 @@ class Client(backend.Backend):
         during which it cannot execute certain actions.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.CreateShipSystemScan,
             'post',
             '/my/ships/{shipSymbol:s}/scan/systems',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
     # spec_name: create-ship-waypoint-scan
-    def create_ship_waypoint_scan(self, ship_symbol: str | models.ShipLike) -> responses.CreateShipWaypointScan:
+    def create_ship_waypoint_scan(self, ship: str | models.ShipLike) -> responses.CreateShipWaypointScan:
         """Scan for nearby waypoints, retrieving detailed
         information on each waypoint in range. Scanning uncharted
         waypoints will allow you to ignore their uncharted state and
@@ -589,19 +589,19 @@ class Client(backend.Backend):
         during which it cannot execute certain actions.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.CreateShipWaypointScan,
             'post',
             '/my/ships/{shipSymbol:s}/scan/waypoints',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
     # spec_name: create-ship-ship-scan
-    def create_ship_ship_scan(self, ship_symbol: str | models.ShipLike) -> responses.CreateShipShipScan:
+    def create_ship_ship_scan(self, ship: str | models.ShipLike) -> responses.CreateShipShipScan:
         """Scan for nearby ships, retrieving information for all
         ships in range.
 
@@ -612,55 +612,55 @@ class Client(backend.Backend):
         during which it cannot execute certain actions.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.CreateShipShipScan,
             'post',
             '/my/ships/{shipSymbol:s}/scan/ships',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
     # spec_name: scrap-ship
-    def scrap_ship(self, ship_symbol: str | models.ShipLike) -> responses.ScrapShip:
+    def scrap_ship(self, ship: str | models.ShipLike) -> responses.ScrapShip:
         """Scrap a ship, removing it from the game and receiving
         a portion of the ship's value back in credits. The ship must
         be docked in a waypoint that has the ``Shipyard`` trait to be
         scrapped.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.ScrapShip,
             'post',
             '/my/ships/{shipSymbol:s}/scrap',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
     # spec_name: get-scrap-ship
-    def get_scrap_ship(self, ship_symbol: str | models.ShipLike) -> responses.GetScrapShip:
+    def get_scrap_ship(self, ship: str | models.ShipLike) -> responses.GetScrapShip:
         """Get the value of scrapping a ship. Requires the ship
         to be docked at a waypoint that has the ``Shipyard`` trait.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.GetScrapShip,
             'get',
             '/my/ships/{shipSymbol:s}/scrap',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
     # spec_name: navigate-ship
-    def navigate_ship(self, ship_symbol: str | models.ShipLike, waypoint_symbol: str | models.WaypointLike) -> responses.NavigateShip:
+    def navigate_ship(self, ship: str | models.ShipLike, waypoint: str | models.WaypointLike) -> responses.NavigateShip:
         """Navigate to a target destination. The ship must be in
         orbit to use this function. The destination waypoint must be
         within the same system as the ship's current location.
@@ -675,23 +675,23 @@ class Client(backend.Backend):
         actions.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
-        waypoint_symbol = models.Waypoint._resolve(waypoint_symbol)
+        ship = models.Ship._resolve(ship)
+        waypoint = models.Waypoint._resolve(waypoint)
 
         return self._call(
             responses.NavigateShip,
             'post',
             '/my/ships/{shipSymbol:s}/navigate',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
             body = {
-                'waypointSymbol': to_json(waypoint_symbol),
+                'waypointSymbol': to_json(waypoint),
             },
         )
 
     # spec_name: warp-ship
-    def warp_ship(self, ship_symbol: str | models.ShipLike, waypoint_symbol: str | models.WaypointLike) -> responses.WarpShip:
+    def warp_ship(self, ship: str | models.ShipLike, waypoint: str | models.WaypointLike) -> responses.WarpShip:
         """Warp your ship to a target destination in another
         system. The ship must be in orbit to use this function and
         must have the ``Warp Drive`` module installed. Warping will
@@ -702,23 +702,23 @@ class Client(backend.Backend):
         unavailable until the ship has arrived at its destination.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
-        waypoint_symbol = models.Waypoint._resolve(waypoint_symbol)
+        ship = models.Ship._resolve(ship)
+        waypoint = models.Waypoint._resolve(waypoint)
 
         return self._call(
             responses.WarpShip,
             'post',
             '/my/ships/{shipSymbol:s}/warp',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
             body = {
-                'waypointSymbol': to_json(waypoint_symbol),
+                'waypointSymbol': to_json(waypoint),
             },
         )
 
     # spec_name: orbit-ship
-    def orbit_ship(self, ship_symbol: str | models.ShipLike) -> responses.OrbitShip:
+    def orbit_ship(self, ship: str | models.ShipLike) -> responses.OrbitShip:
         """Attempt to move your ship into orbit at its current
         location. The request will only succeed if your ship is
         capable of moving into orbit at the time of the request.
@@ -732,19 +732,19 @@ class Client(backend.Backend):
         even if the ship is already in orbit.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.OrbitShip,
             'post',
             '/my/ships/{shipSymbol:s}/orbit',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
     # spec_name: purchase-cargo
-    def purchase_cargo(self, ship_symbol: str | models.ShipLike, symbol: models.TradeSymbol, units: int) -> responses.PurchaseCargo:
+    def purchase_cargo(self, ship: str | models.ShipLike, symbol: models.TradeSymbol, units: int) -> responses.PurchaseCargo:
         """Purchase cargo from a market.
 
         The ship must be docked in a waypoint that has ``Marketplace``
@@ -758,14 +758,14 @@ class Client(backend.Backend):
         Purchased goods are added to the ship's cargo hold.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.PurchaseCargo,
             'post',
             '/my/ships/{shipSymbol:s}/purchase',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
             body = {
                 'symbol': to_json(symbol),
@@ -774,7 +774,7 @@ class Client(backend.Backend):
         )
 
     # spec_name: ship-refine
-    def ship_refine(self, ship_symbol: str | models.ShipLike, produce: models.Produce) -> responses.ShipRefine:
+    def ship_refine(self, ship: str | models.ShipLike, produce: models.Produce) -> responses.ShipRefine:
         """Attempt to refine the raw materials on your ship. The
         request will only succeed if your ship is capable of refining
         at the time of the request. In order to be able to refine, a
@@ -785,14 +785,14 @@ class Client(backend.Backend):
         processed goods.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.ShipRefine,
             'post',
             '/my/ships/{shipSymbol:s}/refine',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
             body = {
                 'produce': to_json(produce),
@@ -800,7 +800,7 @@ class Client(backend.Backend):
         )
 
     # spec_name: refuel-ship
-    def refuel_ship(self, ship_symbol: str | models.ShipLike, units: int | None = None, from_cargo: bool | None = None) -> responses.RefuelShip:
+    def refuel_ship(self, ship: str | models.ShipLike, units: int | None = None, from_cargo: bool | None = None) -> responses.RefuelShip:
         """Refuel your ship by buying fuel from the local
         market.
 
@@ -815,14 +815,14 @@ class Client(backend.Backend):
         capacity when using this action.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.RefuelShip,
             'post',
             '/my/ships/{shipSymbol:s}/refuel',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
             body = {
                 'units': to_json(units),
@@ -831,56 +831,56 @@ class Client(backend.Backend):
         )
 
     # spec_name: repair-ship
-    def repair_ship(self, ship_symbol: str | models.ShipLike) -> responses.RepairShip:
+    def repair_ship(self, ship: str | models.ShipLike) -> responses.RepairShip:
         """Repair a ship, restoring the ship to maximum
         condition. The ship must be docked at a waypoint that has the
         ``Shipyard`` trait in order to use this function. To preview
         the cost of repairing the ship, use the Get action.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.RepairShip,
             'post',
             '/my/ships/{shipSymbol:s}/repair',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
     # spec_name: get-repair-ship
-    def get_repair_ship(self, ship_symbol: str | models.ShipLike) -> responses.GetRepairShip:
+    def get_repair_ship(self, ship: str | models.ShipLike) -> responses.GetRepairShip:
         """Get the cost of repairing a ship. Requires the ship
         to be docked at a waypoint that has the ``Shipyard`` trait.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.GetRepairShip,
             'get',
             '/my/ships/{shipSymbol:s}/repair',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
     # spec_name: sell-cargo
-    def sell_cargo(self, ship_symbol: str | models.ShipLike, symbol: models.TradeSymbol, units: int) -> responses.SellCargo:
+    def sell_cargo(self, ship: str | models.ShipLike, symbol: models.TradeSymbol, units: int) -> responses.SellCargo:
         """Sell cargo in your ship to a market that trades this
         cargo. The ship must be docked in a waypoint that has the
         ``Marketplace`` trait in order to use this function.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.SellCargo,
             'post',
             '/my/ships/{shipSymbol:s}/sell',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
             body = {
                 'symbol': to_json(symbol),
@@ -889,26 +889,26 @@ class Client(backend.Backend):
         )
 
     # spec_name: siphon-resources
-    def siphon_resources(self, ship_symbol: str | models.ShipLike) -> responses.SiphonResources:
+    def siphon_resources(self, ship: str | models.ShipLike) -> responses.SiphonResources:
         """Siphon gases or other resources from gas giants.
 
         The ship must be in orbit to be able to siphon and must have
         siphon mounts and a gas processor installed.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.SiphonResources,
             'post',
             '/my/ships/{shipSymbol:s}/siphon',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
     # spec_name: create-survey
-    def create_survey(self, ship_symbol: str | models.ShipLike) -> responses.CreateSurvey:
+    def create_survey(self, ship: str | models.ShipLike) -> responses.CreateSurvey:
         """Create surveys on a waypoint that can be extracted
         such as asteroid fields. A survey focuses on specific types of
         deposits from the extracted location. When ships extract using
@@ -932,14 +932,14 @@ class Client(backend.Backend):
         use this function.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.CreateSurvey,
             'post',
             '/my/ships/{shipSymbol:s}/survey',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
@@ -972,51 +972,51 @@ class Client(backend.Backend):
         )
 
     # spec_name: get-my-ship-cargo
-    def ship_cargo(self, ship_symbol: str | models.ShipLike) -> models.ShipCargo:
+    def ship_cargo(self, ship: str | models.ShipLike) -> models.ShipCargo:
         """Retrieve the cargo of a ship under your agent's
         ownership.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             models.ShipCargo,
             'get',
             '/my/ships/{shipSymbol:s}/cargo',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
     # spec_name: get-ship-modules
-    def ship_modules(self, ship_symbol: str | models.ShipLike) -> list[models.ShipModule]:
+    def ship_modules(self, ship: str | models.ShipLike) -> list[models.ShipModule]:
         """Get the modules installed on a ship."""
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             list[models.ShipModule],
             'get',
             '/my/ships/{shipSymbol:s}/modules',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
     # spec_name: install-ship-module
-    def install_ship_module(self, ship_symbol: str | models.ShipLike, symbol: str) -> responses.InstallShipModule:
+    def install_ship_module(self, ship: str | models.ShipLike, symbol: str) -> responses.InstallShipModule:
         """Install a module on a ship. The module must be in
         your cargo.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.InstallShipModule,
             'post',
             '/my/ships/{shipSymbol:s}/modules/install',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
             body = {
                 'symbol': to_json(symbol),
@@ -1024,19 +1024,19 @@ class Client(backend.Backend):
         )
 
     # spec_name: remove-ship-module
-    def remove_ship_module(self, ship_symbol: str | models.ShipLike, symbol: str) -> responses.RemoveShipModule:
+    def remove_ship_module(self, ship: str | models.ShipLike, symbol: str) -> responses.RemoveShipModule:
         """Remove a module from a ship. The module will be
         placed in cargo.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.RemoveShipModule,
             'post',
             '/my/ships/{shipSymbol:s}/modules/remove',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
             body = {
                 'symbol': to_json(symbol),
@@ -1044,22 +1044,22 @@ class Client(backend.Backend):
         )
 
     # spec_name: get-mounts
-    def mounts(self, ship_symbol: str | models.ShipLike) -> list[models.ShipMount]:
+    def mounts(self, ship: str | models.ShipLike) -> list[models.ShipMount]:
         """Get the mounts installed on a ship."""
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             list[models.ShipMount],
             'get',
             '/my/ships/{shipSymbol:s}/mounts',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
     # spec_name: install-mount
-    def install_mount(self, ship_symbol: str | models.ShipLike, symbol: str) -> responses.InstallMount:
+    def install_mount(self, ship: str | models.ShipLike, symbol: str) -> responses.InstallMount:
         """Install a mount on a ship.
 
         In order to install a mount, the ship must be docked and
@@ -1070,14 +1070,14 @@ class Client(backend.Backend):
         installing the mount on the ship.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.InstallMount,
             'post',
             '/my/ships/{shipSymbol:s}/mounts/install',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
             body = {
                 'symbol': to_json(symbol),
@@ -1085,7 +1085,7 @@ class Client(backend.Backend):
         )
 
     # spec_name: remove-mount
-    def remove_mount(self, ship_symbol: str | models.ShipLike, symbol: str) -> responses.RemoveMount:
+    def remove_mount(self, ship: str | models.ShipLike, symbol: str) -> responses.RemoveMount:
         """Remove a mount from a ship.
 
         The ship must be docked in a waypoint that has the
@@ -1095,14 +1095,14 @@ class Client(backend.Backend):
         A removal fee will be deduced from the agent by the Shipyard.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.RemoveMount,
             'post',
             '/my/ships/{shipSymbol:s}/mounts/remove',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
             body = {
                 'symbol': to_json(symbol),
@@ -1110,36 +1110,36 @@ class Client(backend.Backend):
         )
 
     # spec_name: get-ship-nav
-    def ship_nav(self, ship_symbol: str | models.ShipLike) -> models.ShipNav:
+    def ship_nav(self, ship: str | models.ShipLike) -> models.ShipNav:
         """Get the current nav status of a ship."""
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             models.ShipNav,
             'get',
             '/my/ships/{shipSymbol:s}/nav',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
         )
 
     # spec_name: patch-ship-nav
-    def patch_ship_nav(self, ship_symbol: str | models.ShipLike, flight_mode: models.FlightMode | None = None) -> responses.PatchShipNav:
+    def patch_ship_nav(self, ship: str | models.ShipLike, flight_mode: models.FlightMode | None = None) -> responses.PatchShipNav:
         """Update the nav configuration of a ship.
 
         Currently only supports configuring the Flight Mode of the
         ship, which affects its speed and fuel consumption.
         """
 
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.PatchShipNav,
             'patch',
             '/my/ships/{shipSymbol:s}/nav',
             path_args = {
-                'shipSymbol': ship_symbol,
+                'shipSymbol': ship,
             },
             body = {
                 'flightMode': to_json(flight_mode),
@@ -1161,24 +1161,24 @@ class Client(backend.Backend):
         )
 
     # spec_name: get-system
-    def system(self, system_symbol: str | models.SystemLike) -> models.System:
+    def system(self, system: str | models.SystemLike) -> models.System:
         """Get the details of a system. Requires the system to
         have been visited or charted.
         """
 
-        system_symbol = models.System._resolve(system_symbol)
+        system = models.System._resolve(system)
 
         return self._call(
             models.System,
             'get',
             '/systems/{systemSymbol:s}',
             path_args = {
-                'systemSymbol': system_symbol,
+                'systemSymbol': system,
             },
         )
 
     # spec_name: get-system-waypoints
-    def system_waypoints(self, system_symbol: str | models.SystemLike, type: models.WaypointType | None = None, traits: list[models.WaypointTrait] | None = None) -> Paged[models.Waypoint]:
+    def system_waypoints(self, system: str | models.SystemLike, type: models.WaypointType | None = None, traits: list[models.WaypointTrait] | None = None) -> Paged[models.Waypoint]:
         """Return a paginated list of all of the waypoints for a
         given system.
 
@@ -1186,14 +1186,14 @@ class Client(backend.Backend):
         trait instead of its actual traits.
         """
 
-        system_symbol = models.System._resolve(system_symbol)
+        system = models.System._resolve(system)
 
         return self._call_paginated(
             models.Waypoint,
             'get',
             '/systems/{systemSymbol:s}/waypoints',
             path_args = {
-                'systemSymbol': system_symbol,
+                'systemSymbol': system,
             },
             query_args = {
                 'type': str(type),
@@ -1202,48 +1202,48 @@ class Client(backend.Backend):
         )
 
     # spec_name: get-waypoint
-    def waypoint(self, system_symbol: str | models.SystemLike, waypoint_symbol: str | models.WaypointLike) -> models.Waypoint:
+    def waypoint(self, system: str | models.SystemLike, waypoint: str | models.WaypointLike) -> models.Waypoint:
         """View the details of a waypoint.
 
         If the waypoint is uncharted, it will return the 'Uncharted'
         trait instead of its actual traits.
         """
 
-        system_symbol = models.System._resolve(system_symbol)
-        waypoint_symbol = models.Waypoint._resolve(waypoint_symbol)
+        system = models.System._resolve(system)
+        waypoint = models.Waypoint._resolve(waypoint)
 
         return self._call(
             models.Waypoint,
             'get',
             '/systems/{systemSymbol:s}/waypoints/{waypointSymbol:s}',
             path_args = {
-                'systemSymbol': system_symbol,
-                'waypointSymbol': waypoint_symbol,
+                'systemSymbol': system,
+                'waypointSymbol': waypoint,
             },
         )
 
     # spec_name: get-construction
-    def construction(self, system_symbol: str | models.SystemLike, waypoint_symbol: str | models.WaypointLike) -> models.Construction:
+    def construction(self, system: str | models.SystemLike, waypoint: str | models.WaypointLike) -> models.Construction:
         """Get construction details for a waypoint. Requires a
         waypoint with a property of ``isUnderConstruction`` to be
         true.
         """
 
-        system_symbol = models.System._resolve(system_symbol)
-        waypoint_symbol = models.Waypoint._resolve(waypoint_symbol)
+        system = models.System._resolve(system)
+        waypoint = models.Waypoint._resolve(waypoint)
 
         return self._call(
             models.Construction,
             'get',
             '/systems/{systemSymbol:s}/waypoints/{waypointSymbol:s}/construction',
             path_args = {
-                'systemSymbol': system_symbol,
-                'waypointSymbol': waypoint_symbol,
+                'systemSymbol': system,
+                'waypointSymbol': waypoint,
             },
         )
 
     # spec_name: supply-construction
-    def supply_construction(self, system_symbol: str | models.SystemLike, waypoint_symbol: str | models.WaypointLike, ship_symbol: str | models.ShipLike, trade_symbol: models.TradeSymbol, units: int) -> responses.SupplyConstruction:
+    def supply_construction(self, system: str | models.SystemLike, waypoint: str | models.WaypointLike, ship: str | models.ShipLike, trade_symbol: models.TradeSymbol, units: int) -> responses.SupplyConstruction:
         """Supply a construction site with the specified good.
         Requires a waypoint with a property of ``isUnderConstruction``
         to be true.
@@ -1253,27 +1253,27 @@ class Client(backend.Backend):
         site's materials.
         """
 
-        system_symbol = models.System._resolve(system_symbol)
-        waypoint_symbol = models.Waypoint._resolve(waypoint_symbol)
-        ship_symbol = models.Ship._resolve(ship_symbol)
+        system = models.System._resolve(system)
+        waypoint = models.Waypoint._resolve(waypoint)
+        ship = models.Ship._resolve(ship)
 
         return self._call(
             responses.SupplyConstruction,
             'post',
             '/systems/{systemSymbol:s}/waypoints/{waypointSymbol:s}/construction/supply',
             path_args = {
-                'systemSymbol': system_symbol,
-                'waypointSymbol': waypoint_symbol,
+                'systemSymbol': system,
+                'waypointSymbol': waypoint,
             },
             body = {
-                'shipSymbol': to_json(ship_symbol),
+                'shipSymbol': to_json(ship),
                 'tradeSymbol': to_json(trade_symbol),
                 'units': to_json(units),
             },
         )
 
     # spec_name: get-market
-    def market(self, system_symbol: str | models.SystemLike, waypoint_symbol: str | models.WaypointLike) -> models.Market:
+    def market(self, system: str | models.SystemLike, waypoint: str | models.WaypointLike) -> models.Market:
         """Retrieve imports, exports and exchange data from a
         marketplace. Requires a waypoint that has the ``Marketplace``
         trait to use.
@@ -1284,21 +1284,21 @@ class Client(backend.Backend):
         better a understanding of the market in the game.
         """
 
-        system_symbol = models.System._resolve(system_symbol)
-        waypoint_symbol = models.Waypoint._resolve(waypoint_symbol)
+        system = models.System._resolve(system)
+        waypoint = models.Waypoint._resolve(waypoint)
 
         return self._call(
             models.Market,
             'get',
             '/systems/{systemSymbol:s}/waypoints/{waypointSymbol:s}/market',
             path_args = {
-                'systemSymbol': system_symbol,
-                'waypointSymbol': waypoint_symbol,
+                'systemSymbol': system,
+                'waypointSymbol': waypoint,
             },
         )
 
     # spec_name: get-jump-gate
-    def jump_gate(self, system_symbol: str | models.SystemLike, waypoint_symbol: str | models.WaypointLike) -> models.JumpGate:
+    def jump_gate(self, system: str | models.SystemLike, waypoint: str | models.WaypointLike) -> models.JumpGate:
         """Get jump gate details for a waypoint. Requires a
         waypoint of type ``JUMP_GATE`` to use.
 
@@ -1306,37 +1306,37 @@ class Client(backend.Backend):
         the waypoints in the system.
         """
 
-        system_symbol = models.System._resolve(system_symbol)
-        waypoint_symbol = models.Waypoint._resolve(waypoint_symbol)
+        system = models.System._resolve(system)
+        waypoint = models.Waypoint._resolve(waypoint)
 
         return self._call(
             models.JumpGate,
             'get',
             '/systems/{systemSymbol:s}/waypoints/{waypointSymbol:s}/jump-gate',
             path_args = {
-                'systemSymbol': system_symbol,
-                'waypointSymbol': waypoint_symbol,
+                'systemSymbol': system,
+                'waypointSymbol': waypoint,
             },
         )
 
     # spec_name: get-shipyard
-    def shipyard(self, system_symbol: str | models.SystemLike, waypoint_symbol: str | models.WaypointLike) -> models.Shipyard:
+    def shipyard(self, system: str | models.SystemLike, waypoint: str | models.WaypointLike) -> models.Shipyard:
         """Get the shipyard for a waypoint. Requires a waypoint
         that has the ``Shipyard`` trait to use. Send a ship to the
         waypoint to access data on ships that are currently available
         for purchase and recent transactions.
         """
 
-        system_symbol = models.System._resolve(system_symbol)
-        waypoint_symbol = models.Waypoint._resolve(waypoint_symbol)
+        system = models.System._resolve(system)
+        waypoint = models.Waypoint._resolve(waypoint)
 
         return self._call(
             models.Shipyard,
             'get',
             '/systems/{systemSymbol:s}/waypoints/{waypointSymbol:s}/shipyard',
             path_args = {
-                'systemSymbol': system_symbol,
-                'waypointSymbol': waypoint_symbol,
+                'systemSymbol': system,
+                'waypointSymbol': waypoint,
             },
         )
 

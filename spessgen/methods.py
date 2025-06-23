@@ -53,13 +53,14 @@ class Converter:
         for method, op in info.methods.items():
             self.add_op(path, method, op)
 
-    def _resolve_key(self, spec_name: str, py_arg_name: str, py_arg_type: str) -> str | None:
+    def _resolve_key(self, spec_name: str, py_arg_name: str, py_arg_type: str) -> tuple[str, str | None]:
+        # returns new_arg_name, KeyType (if keyed)
         if py_arg_type != 'str':
-            return None
+            return (py_arg_name, None)
         for k, spec in KEYED_TYPES.items():
-            if py_arg_name == spec[1]:
-                return k
-        return None
+            if py_arg_name == spec[2]:
+                return (spec[0], k)
+        return (py_arg_name, None)
 
     def _collect_args(self, spec_name: str, op: spec.Operation) -> tuple[list[Method.Argument], list[Method.Argument], bool]:
         path_args = []
@@ -73,15 +74,17 @@ class Converter:
                 paginated = True
                 continue
 
+            py_type = self.resolver.resolve(spec_name + '.' + json_name, param.schema, parent=self.resolver.models_module)
+
             try:
                 stem = param.in_.value.lower() + '.'
                 py_name = METHOD_ARG_NAME.get(spec_name, {})[stem + json_name]
+                _, keyed = self._resolve_key(spec_name, py_name, py_type)
             except KeyError:
                 py_name = humps.decamelize(json_name)
                 if py_name in KEYWORDS:
                     py_name += '_'
-
-            py_type = self.resolver.resolve(spec_name + '.' + json_name, param.schema, parent=self.resolver.models_module)
+                py_name, keyed = self._resolve_key(spec_name, py_name, py_type)
 
             arg = Method.Argument(
                 json_name = json_name,
@@ -89,7 +92,7 @@ class Converter:
                 py_type = py_type,
                 optional = not param.required,
                 doc = param.description,
-                keyed = self._resolve_key(spec_name, py_name, py_type),
+                keyed = keyed,
             )
 
             match param.in_:
@@ -122,17 +125,19 @@ class Converter:
             py_type = self.resolver.resolve(spec_name + '.body', schema, parent=self.resolver.models_module, name_hint=py_name)
             try:
                 py_name = METHOD_ARG_NAME.get(spec_name, {})['body']
+                _, keyed = self._resolve_key(spec_name, py_name, py_type)
             except KeyError:
                 py_name = humps.decamelize(py_type.rsplit('.')[-1])
                 if py_name in KEYWORDS:
                     py_name += '_'
+                py_name, keyed = self._resolve_key(spec_name, py_name, py_type)
             return Method.Argument(
                 json_name = 'body', # dummy
                 py_name = py_name,
                 py_type = py_type,
                 doc = None,
                 optional = not body.required,
-                keyed = self._resolve_key(spec_name, py_name, py_type),
+                keyed = keyed,
             )
         else:
             # composite type, break it out into arguments
@@ -144,15 +149,17 @@ class Converter:
             for field in ty.definition.fields.values():
                 try:
                     py_name = METHOD_ARG_NAME.get(spec_name, {})['body.' + field.json_name]
+                    _, keyed = self._resolve_key(spec_name, py_name, field.py_type)
                 except KeyError:
                     py_name = field.py_name
+                    py_name, keyed = self._resolve_key(spec_name, py_name, field.py_type)
                 args.append(Method.Argument(
                     json_name = field.json_name,
                     py_name = py_name,
                     py_type = field.py_type,
                     doc = field.doc,
                     optional = field.optional or not body.required,
-                    keyed = self._resolve_key(spec_name, py_name, field.py_type),
+                    keyed = keyed,
                 ))
             return args
 
