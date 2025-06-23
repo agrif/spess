@@ -16,17 +16,17 @@ __all__ = [
     'Cooldown', 'Extraction', 'ExtractionYield', 'Faction',
     'FactionSymbol', 'FactionTrait', 'FactionTraitInfo', 'FlightMode',
     'JumpGate', 'Market', 'MarketTradeGood', 'MarketTransaction', 'Meta',
-    'PublicAgent', 'RepairTransaction', 'ScannedShip', 'ScannedSystem',
-    'ScannedWaypoint', 'ScrapTransaction', 'Ship', 'ShipCargo',
-    'ShipCargoItem', 'ShipConditionEvent', 'ShipCrew', 'ShipEngine',
-    'ShipFrame', 'ShipFuel', 'ShipModificationTransaction', 'ShipModule',
-    'ShipMount', 'ShipNav', 'ShipNavRoute', 'ShipNavRouteWaypoint',
-    'ShipReactor', 'ShipRegistration', 'ShipRequirements', 'ShipRole',
-    'ShipStatus', 'ShipType', 'Shipyard', 'ShipyardShip',
-    'ShipyardTransaction', 'Siphon', 'SiphonYield', 'SupplyLevel',
-    'Survey', 'SurveyDeposit', 'SurveySize', 'System', 'SystemFaction',
-    'SystemType', 'SystemWaypoint', 'TradeGood', 'TradeSymbol',
-    'Waypoint', 'WaypointFaction', 'WaypointModifier',
+    'Produce', 'PublicAgent', 'RepairTransaction', 'ScannedShip',
+    'ScannedSystem', 'ScannedWaypoint', 'ScrapTransaction', 'Ship',
+    'ShipCargo', 'ShipCargoItem', 'ShipConditionEvent', 'ShipCrew',
+    'ShipEngine', 'ShipFrame', 'ShipFuel', 'ShipModificationTransaction',
+    'ShipModule', 'ShipMount', 'ShipNav', 'ShipNavRoute',
+    'ShipNavRouteWaypoint', 'ShipReactor', 'ShipRegistration',
+    'ShipRequirements', 'ShipRole', 'ShipStatus', 'ShipType', 'Shipyard',
+    'ShipyardShip', 'ShipyardTransaction', 'Siphon', 'SiphonYield',
+    'SupplyLevel', 'Survey', 'SurveyDeposit', 'SurveySize', 'System',
+    'SystemFaction', 'SystemType', 'SystemWaypoint', 'TradeGood',
+    'TradeSymbol', 'Waypoint', 'WaypointFaction', 'WaypointModifier',
     'WaypointModifierInfo', 'WaypointOrbital', 'WaypointTrait',
     'WaypointTraitInfo', 'WaypointType',
 ]
@@ -3237,3 +3237,17 @@ class ShipModificationTransaction:
             total_price = from_json(int, v['totalPrice']),
             timestamp = from_json(datetime, v['timestamp']),
         )
+
+# spec_name: ship-refine.body.produce
+class Produce(Enum):
+    """The type of good to produce out of the refining process."""
+
+    ALUMINUM = 'ALUMINUM'
+    COPPER = 'COPPER'
+    FUEL = 'FUEL'
+    GOLD = 'GOLD'
+    IRON = 'IRON'
+    MERITIUM = 'MERITIUM'
+    PLATINUM = 'PLATINUM'
+    SILVER = 'SILVER'
+    URANITE = 'URANITE'

@@ -724,7 +724,7 @@ class Client(backend.Backend):
         )
 
     # spec_name: ship-refine
-    def ship_refine(self, ship_symbol: str, produce: responses.Produce) -> responses.ShipRefine:
+    def ship_refine(self, ship_symbol: str, produce: models.Produce) -> responses.ShipRefine:
         """Attempt to refine the raw materials on your ship. The
         request will only succeed if your ship is capable of refining
         at the time of the request. In order to be able to refine, a

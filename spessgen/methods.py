@@ -83,7 +83,7 @@ class Converter:
                 if py_name in KEYWORDS:
                     py_name += '_'
 
-            py_type = self.resolver.resolve(spec_name + '.' + json_name, param.schema, parent=self.responses_module)
+            py_type = self.resolver.resolve(spec_name + '.' + json_name, param.schema, parent=self.resolver.models_module)
 
             arg = Method.Argument(
                 json_name = json_name,
@@ -121,7 +121,7 @@ class Converter:
         schema = self._json_schema(f'{spec_name} body', body.content)
         if isinstance(schema, spec.SchemaRef):
             # premade type, use it wholesale
-            py_type = self.resolver.resolve(spec_name + '.body', schema, parent=self.responses_module, name_hint=py_name + 'Body')
+            py_type = self.resolver.resolve(spec_name + '.body', schema, parent=self.resolver.models_module, name_hint=py_name)
             try:
                 py_name = METHOD_ARG_NAME.get(spec_name, {})['body']
             except KeyError:
@@ -138,7 +138,7 @@ class Converter:
             )
         else:
             # composite type, break it out into arguments
-            _, ty = self.resolver.resolve_type(spec_name + '.body', schema, parent=self.responses_module, name_hint=py_name + 'Body', define=False, promote_orphans=True)
+            _, ty = self.resolver.resolve_type(spec_name + '.body', schema, parent=self.resolver.models_module, name_hint=py_name, define=False, promote_orphans=True)
             if ty is None or not isinstance(ty.definition, types.Struct):
                 raise NotImplementedError(f'non-object type in body of {spec_name}')
 

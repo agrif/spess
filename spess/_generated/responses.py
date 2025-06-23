@@ -17,11 +17,11 @@ __all__ = [
     'ExtractResourcesWithSurvey', 'FulfillContract', 'GetRepairShip',
     'GetScrapShip', 'InstallMount', 'InstallShipModule', 'Jettison',
     'JumpShip', 'MyAccount', 'MyFaction', 'NavigateShip',
-    'NegotiateContract', 'OrbitShip', 'PatchShipNav', 'Produce',
-    'PurchaseCargo', 'PurchaseShip', 'RefuelShip', 'Register',
-    'RemoveMount', 'RemoveShipModule', 'RepairShip', 'ScrapShip',
-    'SellCargo', 'ServerStatus', 'ShipRefine', 'SiphonResources',
-    'SupplyConstruction', 'TransferCargo', 'WarpShip',
+    'NegotiateContract', 'OrbitShip', 'PatchShipNav', 'PurchaseCargo',
+    'PurchaseShip', 'RefuelShip', 'Register', 'RemoveMount',
+    'RemoveShipModule', 'RepairShip', 'ScrapShip', 'SellCargo',
+    'ServerStatus', 'ShipRefine', 'SiphonResources', 'SupplyConstruction',
+    'TransferCargo', 'WarpShip',
 ]
 
 # spec_name: get-status.response
@@ -1007,20 +1007,6 @@ class PurchaseCargo:
             transaction = from_json(models.MarketTransaction, v['transaction']),
             agent = from_json(models.Agent, v['agent']),
         )
-
-# spec_name: ship-refine.body.produce
-class Produce(Enum):
-    """The type of good to produce out of the refining process."""
-
-    ALUMINUM = 'ALUMINUM'
-    COPPER = 'COPPER'
-    FUEL = 'FUEL'
-    GOLD = 'GOLD'
-    IRON = 'IRON'
-    MERITIUM = 'MERITIUM'
-    PLATINUM = 'PLATINUM'
-    SILVER = 'SILVER'
-    URANITE = 'URANITE'
 
 # spec_name: ship-refine.response
 @dataclasses.dataclass
