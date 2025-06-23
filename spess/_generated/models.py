@@ -8,6 +8,8 @@ import typing
 
 from spess._json import Json, from_json, to_json
 from spess._model_bases import date, datetime, Enum, Keyed
+from spess._paged import Paged
+import spess.responses as responses
 
 __all__ = [
     'ActivityLevel', 'Agent', 'AgentEvent', 'AgentLike', 'Chart',
@@ -338,6 +340,96 @@ class System(Keyed):
         """Alias for ``self.symbol``."""
 
         return self.symbol
+
+    #
+    # Systems
+    #
+
+    # spec_name: get-system
+    def update(self) -> System:
+        """Get the details of a system. Requires the system to
+        have been visited or charted.
+        """
+
+        return self._c.system(self.symbol)
+
+    # spec_name: get-system-waypoints
+    def get_waypoints(self, type: WaypointType | None = None, traits: list[WaypointTrait] | None = None) -> Paged[Waypoint]:
+        """Return a paginated list of all of the waypoints for a
+        given system.
+
+        If a waypoint is uncharted, it will return the ``Uncharted``
+        trait instead of its actual traits.
+        """
+
+        return self._c.system_waypoints(self.symbol, type=type, traits=traits)
+
+    # spec_name: get-waypoint
+    def waypoint(self, waypoint: str | WaypointLike) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.symbol, waypoint)
+
+    # spec_name: get-construction
+    def construction(self, waypoint: str | WaypointLike) -> Construction:
+        """Get construction details for a waypoint. Requires a
+        waypoint with a property of ``isUnderConstruction`` to be
+        true.
+        """
+
+        return self._c.construction(self.symbol, waypoint)
+
+    # spec_name: supply-construction
+    def supply_construction(self, waypoint: str | WaypointLike, ship: str | ShipLike, trade_symbol: TradeSymbol, units: int) -> responses.SupplyConstruction:
+        """Supply a construction site with the specified good.
+        Requires a waypoint with a property of ``isUnderConstruction``
+        to be true.
+
+        The good must be in your ship's cargo. The good will be
+        removed from your ship's cargo and added to the construction
+        site's materials.
+        """
+
+        return self._c.supply_construction(self.symbol, waypoint, ship, trade_symbol, units)
+
+    # spec_name: get-market
+    def market(self, waypoint: str | WaypointLike) -> Market:
+        """Retrieve imports, exports and exchange data from a
+        marketplace. Requires a waypoint that has the ``Marketplace``
+        trait to use.
+
+        Send a ship to the waypoint to access trade good prices and
+        recent transactions. Refer to the `Market Overview page
+        <https://docs.spacetraders.io/game-concepts/markets>`_ to gain
+        better a understanding of the market in the game.
+        """
+
+        return self._c.market(self.symbol, waypoint)
+
+    # spec_name: get-jump-gate
+    def jump_gate(self, waypoint: str | WaypointLike) -> JumpGate:
+        """Get jump gate details for a waypoint. Requires a
+        waypoint of type ``JUMP_GATE`` to use.
+
+        Waypoints connected to this jump gate can be found by querying
+        the waypoints in the system.
+        """
+
+        return self._c.jump_gate(self.symbol, waypoint)
+
+    # spec_name: get-shipyard
+    def shipyard(self, waypoint: str | WaypointLike) -> Shipyard:
+        """Get the shipyard for a waypoint. Requires a waypoint
+        that has the ``Shipyard`` trait to use. Send a ship to the
+        waypoint to access data on ships that are currently available
+        for purchase and recent transactions.
+        """
+
+        return self._c.shipyard(self.symbol, waypoint)
 
 # spec_name: SystemType
 class SystemType(Enum):
@@ -2045,6 +2137,49 @@ class Contract(Keyed):
 
         return self.id
 
+    #
+    # Contracts
+    #
+
+    # spec_name: get-contract
+    def update(self) -> Contract:
+        """Get the details of a specific contract."""
+
+        return self._c.contract(self.id)
+
+    # spec_name: accept-contract
+    def accept(self) -> responses.AcceptContract:
+        """Accept a contract by ID.
+
+        You can only accept contracts that were offered to you, were
+        not accepted yet, and whose deadlines has not passed yet.
+        """
+
+        return self._c.accept_contract(self.id)
+
+    # spec_name: fulfill-contract
+    def fulfill(self) -> responses.FulfillContract:
+        """Fulfill a contract. Can only be used on contracts
+        that have all of their delivery terms fulfilled.
+        """
+
+        return self._c.fulfill_contract(self.id)
+
+    # spec_name: deliver-contract
+    def deliver(self, ship: str | ShipLike, trade_symbol: str, units: int) -> responses.DeliverContract:
+        """Deliver cargo to a contract.
+
+        In order to use this API, a ship must be at the delivery
+        location (denoted in the delivery terms as
+        ``destinationSymbol`` of a contract) and must have a number of
+        units of a good required by this contract in its cargo.
+
+        Cargo that was delivered will be removed from the ship's
+        cargo.
+        """
+
+        return self._c.deliver_contract(self.id, ship, trade_symbol, units)
+
 # spec_name: ContractTerms
 @dataclasses.dataclass
 class ContractTerms:
@@ -2201,6 +2336,16 @@ class Agent(Keyed):
 
         return self.symbol
 
+    #
+    # Agents
+    #
+
+    # spec_name: get-agent
+    def update(self) -> PublicAgent:
+        """Get public details for a specific agent."""
+
+        return self._c.agent(self.symbol)
+
 # spec_name: AgentEvent
 @dataclasses.dataclass
 class AgentEvent:
@@ -2326,6 +2471,446 @@ class Ship(Keyed):
         """Alias for ``self.symbol``."""
 
         return self.symbol
+
+    #
+    # Contracts
+    #
+
+    # spec_name: negotiate-contract
+    def negotiate_contract(self) -> responses.NegotiateContract:
+        """Negotiate a new contract with the HQ.
+
+        In order to negotiate a new contract, an agent must not have
+        ongoing or offered contracts over the allowed maximum amount.
+        Currently the maximum contracts an agent can have at a time is
+        1.
+
+        Once a contract is negotiated, it is added to the list of
+        contracts offered to the agent, which the agent can then
+        accept.
+
+        The ship must be present at any waypoint with a faction
+        present to negotiate a contract with that faction.
+        """
+
+        return self._c.negotiate_contract(self.symbol)
+
+    #
+    # Fleet
+    #
+
+    # spec_name: get-my-ship
+    def update(self) -> Ship:
+        """Retrieve the details of a ship under your agent's
+        ownership.
+        """
+
+        return self._c.ship(self.symbol)
+
+    # spec_name: create-chart
+    def create_chart(self) -> responses.CreateChart:
+        """Command a ship to chart the waypoint at its current
+        location.
+
+        Most waypoints in the universe are uncharted by default. These
+        waypoints have their traits hidden until they have been
+        charted by a ship.
+
+        Charting a waypoint will record your agent as the one who
+        created the chart, and all other agents would also be able to
+        see the waypoint's traits. Charting a waypoint gives you a one
+        time reward of credits based on the rarity of the waypoint's
+        traits.
+        """
+
+        return self._c.create_chart(self.symbol)
+
+    # spec_name: get-ship-cooldown
+    def update_cooldown(self) -> Cooldown:
+        """Retrieve the details of your ship's reactor cooldown.
+        Some actions such as activating your jump drive, scanning, or
+        extracting resources taxes your reactor and results in a
+        cooldown.
+
+        Your ship cannot perform additional actions until your
+        cooldown has expired. The duration of your cooldown is
+        relative to the power consumption of the related modules or
+        mounts for the action taken.
+
+        Response returns a 204 status code (no-content) when the ship
+        has no cooldown.
+        """
+
+        return self._c.ship_cooldown(self.symbol)
+
+    # spec_name: dock-ship
+    def dock(self) -> responses.DockShip:
+        """Attempt to dock your ship at its current location.
+        Docking will only succeed if your ship is capable of docking
+        at the time of the request.
+
+        Docked ships can access elements in their current location,
+        such as the market or a shipyard, but cannot do actions that
+        require the ship to be above surface such as navigating or
+        extracting.
+
+        The endpoint is idempotent - successive calls will succeed
+        even if the ship is already docked.
+        """
+
+        return self._c.dock_ship(self.symbol)
+
+    # spec_name: extract-resources
+    def extract_resources(self) -> responses.ExtractResources:
+        """Extract resources from a waypoint that can be
+        extracted, such as asteroid fields, into your ship. Send an
+        optional survey as the payload to target specific yields.
+
+        The ship must be in orbit to be able to extract and must have
+        mining equipments installed that can extract goods, such as
+        the ``Gas Siphon`` mount for gas-based goods or ``Mining
+        Laser`` mount for ore-based goods.
+
+        The survey property is now deprecated. See the
+        ``extract/survey`` endpoint for more details.
+        """
+
+        return self._c.extract_resources(self.symbol)
+
+    # spec_name: extract-resources-with-survey
+    def extract_resources_with_survey(self, survey: Survey | None = None) -> responses.ExtractResourcesWithSurvey:
+        """Use a survey when extracting resources from a
+        waypoint. This endpoint requires a survey as the payload,
+        which allows your ship to extract specific yields.
+
+        Send the full survey object as the payload which will be
+        validated according to the signature. If the signature is
+        invalid, or any properties of the survey are changed, the
+        request will fail.
+        """
+
+        return self._c.extract_resources_with_survey(self.symbol, survey=survey)
+
+    # spec_name: jettison
+    def jettison(self, symbol: TradeSymbol, units: int) -> responses.Jettison:
+        """Jettison cargo from your ship's cargo hold."""
+
+        return self._c.jettison(self.symbol, symbol, units)
+
+    # spec_name: jump-ship
+    def jump(self, waypoint: str | WaypointLike) -> responses.JumpShip:
+        """Jump your ship instantly to a target connected
+        waypoint. The ship must be in orbit to execute a jump.
+
+        A unit of antimatter is purchased and consumed from the market
+        when jumping. The price of antimatter is determined by the
+        market and is subject to change. A ship can only jump to
+        connected waypoints
+        """
+
+        return self._c.jump_ship(self.symbol, waypoint)
+
+    # spec_name: create-ship-system-scan
+    def create_ship_system_scan(self) -> responses.CreateShipSystemScan:
+        """Scan for nearby systems, retrieving information on
+        the systems' distance from the ship and their waypoints.
+        Requires a ship to have the ``Sensor Array`` mount installed
+        to use.
+
+        The ship will enter a cooldown after using this function,
+        during which it cannot execute certain actions.
+        """
+
+        return self._c.create_ship_system_scan(self.symbol)
+
+    # spec_name: create-ship-waypoint-scan
+    def create_ship_waypoint_scan(self) -> responses.CreateShipWaypointScan:
+        """Scan for nearby waypoints, retrieving detailed
+        information on each waypoint in range. Scanning uncharted
+        waypoints will allow you to ignore their uncharted state and
+        will list the waypoints' traits.
+
+        Requires a ship to have the ``Sensor Array`` mount installed
+        to use.
+
+        The ship will enter a cooldown after using this function,
+        during which it cannot execute certain actions.
+        """
+
+        return self._c.create_ship_waypoint_scan(self.symbol)
+
+    # spec_name: create-ship-ship-scan
+    def create_ship_ship_scan(self) -> responses.CreateShipShipScan:
+        """Scan for nearby ships, retrieving information for all
+        ships in range.
+
+        Requires a ship to have the ``Sensor Array`` mount installed
+        to use.
+
+        The ship will enter a cooldown after using this function,
+        during which it cannot execute certain actions.
+        """
+
+        return self._c.create_ship_ship_scan(self.symbol)
+
+    # spec_name: scrap-ship
+    def scrap(self) -> responses.ScrapShip:
+        """Scrap a ship, removing it from the game and receiving
+        a portion of the ship's value back in credits. The ship must
+        be docked in a waypoint that has the ``Shipyard`` trait to be
+        scrapped.
+        """
+
+        return self._c.scrap_ship(self.symbol)
+
+    # spec_name: get-scrap-ship
+    def get_scrap(self) -> responses.GetScrapShip:
+        """Get the value of scrapping a ship. Requires the ship
+        to be docked at a waypoint that has the ``Shipyard`` trait.
+        """
+
+        return self._c.get_scrap_ship(self.symbol)
+
+    # spec_name: navigate-ship
+    def navigate(self, waypoint: str | WaypointLike) -> responses.NavigateShip:
+        """Navigate to a target destination. The ship must be in
+        orbit to use this function. The destination waypoint must be
+        within the same system as the ship's current location.
+        Navigating will consume the necessary fuel from the ship's
+        manifest based on the distance to the target waypoint.
+
+        The returned response will detail the route information
+        including the expected time of arrival. Most ship actions are
+        unavailable until the ship has arrived at it's destination.
+
+        To travel between systems, see the ship's Warp or Jump
+        actions.
+        """
+
+        return self._c.navigate_ship(self.symbol, waypoint)
+
+    # spec_name: warp-ship
+    def warp(self, waypoint: str | WaypointLike) -> responses.WarpShip:
+        """Warp your ship to a target destination in another
+        system. The ship must be in orbit to use this function and
+        must have the ``Warp Drive`` module installed. Warping will
+        consume the necessary fuel from the ship's manifest.
+
+        The returned response will detail the route information
+        including the expected time of arrival. Most ship actions are
+        unavailable until the ship has arrived at its destination.
+        """
+
+        return self._c.warp_ship(self.symbol, waypoint)
+
+    # spec_name: orbit-ship
+    def orbit(self) -> responses.OrbitShip:
+        """Attempt to move your ship into orbit at its current
+        location. The request will only succeed if your ship is
+        capable of moving into orbit at the time of the request.
+
+        Orbiting ships are able to do actions that require the ship to
+        be above surface such as navigating or extracting, but cannot
+        access elements in their current waypoint, such as the market
+        or a shipyard.
+
+        The endpoint is idempotent - successive calls will succeed
+        even if the ship is already in orbit.
+        """
+
+        return self._c.orbit_ship(self.symbol)
+
+    # spec_name: purchase-cargo
+    def purchase_cargo(self, symbol: TradeSymbol, units: int) -> responses.PurchaseCargo:
+        """Purchase cargo from a market.
+
+        The ship must be docked in a waypoint that has ``Marketplace``
+        trait, and the market must be selling a good to be able to
+        purchase it.
+
+        The maximum amount of units of a good that can be purchased in
+        each transaction are denoted by the ``tradeVolume`` value of
+        the good, which can be viewed by using the Get Market action.
+
+        Purchased goods are added to the ship's cargo hold.
+        """
+
+        return self._c.purchase_cargo(self.symbol, symbol, units)
+
+    # spec_name: ship-refine
+    def refine(self, produce: Produce) -> responses.ShipRefine:
+        """Attempt to refine the raw materials on your ship. The
+        request will only succeed if your ship is capable of refining
+        at the time of the request. In order to be able to refine, a
+        ship must have goods that can be refined and have installed a
+        ``Refinery`` module that can refine it.
+
+        When refining, 100 basic goods will be converted into 10
+        processed goods.
+        """
+
+        return self._c.ship_refine(self.symbol, produce)
+
+    # spec_name: refuel-ship
+    def refuel(self, units: int | None = None, from_cargo: bool | None = None) -> responses.RefuelShip:
+        """Refuel your ship by buying fuel from the local
+        market.
+
+        Requires the ship to be docked in a waypoint that has the
+        ``Marketplace`` trait, and the market must be selling fuel in
+        order to refuel.
+
+        Each fuel bought from the market replenishes 100 units in your
+        ship's fuel.
+
+        Ships will always be refuel to their frame's maximum fuel
+        capacity when using this action.
+        """
+
+        return self._c.refuel_ship(self.symbol, units=units, from_cargo=from_cargo)
+
+    # spec_name: repair-ship
+    def repair(self) -> responses.RepairShip:
+        """Repair a ship, restoring the ship to maximum
+        condition. The ship must be docked at a waypoint that has the
+        ``Shipyard`` trait in order to use this function. To preview
+        the cost of repairing the ship, use the Get action.
+        """
+
+        return self._c.repair_ship(self.symbol)
+
+    # spec_name: get-repair-ship
+    def get_repair(self) -> responses.GetRepairShip:
+        """Get the cost of repairing a ship. Requires the ship
+        to be docked at a waypoint that has the ``Shipyard`` trait.
+        """
+
+        return self._c.get_repair_ship(self.symbol)
+
+    # spec_name: sell-cargo
+    def sell_cargo(self, symbol: TradeSymbol, units: int) -> responses.SellCargo:
+        """Sell cargo in your ship to a market that trades this
+        cargo. The ship must be docked in a waypoint that has the
+        ``Marketplace`` trait in order to use this function.
+        """
+
+        return self._c.sell_cargo(self.symbol, symbol, units)
+
+    # spec_name: siphon-resources
+    def siphon_resources(self) -> responses.SiphonResources:
+        """Siphon gases or other resources from gas giants.
+
+        The ship must be in orbit to be able to siphon and must have
+        siphon mounts and a gas processor installed.
+        """
+
+        return self._c.siphon_resources(self.symbol)
+
+    # spec_name: create-survey
+    def create_survey(self) -> responses.CreateSurvey:
+        """Create surveys on a waypoint that can be extracted
+        such as asteroid fields. A survey focuses on specific types of
+        deposits from the extracted location. When ships extract using
+        this survey, they are guaranteed to procure a high amount of
+        one of the goods in the survey.
+
+        In order to use a survey, send the entire survey details in
+        the body of the extract request.
+
+        Each survey may have multiple deposits, and if a symbol shows
+        up more than once, that indicates a higher chance of
+        extracting that resource.
+
+        Your ship will enter a cooldown after surveying in which it is
+        unable to perform certain actions. Surveys will eventually
+        expire after a period of time or will be exhausted after being
+        extracted several times based on the survey's size. Multiple
+        ships can use the same survey for extraction.
+
+        A ship must have the ``Surveyor`` mount installed in order to
+        use this function.
+        """
+
+        return self._c.create_survey(self.symbol)
+
+    # spec_name: get-my-ship-cargo
+    def update_cargo(self) -> ShipCargo:
+        """Retrieve the cargo of a ship under your agent's
+        ownership.
+        """
+
+        return self._c.ship_cargo(self.symbol)
+
+    # spec_name: get-ship-modules
+    def update_modules(self) -> list[ShipModule]:
+        """Get the modules installed on a ship."""
+
+        return self._c.ship_modules(self.symbol)
+
+    # spec_name: install-ship-module
+    def install_ship_module(self, symbol: str) -> responses.InstallShipModule:
+        """Install a module on a ship. The module must be in
+        your cargo.
+        """
+
+        return self._c.install_ship_module(self.symbol, symbol)
+
+    # spec_name: remove-ship-module
+    def remove_ship_module(self, symbol: str) -> responses.RemoveShipModule:
+        """Remove a module from a ship. The module will be
+        placed in cargo.
+        """
+
+        return self._c.remove_ship_module(self.symbol, symbol)
+
+    # spec_name: get-mounts
+    def update_mounts(self) -> list[ShipMount]:
+        """Get the mounts installed on a ship."""
+
+        return self._c.mounts(self.symbol)
+
+    # spec_name: install-mount
+    def install_mount(self, symbol: str) -> responses.InstallMount:
+        """Install a mount on a ship.
+
+        In order to install a mount, the ship must be docked and
+        located in a waypoint that has a ``Shipyard`` trait. The ship
+        also must have the mount to install in its cargo hold.
+
+        An installation fee will be deduced by the Shipyard for
+        installing the mount on the ship.
+        """
+
+        return self._c.install_mount(self.symbol, symbol)
+
+    # spec_name: remove-mount
+    def remove_mount(self, symbol: str) -> responses.RemoveMount:
+        """Remove a mount from a ship.
+
+        The ship must be docked in a waypoint that has the
+        ``Shipyard`` trait, and must have the desired mount that it
+        wish to remove installed.
+
+        A removal fee will be deduced from the agent by the Shipyard.
+        """
+
+        return self._c.remove_mount(self.symbol, symbol)
+
+    # spec_name: get-ship-nav
+    def update_nav(self) -> ShipNav:
+        """Get the current nav status of a ship."""
+
+        return self._c.ship_nav(self.symbol)
+
+    # spec_name: patch-ship-nav
+    def patch_ship_nav(self, flight_mode: FlightMode | None = None) -> responses.PatchShipNav:
+        """Update the nav configuration of a ship.
+
+        Currently only supports configuring the Flight Mode of the
+        ship, which affects its speed and fuel consumption.
+        """
+
+        return self._c.patch_ship_nav(self.symbol, flight_mode=flight_mode)
 
 # spec_name: ShipRegistration
 @dataclasses.dataclass

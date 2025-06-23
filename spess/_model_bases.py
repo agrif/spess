@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 import datetime as dt
 import enum
 import functools
 import typing
 
+import spess.client
 from spess._json import Json
 
 # for custom repr
@@ -35,12 +38,19 @@ class Enum(enum.Enum):
 @functools.total_ordering
 class Keyed[SelfKey]:
     _class_key: typing.ClassVar[str]
+    _client: spess.client.Client | None
 
     @classmethod
     def _resolve(cls, other: str | SelfKey) -> str:
         if isinstance(other, str):
             return other
         return getattr(other, cls._class_key)
+
+    @property
+    def _c(self) -> spess.client.Client:
+        if getattr(self, '_client', None) is None or self._client is None:
+            raise RuntimeError('model has no reference to client')
+        return self._client
 
     def _compare_keys(self, other: object) -> tuple[str, str] | None:
         if isinstance(other, Keyed):

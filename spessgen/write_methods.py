@@ -1,11 +1,21 @@
 import string
 import typing
 
+import humps
+
+from spessgen.config import *
 import spessgen.methods as methods
 import spessgen.types as types
-import spessgen.write_types as write_types
+import spessgen.writer as writer
 
-class WriteMethods(write_types.WriteTypes):
+class WriteMethods(writer.Writer):
+    def __init__(self, converter: methods.Converter, module: str) -> None:
+        super().__init__()
+        self.spec = converter.spec
+        self.resolver = converter.resolver
+        self.converter = converter
+        self.module = module
+
     def write_banner(self, banner: str | None):
         if banner:
             self.print()
@@ -43,12 +53,20 @@ class WriteMethods(write_types.WriteTypes):
         self.print(f'body = to_json({args.py_name}),')
 
     def _resolve_type(self, method: methods.Method, arg: methods.Method.Argument) -> str:
+        py_type = types.remove_prefix(arg.py_type, prefix=self.module)
         if arg.keyed:
             ktype = self.resolver.get(arg.keyed)
             if not ktype.keyed:
                 raise RuntimeError(f'keyed method {method.py_name} uses unkeyed type {ktype.py_name}')
-            return f'{arg.py_type} | {ktype.keyed.name}'
-        return arg.py_type
+            kname = types.remove_prefix(ktype.keyed.name, prefix=self.module)
+            return f'{py_type} | {kname}'
+        return py_type
+
+    def _resolve_return(self, method: methods.Method) -> str:
+        result = types.remove_prefix(method.py_result, prefix=self.module)
+        if method.paginated:
+            return f'Paged[{result}]'
+        return result
 
     def _cast_arg(self, method: methods.Method, arg: methods.Method.Argument) -> None:
         if arg.keyed:
@@ -63,11 +81,8 @@ class WriteMethods(write_types.WriteTypes):
             if arg.optional:
                 method_args += ' | None = None'
 
-        return_type = method.py_result
-        call_method = '_call'
-        if method.paginated:
-            call_method = '_call_paginated'
-            return_type = f'Paged[{return_type}]'
+        return_type = self._resolve_return(method)
+        call_method = '_call_paginated' if method.paginated else '_call'
 
         self.print()
         self.print(f'# spec_name: {method.spec_name}')
@@ -88,3 +103,64 @@ class WriteMethods(write_types.WriteTypes):
                 if method.adhoc:
                     self.print('adhoc = True,')
             self.print(')')
+
+    def write_convenience_method(self, type: types.Type, method: methods.Method, banner: str | None = None) -> None:
+        if not type.keyed:
+            raise ValueError('convenience methods only work on keyed types')
+
+        if banner:
+            self.write_banner(banner)
+
+        try:
+            method_name = CONVENIENCE_METHOD_NAME[type.py_full_name][method.spec_name]
+        except KeyError:
+            method_name = method.py_name
+            common = humps.decamelize(type.py_name)
+            if method_name.endswith('_' + common):
+                method_name = method_name[:-len(common) - 1]
+            if method_name.startswith(common + '_'):
+                method_name = method_name[len(common) + 1:]
+            if method_name == common:
+                method_name = 'update'
+
+        # look for obvious collisions
+        if isinstance(type.definition, types.Struct):
+            if method_name in type.definition.fields:
+                raise RuntimeError(f'convenience method {method_name} ({method.spec_name}) conflicts with field on {type.py_name}')
+        elif isinstance(type.definition, types.Enum):
+            if method_name in type.definition.variants:
+                raise RuntimeError(f'convenience method {method_name} ({method.spec_name}) conflicts with variant on {type.py_name}')
+        else:
+            typing.assert_never(type.definition)
+
+        method_args = []
+        call_args = []
+        return_type = self._resolve_return(method)
+
+        used_self = False
+        for arg in method.all_args:
+            ma = f'{arg.py_name}: {self._resolve_type(method, arg)}'
+            ca = arg.py_name
+            if arg.optional:
+                ma += ' | None = None'
+                ca += f'={arg.py_name}'
+
+            if arg.keyed == type.py_full_name and not used_self:
+                used_self = True
+                if arg.optional:
+                    call_args.append(f'{arg.py_name}=self.{type.keyed.local}')
+                else:
+                    call_args.append(f'self.{type.keyed.local}')
+            else:
+                method_args.append(ma)
+                call_args.append(ca)
+
+        method_args_rep = ''.join(', ' + ma for ma in method_args)
+        call_args_rep = ', '.join(call_args)
+
+        self.print()
+        self.print(f'# spec_name: {method.spec_name}')
+        with self.print(f'def {method_name}(self{method_args_rep}) -> {return_type}:'):
+            self.doc_string(method.doc)
+            self.print()
+            self.print(f'return self._c.{method.py_name}({call_args_rep})')

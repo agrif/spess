@@ -5,10 +5,6 @@ import spessgen.types as types
 import spessgen.write_types as write_types
 
 class ModelWriter(write_types.WriteTypes):
-    def __init__(self, converter: methods.Converter, module: str) -> None:
-        super().__init__(converter)
-        self.module = module
-
     def go(self) -> None:
         self.generated_header()
 
@@ -22,6 +18,10 @@ class ModelWriter(write_types.WriteTypes):
             models = self.resolver.models_module
             self.print(f'import spess.{models} as {models}')
         self.print(f'from spess._model_bases import date, datetime, Enum, Keyed')
+        self.print('from spess._paged import Paged')
+        if self.converter.responses_module != self.module:
+            responses = self.converter.responses_module
+            self.print(f'import spess.{responses} as {responses}')
 
         self.print()
         all_types = []

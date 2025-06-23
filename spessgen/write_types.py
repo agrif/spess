@@ -2,7 +2,7 @@ import typing
 
 import spessgen.methods as methods
 import spessgen.types as types
-import spessgen.writer as writer
+import spessgen.write_methods as write_methods
 
 KEY_TYPE_DOCS = ' '.join([
     "This abstract class represents all objects that unambiguously refer",
@@ -11,13 +11,7 @@ KEY_TYPE_DOCS = ' '.join([
     "``{type.keyed.name}``.",
 ])
 
-class WriteTypes(writer.Writer):
-    def __init__(self, converter: methods.Converter) -> None:
-        super().__init__()
-        self.spec = converter.spec
-        self.resolver = converter.resolver
-        self.converter = converter
-
+class WriteTypes(write_methods.WriteMethods):
     def write_types(self, iter_types: types.Resolver.IterTypes) -> None:
         for type, children in iter_types:
             self.write_type(type, children)
@@ -54,6 +48,21 @@ class WriteTypes(writer.Writer):
                 self.doc_string(f'Alias for `self.{type.keyed.local}`.')
                 self.print(f'return self.{type.keyed.local}')
 
+    def _write_top(self, type: types.Type, children: types.Resolver.IterTypes) -> None:
+        self.doc_string(type.doc)
+        self._write_key_top(type)
+        self.write_types(children)
+
+    def _write_bottom(self, type: types.Type) -> None:
+        self._write_key_bottom(type)
+
+        # convenience methods are anything with arguments keyed to us
+        if type.keyed:
+            def is_ours(method: methods.Method) -> bool:
+                return bool(method.all_args) and method.all_args[0].keyed == type.py_full_name
+            for method, banner in self.converter.iter_methods(is_ours):
+                self.write_convenience_method(type, method, banner=banner)
+
     def _write_struct(self, type: types.Type, struct: types.Struct, children: types.Resolver.IterTypes) -> None:
         dataclass_args: dict[str, typing.Any] = {}
         base_classes = []
@@ -70,22 +79,18 @@ class WriteTypes(writer.Writer):
 
         self.print(f'@dataclasses.dataclass{dataclass}')
         with self.print(f'class {type.py_name}{base}:'):
-            if type.doc:
-                self.doc_string(type.doc)
-            else:
+            if not type.doc:
                 # dataclass adds a docstring that is very noisy in real docs
                 # it's not enough to set this to None or empty string
                 self.print("__doc__ = ' '")
                 self.print()
-            self._write_key_top(type)
-            self.write_types(children)
 
+            self._write_top(type, children)
             self.print()
             for field in struct.fields.values():
                 self._write_struct_field(field)
             self._write_struct_json(struct.fields)
-
-            self._write_key_bottom(type)
+            self._write_bottom(type)
 
     def _write_struct_field(self, field: types.Struct.Field) -> None:
         self.doc_comment(field.doc)
@@ -124,12 +129,8 @@ class WriteTypes(writer.Writer):
 
     def _write_enum(self, type: types.Type, enum: types.Enum, children: types.Resolver.IterTypes) -> None:
         with self.print(f'class {type.py_name}(Enum):'):
-            self.doc_string(type.doc)
-            self._write_key_top(type)
-            self.write_types(children)
-
+            self._write_top(type, children)
             self.print()
             for py_name, json_name in enum.variants.items():
                 self.print(f'{py_name} = {json_name!r}')
-
-            self._write_key_bottom(type)
+            self._write_bottom(type)

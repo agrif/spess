@@ -6,6 +6,7 @@ import requests
 
 import spess._json
 import spess.models
+import spess._model_bases
 import spess._paged
 import spess._rate_limit
 
@@ -165,9 +166,11 @@ class Backend:
             except Exception:
                 raise ParseError(message=f'response has no {"data"!r} key')
         try:
-            return spess._json.from_json(ty, json)
+            data = spess._json.from_json(ty, json)
         except Exception:
             raise ParseError(message=f'response is not {ty!r}')
+
+        return self._merge(data)
 
     def _call_paginated[T](
             self,
@@ -209,6 +212,11 @@ class Backend:
             except Exception:
                 raise ParseError(message=f'paged response data is not {ty!r}')
 
-            return (meta, data)
+            return (meta, [self._merge(x) for x in data])
 
         return spess._paged.Paged(get_page)
+
+    def _merge[T](self, obj: T) -> T:
+        if isinstance(obj, spess._model_bases.Keyed):
+            obj._client = self # type: ignore
+        return obj

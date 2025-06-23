@@ -140,3 +140,19 @@ KEYED_TYPES: dict[str, tuple[str, str, str]] = {
     'models.System': ('system', 'symbol', 'system_symbol'),
     'models.Waypoint': ('waypoint', 'symbol', 'waypoint_symbol'),
 }
+
+# override convenience method names, from PyType, spec_name to py_method_name
+CONVENIENCE_METHOD_NAME: dict[str, dict[str, str]] = {
+    # prevent collision with attributes
+    'models.Ship': {
+        'get-mounts': 'update_mounts',
+        'get-my-ship-cargo': 'update_cargo',
+        'get-ship-cooldown': 'update_cooldown',
+        'get-ship-modules': 'update_modules',
+        'get-ship-nav': 'update_nav',
+    },
+    # prevent collision with attributes
+    'models.System': {
+        'get-system-waypoints': 'get_waypoints',
+    },
+}

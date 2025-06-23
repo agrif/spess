@@ -4,10 +4,6 @@ import spessgen.methods as methods
 import spessgen.write_methods as write_methods
 
 class ClientWriter(write_methods.WriteMethods):
-    def __init__(self, converter: methods.Converter, module: str) -> None:
-        super().__init__(converter)
-        self.module = module
-
     def go(self) -> None:
         self.generated_header()
 

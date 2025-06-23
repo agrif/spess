@@ -45,6 +45,7 @@ class Type:
             return dataclasses.replace(self, name=f(self.name))
 
     spec_name: str | None
+    py_full_name: str
     py_name: str
     doc: str | None
     definition: Struct | Enum
@@ -286,6 +287,7 @@ class Resolver:
 
         ty = Type(
             spec_name = spec_name,
+            py_full_name = py_name,
             py_name = py_name,
             doc = schema.description,
             definition = definition,
