@@ -34,16 +34,27 @@ def remove_prefix(name: str, prefix: str | None = None, replace: str | None = No
 
 @dataclasses.dataclass
 class Type:
+    @dataclasses.dataclass
+    class Keyed:
+        name: str
+        local: str
+        foreign: str
+
+        def _map_types(self, f: typing.Callable[[str], str]) -> typing.Self:
+            return dataclasses.replace(self, name=f(self.name))
+
     spec_name: str | None
     py_name: str
     doc: str | None
     definition: Struct | Enum
+    keyed: Keyed | None
 
     def _map_types(self, f: typing.Callable[[str], str]) -> typing.Self:
         return dataclasses.replace(
             self,
             py_name=f(self.py_name),
             definition=self.definition._map_types(f),
+            keyed=self.keyed._map_types(f) if self.keyed else None
         )
 
 @dataclasses.dataclass
@@ -79,7 +90,7 @@ TypeTree: typing.TypeAlias = tuple[Type, list['TypeTree']]
 class Resolver:
     def __init__(self, spec: spec.Spec, models_module) -> None:
         self.spec = spec
-        self.types: list[TypeTree] = []
+        self.type_tree: list[TypeTree] = []
         self.models_module = models_module
 
         for k, schema in self.spec.components.schemas.items():
@@ -87,12 +98,12 @@ class Resolver:
 
     @contextlib.contextmanager
     def _subtypes(self) -> typing.Iterator[list[TypeTree]]:
-        types = self.types
+        type_tree = self.type_tree
         try:
-            self.types = []
-            yield self.types
+            self.type_tree = []
+            yield self.type_tree
         finally:
-            self.types = types
+            self.type_tree = type_tree
 
     def _resolve_ref(self, ref: str) -> tuple[str, spec.Schema]:
         if not '/' in ref:
@@ -198,9 +209,9 @@ class Resolver:
 
     def _add_type(self, ty: Type, subtypes: list[TypeTree]) -> None:
         # we only care about conflicts with siblings
-        if [t for t, _ in self.types if t.py_name == ty.py_name]:
+        if [t for t, _ in self.type_tree if t.py_name == ty.py_name]:
             raise RuntimeError(f'conflicting type names: {ty.py_name}')
-        self.types.append((ty, subtypes))
+        self.type_tree.append((ty, subtypes))
 
     def resolve_type(
             self,
@@ -269,11 +280,16 @@ class Resolver:
         if definition is None:
             raise NotImplementedError(f'no definition for {schema!r}')
 
+        key_spec = KEYED_TYPES.get(py_name)
+        if isinstance(key_spec, str):
+            key_spec = (key_spec, key_spec)
+
         ty = Type(
             spec_name = spec_name,
             py_name = py_name,
             doc = schema.description,
             definition = definition,
+            keyed = Type.Keyed(py_name + 'Like', *key_spec) if key_spec else None,
         )
 
         if define:
@@ -291,22 +307,33 @@ class Resolver:
         return (ty.py_name, ty)
 
     IterTypes: typing.TypeAlias = typing.Iterator[tuple[Type, 'IterTypes']]
-    def iter_types(self, module: str | None = None, absolute: bool = False, types: list[TypeTree] | None = None, prefix: str | None = None) -> IterTypes:
+    def iter_tree(self, module: str | None = None, absolute: bool = False, types: list[TypeTree] | None = None, prefix: str | None = None) -> IterTypes:
         if types is None:
-            types = self.types
+            types = self.type_tree
 
         if prefix is None:
             prefix = module
 
         for ty, children in types:
             renamed = remove_prefix(ty.py_name, prefix=prefix)
-            if renamed == ty.py_name:
+            if prefix is not None and renamed == ty.py_name:
                 continue
             yield (
                 dataclasses.replace(
-                    ty,
+                    ty._map_types(lambda t: remove_prefix(t, prefix=module)),
                     py_name=renamed,
-                    definition=ty.definition._map_types(lambda t: remove_prefix(t, prefix=module)),
                 ),
-                self.iter_types(module=module, types=children, prefix=prefix if absolute else ty.py_name),
+                self.iter_tree(module=module, types=children, prefix=prefix if absolute else ty.py_name),
             )
+
+    def get(self, py_name: str, from_types: IterTypes | None = None) -> Type:
+        if from_types is None:
+            from_types = self.iter_tree(absolute=True)
+        for ty, children in from_types:
+            if ty.py_name == py_name:
+                return ty
+            try:
+                return self.get(py_name, from_types=children)
+            except KeyError:
+                pass
+        raise KeyError(py_name)

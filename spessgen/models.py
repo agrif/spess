@@ -21,10 +21,15 @@ class ModelWriter(write_types.WriteTypes):
         if self.resolver.models_module != self.module:
             models = self.resolver.models_module
             self.print(f'import spess.{models} as {models}')
-        self.print(f'from spess._model_bases import date, datetime, Enum')
+        self.print(f'from spess._model_bases import date, datetime, Enum, Keyed')
 
         self.print()
-        abs_types = self.resolver.iter_types(self.module, absolute=True)
-        self.dunder_all(sorted(t.py_name for t, _ in abs_types))
+        all_types = []
+        for t, _ in self.resolver.iter_tree(self.module, absolute=True):
+            all_types.append(t.py_name)
+            if t.keyed:
+                all_types.append(t.keyed.name)
+        all_types.sort()
+        self.dunder_all(all_types)
 
-        self.write_types(self.resolver.iter_types(self.module))
+        self.write_types(self.resolver.iter_tree(self.module))

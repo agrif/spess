@@ -42,12 +42,24 @@ class WriteMethods(write_types.WriteTypes):
             return self._collect_args('body', args, json=True)
         self.print(f'body = to_json({args.py_name}),')
 
+    def _resolve_type(self, method: methods.Method, arg: methods.Method.Argument) -> str:
+        if arg.keyed:
+            ktype = self.resolver.get(arg.keyed)
+            if not ktype.keyed:
+                raise RuntimeError(f'keyed method {method.py_name} uses unkeyed type {ktype.py_name}')
+            return f'{arg.py_type} | {ktype.keyed.name}'
+        return arg.py_type
+
+    def _cast_arg(self, method: methods.Method, arg: methods.Method.Argument) -> None:
+        if arg.keyed:
+            self.print(f'{arg.py_name} = {arg.keyed}._resolve({arg.py_name})')
+
     def write_method(self, method: methods.Method, banner: str | None = None) -> None:
         self.write_banner(banner)
 
         method_args = ''
         for arg in method.all_args:
-            method_args += f', {arg.py_name}: {arg.py_type}'
+            method_args += f', {arg.py_name}: {self._resolve_type(method, arg)}'
             if arg.optional:
                 method_args += ' | None = None'
 
@@ -62,6 +74,9 @@ class WriteMethods(write_types.WriteTypes):
         with self.print(f'def {method.py_name}(self{method_args}) -> {return_type}:'):
             self.doc_string(method.doc)
 
+            self.print()
+            for arg in method.all_args:
+                self._cast_arg(method, arg)
             self.print()
             with self.print(f'return self.{call_method}('):
                 self.print(f'{method.py_result},')

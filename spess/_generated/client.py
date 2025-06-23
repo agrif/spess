@@ -122,8 +122,10 @@ class Client(backend.Backend):
         )
 
     # spec_name: get-agent
-    def agent(self, agent_symbol: str) -> models.PublicAgent:
+    def agent(self, agent_symbol: str | models.AgentLike) -> models.PublicAgent:
         """Get public details for a specific agent."""
+
+        agent_symbol = models.Agent._resolve(agent_symbol)
 
         return self._call(
             models.PublicAgent,

@@ -4,6 +4,13 @@ import spessgen.methods as methods
 import spessgen.types as types
 import spessgen.writer as writer
 
+KEY_TYPE_DOCS = ' '.join([
+    "This abstract class represents all objects that unambiguously refer",
+    "to a single `{type.py_name}`. Any type that has the",
+    "`{type.keyed.foreign}` attribute is accepted as a valid",
+    "`{type.keyed.name}`.",
+])
+
 class WriteTypes(writer.Writer):
     def __init__(self, converter: methods.Converter) -> None:
         super().__init__()
@@ -16,6 +23,7 @@ class WriteTypes(writer.Writer):
             self.write_type(type, children)
 
     def write_type(self, type: types.Type, children: types.Resolver.IterTypes) -> None:
+        self._write_key(type)
         self.print()
         self.print(f'# spec_name: {type.spec_name}')
         if isinstance(type.definition, types.Struct):
@@ -25,9 +33,42 @@ class WriteTypes(writer.Writer):
         else:
             typing.assert_never(type.definition)
 
+    def _write_key(self, type: types.Type) -> None:
+        if type.keyed:
+            self.print()
+            with self.print(f'class {type.keyed.name}(typing.Protocol):'):
+                self.doc_string(KEY_TYPE_DOCS.format(type=type))
+                self.print('@property')
+                self.print(f'def {type.keyed.foreign}(self) -> str: ...')
+
+    def _write_key_top(self, type: types.Type) -> None:
+        if type.keyed:
+            self.print()
+            self.print(f'_class_key: typing.ClassVar[str] = {type.keyed.foreign!r}')
+
+    def _write_key_bottom(self, type: types.Type) -> None:
+        if type.keyed and type.keyed.local != type.keyed.foreign:
+            self.print()
+            self.print('@property')
+            with self.print(f'def {type.keyed.foreign}(self) -> str:'):
+                self.print(f'return self.{type.keyed.local}')
+
     def _write_struct(self, type: types.Type, struct: types.Struct, children: types.Resolver.IterTypes) -> None:
-        self.print('@dataclasses.dataclass')
-        with self.print(f'class {type.py_name}:'):
+        dataclass_args: dict[str, typing.Any] = {}
+        base_classes = []
+        if type.keyed:
+            base_classes.append('Keyed')
+            dataclass_args['eq'] = False
+
+        base = ''
+        if base_classes:
+            base = f'({", ".join(base_classes)})'
+        dataclass = ''
+        if dataclass_args:
+            dataclass = f'({", ".join(f"{k}={v!r}" for k, v in dataclass_args.items())})'
+
+        self.print(f'@dataclasses.dataclass{dataclass}')
+        with self.print(f'class {type.py_name}{base}:'):
             if type.doc:
                 self.doc_string(type.doc)
             else:
@@ -35,11 +76,15 @@ class WriteTypes(writer.Writer):
                 # it's not enough to set this to None or empty string
                 self.print("__doc__ = ' '")
                 self.print()
+            self._write_key_top(type)
             self.write_types(children)
+
             self.print()
             for field in struct.fields.values():
                 self._write_struct_field(field)
             self._write_struct_json(struct.fields)
+
+            self._write_key_bottom(type)
 
     def _write_struct_field(self, field: types.Struct.Field) -> None:
         self.doc_comment(field.doc)
@@ -79,7 +124,11 @@ class WriteTypes(writer.Writer):
     def _write_enum(self, type: types.Type, enum: types.Enum, children: types.Resolver.IterTypes) -> None:
         with self.print(f'class {type.py_name}(Enum):'):
             self.doc_string(type.doc)
+            self._write_key_top(type)
             self.write_types(children)
+
             self.print()
             for py_name, json_name in enum.variants.items():
                 self.print(f'{py_name} = {json_name!r}')
+
+            self._write_key_bottom(type)

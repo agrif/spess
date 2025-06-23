@@ -8,7 +8,7 @@ import typing
 
 from spess._json import Json, from_json, to_json
 import spess.models as models
-from spess._model_bases import date, datetime, Enum
+from spess._model_bases import date, datetime, Enum, Keyed
 
 __all__ = [
     'AcceptContract', 'CreateChart', 'CreateShipShipScan',

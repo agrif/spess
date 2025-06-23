@@ -7,15 +7,15 @@ import dataclasses
 import typing
 
 from spess._json import Json, from_json, to_json
-from spess._model_bases import date, datetime, Enum
+from spess._model_bases import date, datetime, Enum, Keyed
 
 __all__ = [
-    'ActivityLevel', 'Agent', 'AgentEvent', 'Chart', 'ChartTransaction',
-    'Construction', 'ConstructionMaterial', 'Contract',
-    'ContractDeliverGood', 'ContractPayment', 'ContractTerms', 'Cooldown',
-    'Extraction', 'ExtractionYield', 'Faction', 'FactionSymbol',
-    'FactionTrait', 'FactionTraitInfo', 'FlightMode', 'JumpGate',
-    'Market', 'MarketTradeGood', 'MarketTransaction', 'Meta',
+    'ActivityLevel', 'Agent', 'AgentEvent', 'AgentLike', 'Chart',
+    'ChartTransaction', 'Construction', 'ConstructionMaterial',
+    'Contract', 'ContractDeliverGood', 'ContractPayment', 'ContractTerms',
+    'Cooldown', 'Extraction', 'ExtractionYield', 'Faction',
+    'FactionSymbol', 'FactionTrait', 'FactionTraitInfo', 'FlightMode',
+    'JumpGate', 'Market', 'MarketTradeGood', 'MarketTransaction', 'Meta',
     'PublicAgent', 'RepairTransaction', 'ScannedShip', 'ScannedSystem',
     'ScannedWaypoint', 'ScrapTransaction', 'Ship', 'ShipCargo',
     'ShipCargoItem', 'ShipConditionEvent', 'ShipCrew', 'ShipEngine',
@@ -2083,10 +2083,21 @@ class ContractDeliverGood:
             units_fulfilled = from_json(int, v['unitsFulfilled']),
         )
 
+class AgentLike(typing.Protocol):
+    """This abstract class represents all objects that
+    unambiguously refer to a single ``Agent``. Any type that has the
+    ``agent_symbol`` attribute is accepted as a valid ``AgentLike``.
+    """
+
+    @property
+    def agent_symbol(self) -> str: ...
+
 # spec_name: Agent
-@dataclasses.dataclass
-class Agent:
+@dataclasses.dataclass(eq=False)
+class Agent(Keyed):
     """Agent details."""
+
+    _class_key: typing.ClassVar[str] = 'agent_symbol'
 
     #: Account ID that is tied to this agent. Only included on your
     #: own agent.
@@ -2126,6 +2137,10 @@ class Agent:
             starting_faction = from_json(FactionSymbol, v['startingFaction']),
             ship_count = from_json(int, v['shipCount']),
         )
+
+    @property
+    def agent_symbol(self) -> str:
+        return self.symbol
 
 # spec_name: AgentEvent
 @dataclasses.dataclass

@@ -27,6 +27,10 @@ KEYWORDS: set[str] = {
     'yield',
 }
 
+#
+# Fixes
+#
+
 # type names, from spec_name to local python type name (no parent)
 TYPE_NAME: dict[str, str] = {
     # info/symbol swap, give symbol a shorter name
@@ -116,4 +120,13 @@ METHOD_ARG_NAME: dict[str, dict[str, str]] = {
         'body.shipSymbol': 'to_ship',
         'path.shipSymbol': 'from_ship',
     },
+}
+
+#
+# Extensions. Unlike above, *these* work in python names
+#
+
+# types with keys, python.Name to either key_name or (local_key, foreign_key)
+KEYED_TYPES: dict[str, tuple[str, str] | str] = {
+    'models.Agent': ('symbol', 'agent_symbol'),
 }

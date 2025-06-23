@@ -16,6 +16,7 @@ class Method:
         py_type: str
         optional: bool
         doc: str | None
+        keyed: str | None
 
     spec_name: str
     py_name: str
@@ -52,6 +53,16 @@ class Converter:
         for method, op in info.methods.items():
             self.add_op(path, method, op)
 
+    def _resolve_key(self, spec_name: str, py_arg_name: str, py_arg_type: str) -> str | None:
+        if py_arg_type != 'str':
+            return None
+        for k, spec in KEYED_TYPES.items():
+            if isinstance(spec, str):
+                spec = (spec, spec)
+            if py_arg_name == spec[1]:
+                return k
+        return None
+
     def _collect_args(self, spec_name: str, op: spec.Operation) -> tuple[list[Method.Argument], list[Method.Argument], bool]:
         path_args = []
         query_args = []
@@ -80,6 +91,7 @@ class Converter:
                 py_type = py_type,
                 optional = not param.required,
                 doc = param.description,
+                keyed = self._resolve_key(spec_name, py_name, py_type),
             )
 
             match param.in_:
@@ -122,6 +134,7 @@ class Converter:
                 py_type = py_type,
                 doc = None,
                 optional = not body.required,
+                keyed = self._resolve_key(spec_name, py_name, py_type),
             )
         else:
             # composite type, break it out into arguments
@@ -141,6 +154,7 @@ class Converter:
                     py_type = field.py_type,
                     doc = field.doc,
                     optional = field.optional or not body.required,
+                    keyed = self._resolve_key(spec_name, py_name, field.py_type),
                 ))
             return args
 

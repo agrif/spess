@@ -1,5 +1,6 @@
 import datetime as dt
 import enum
+import functools
 import typing
 
 from spess._json import Json
@@ -30,3 +31,46 @@ class Enum(enum.Enum):
         if not isinstance(v, str):
             raise TypeError(type(v))
         return cls(v)
+
+@functools.total_ordering
+class Keyed[SelfKey]:
+    _class_key: typing.ClassVar[str]
+
+    @classmethod
+    def _resolve(cls, other: str | SelfKey) -> str:
+        if isinstance(other, str):
+            return other
+        return getattr(other, cls._class_key)
+
+    def _compare_keys(self, other: object) -> tuple[str, str] | None:
+        if isinstance(other, Keyed):
+            if type(self) == type(other):
+                # compare keys
+                return (getattr(self, self._class_key), getattr(other, other._class_key))
+            else:
+                # flat refuse to compare to another keyed that isn't us
+                return None
+
+        # if the other is a string, compare to that
+        if isinstance(other, str):
+            return (getattr(self, self._class_key), other)
+
+        # ok, try to compare keys
+        try:
+            return (getattr(self, self._class_key), getattr(other, self._class_key))
+        except AttributeError:
+            return None
+
+    def __eq__(self, other: object) -> bool:
+        keys = self._compare_keys(other)
+        if keys is None:
+            return NotImplemented
+        else:
+            return keys[0] == keys[1]
+
+    def __lt__(self, other: object) -> bool:
+        keys = self._compare_keys(other)
+        if keys is None:
+            return NotImplemented
+        else:
+            return keys[0] < keys[1]
