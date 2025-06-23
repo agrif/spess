@@ -325,7 +325,7 @@ class Client(backend.Backend):
     #
 
     # spec_name: get-my-ships
-    def my_ships(self) -> Paged[models.Ship]:
+    def ships(self) -> Paged[models.Ship]:
         """Return a paginated list of all of ships under your
         agent's ownership.
         """
@@ -362,7 +362,7 @@ class Client(backend.Backend):
         )
 
     # spec_name: get-my-ship
-    def my_ship(self, ship_symbol: str | models.ShipLike) -> models.Ship:
+    def ship(self, ship_symbol: str | models.ShipLike) -> models.Ship:
         """Retrieve the details of a ship under your agent's
         ownership.
         """
@@ -972,7 +972,7 @@ class Client(backend.Backend):
         )
 
     # spec_name: get-my-ship-cargo
-    def my_ship_cargo(self, ship_symbol: str | models.ShipLike) -> models.ShipCargo:
+    def ship_cargo(self, ship_symbol: str | models.ShipLike) -> models.ShipCargo:
         """Retrieve the cargo of a ship under your agent's
         ownership.
         """

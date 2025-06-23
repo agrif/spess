@@ -109,6 +109,10 @@ METHOD_NAME: dict[str, str] = {
     # don't auto-remove get- on these, it conflicts with another method
     'get-repair-ship': 'get_repair_ship',
     'get-scrap-ship': 'get_scrap_ship',
+    # be consistent with other ship methods
+    'get-my-ship': 'ship',
+    'get-my-ships': 'ships',
+    'get-my-ship-cargo': 'ship_cargo',
 }
 
 # method argument names, from spec_name, <type>.jsonArgName to python name
