@@ -19,11 +19,8 @@ class ClientWriter(write_methods.WriteMethods):
 
         self.print('from __future__ import annotations')
         self.print()
-        self.print('import dataclasses')
-        self.print('import typing')
-        self.print()
         self.print('import spess._backend as backend')
-        self.print('from spess._json import Json, from_json, to_json, Enum, datetime, date')
+        self.print('from spess._json import to_json')
         if self.resolver.models_module != self.module:
             models = self.resolver.models_module
             self.print(f'import spess.{models} as {models}')

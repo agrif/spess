@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import datetime as dt
-import enum
 import types
 import typing
 
@@ -99,28 +98,3 @@ def from_json[T: FromJson](cls: type[T], v: Json) -> T:
             raise TypeError('expected None')
     else:
         raise TypeError(cls)
-
-# for custom repr and str, common json impl
-class Enum(enum.Enum):
-    def __repr__(self) -> str:
-        return f'{self.__class__.__name__}.{self.name}'
-
-    def __str__(self) -> str:
-        return str(self.value)
-
-    def to_json(self) -> Json:
-        return self.value
-
-    @classmethod
-    def from_json(cls, v: Json) -> typing.Self:
-        return cls(v)
-
-# for custom repr
-class datetime(dt.datetime):
-    def __repr__(self) -> str:
-        return f'<{self:%Y-%m-%d %H:%M:%S UTC%:z}>'
-
-# for custom repr
-class date(dt.date):
-    def __repr__(self) -> str:
-        return f'<{self:%Y-%m-%d}>'

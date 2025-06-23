@@ -6,7 +6,8 @@ from __future__ import annotations
 import dataclasses
 import typing
 
-from spess._json import Json, from_json, to_json, Enum, datetime, date
+from spess._json import Json, from_json, to_json
+from spess._model_bases import date, datetime, Enum
 
 __all__ = [
     'ActivityLevel', 'Agent', 'AgentEvent', 'Chart', 'ChartTransaction',
