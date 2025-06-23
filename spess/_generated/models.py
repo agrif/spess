@@ -197,7 +197,7 @@ class Meta:
     #: Shows the total amount of items of this kind that exist.
     total: int
     #: A page denotes an amount of items, offset from the first item.
-    #: Each page holds an amount of items equal to the `limit`.
+    #: Each page holds an amount of items equal to the ``limit``.
     page: int
     #: The amount of items in each page. Limits how many items can be
     #: fetched at once.
@@ -2152,7 +2152,7 @@ class Ship:
     """Ship details."""
 
     #: The globally unique identifier of the ship in the following
-    #: format: `[AGENT_SYMBOL]-[HEX_ID]`
+    #: format: ``[AGENT_SYMBOL]-[HEX_ID]``
     symbol: str
     #: The public registration information of the ship
     registration: ShipRegistration

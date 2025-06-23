@@ -3,6 +3,8 @@ import dataclasses
 import textwrap
 import typing
 
+import commonmark
+
 class Writer:
     def __init__(self) -> None:
         self._f: typing.TextIO | None = None
@@ -50,29 +52,24 @@ class Writer:
             initial_indent = indent
         width = 70 - self._indent
         lines = text.splitlines()
-        inside_block = False
         for i, line in enumerate(lines):
-            lstrip = line.lstrip()
-            if lstrip.startswith('```'):
-                inside_block = not inside_block
-            elif lstrip.startswith('>'):
-                inside_block = True
-
             if line.strip():
-                wrapped = textwrap.wrap(line, width=width, initial_indent=initial_indent, subsequent_indent=indent, break_long_words=False,)
+                line = line.replace('\t', ' ')
+                indent_amt = len(line) - len(line.lstrip())
+                our_indent = ' ' * indent_amt + indent
+                yield from textwrap.wrap(line, width=width, initial_indent=initial_indent, subsequent_indent=our_indent, break_long_words=False)
                 initial_indent = indent
-                for wrap in wrapped:
-                    if wrap:
-                        yield wrap
-
-            if not inside_block and any(lines[i+1:]):
+            else:
                 yield ''
 
-            if lstrip.startswith('>'):
-                inside_block = False
+    def _markdown_to_rest(self, md: str) -> str:
+        ast = commonmark.Parser().parse(md)
+        rst = commonmark.ReStructuredTextRenderer().render(ast).strip()
+        return rst
 
     def doc_string(self, doc: str | None) -> None:
         if doc:
+            doc = self._markdown_to_rest(doc)
             lines = list(self.textwrap(doc, initial_indent='   ' * 3))
             for i, line in enumerate(lines):
                 bare_repr = repr(line)[1:-1]
@@ -89,6 +86,7 @@ class Writer:
 
     def doc_comment(self, doc: str | None) -> None:
         if doc:
+            doc = self._markdown_to_rest(doc)
             lines = self.textwrap(doc, indent='#: ')
             for line in lines:
                 self.print(line)

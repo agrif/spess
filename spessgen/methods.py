@@ -190,7 +190,9 @@ class Converter:
             if py_name in KEYWORDS:
                 py_name += '_'
 
-        docs = [op.summary, op.description]
+        doc = op.description
+        if not doc:
+            doc = op.summary
 
         # Arguments
         path_args, query_args, paginated = self._collect_args(spec_name, op)
@@ -211,7 +213,7 @@ class Converter:
         m = Method(
             spec_name = spec_name,
             py_name = py_name,
-            doc = '\n'.join(s for s in docs if s),
+            doc = doc,
             tags = op.tags,
             path = path,
             method = method,

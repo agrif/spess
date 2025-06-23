@@ -15,7 +15,7 @@ class ClientWriter(write_methods.WriteMethods):
             self.spec.info.title + ' ' + self.spec.info.version,
             self.spec.info.description,
         ]
-        self.doc_string('\n'.join(docs))
+        self.doc_string('\n\n'.join(docs))
 
         self.print('from __future__ import annotations')
         self.print()

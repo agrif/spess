@@ -15,8 +15,10 @@ spess = 'spess.__main__:main'
 [project.optional-dependencies]
 
 dev = [
+    'commonmark~=0.9.1',
     'mypy~=1.16',
     'pyhumps~=3.8',
+    'types-commonmark~=0.9.1',
     'types-requests~=2.28',
 ]
 

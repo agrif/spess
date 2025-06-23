@@ -7,24 +7,24 @@ SpaceTraders is an open-universe game and learning platform that
 offers a set of HTTP endpoints to control a fleet of ships and explore
 a multiplayer universe.
 
-The API is documented using
-[OpenAPI](https://github.com/SpaceTradersAPI/api-docs). You can send
-your first request right here in your browser to check the status of
-the game server.
+The API is documented using `OpenAPI
+<https://github.com/SpaceTradersAPI/api-docs>`_. You can send your
+first request right here in your browser to check the status of the
+game server.
 
-```json http
-{
-  "method": "GET",
-  "url": "https://api.spacetraders.io/v2",
-}
-```
+.. code:: json
+
+    {
+      "method": "GET",
+      "url": "https://api.spacetraders.io/v2",
+    }
 
 Unlike a traditional game, SpaceTraders does not have a first-party
 client or app to play the game. Instead, you can use the API to build
 your own client, write a script to automate your ships, or try an app
 built by the community.
 
-We have a [Discord channel](https://discord.com/invite/jh6zurdWk5)
+We have a `Discord channel <https://discord.com/invite/jh6zurdWk5>`_
 where you can share your projects, ask questions, and get help from
 other players.
 """
@@ -56,10 +56,7 @@ class Client(backend.Backend):
 
     # spec_name: get-my-account
     def my_account(self) -> responses.MyAccount:
-        """Get Account
-
-        Fetch your account details.
-        """
+        """Fetch your account details."""
 
         return self._call(
             responses.MyAccount,
@@ -69,10 +66,7 @@ class Client(backend.Backend):
 
     # spec_name: register
     def register(self, symbol: str, faction: models.FactionSymbol) -> responses.Register:
-        """Register New Agent
-
-        Creates a new agent and ties it to an account.
-
+        """Creates a new agent and ties it to an account.
         The agent symbol must consist of a 3-14 character string, and
         will be used to represent your agent. This symbol will prefix
         the symbol of every ship you own. Agent symbols will be cast
@@ -85,19 +79,20 @@ class Client(backend.Backend):
         advanced capabilities, a small probe ship that can be used for
         reconnaissance, and 175,000 credits.
 
-        > #### Keep your token safe and secure
-        >
-        > Keep careful track of where you store your token. You can
-        generate a new token from our account dashboard, but if
-        someone else gains access to your token they will be able to
-        use it to make API requests on your behalf until the end of
-        the reset.
+            Keep your token safe and secure
+            -------------------------------
+
+            Keep careful track of where you store your token. You can
+            generate a new token from our account dashboard, but if
+            someone else gains access to your token they will be able
+            to use it to make API requests on your behalf until the
+            end of the reset.
 
         If you are new to SpaceTraders, It is recommended to register
         with the COSMIC faction, a faction that is well connected to
         the rest of the universe. After registering, you should try
-        our interactive [quickstart
-        guide](https://docs.spacetraders.io/quickstart/new-game) which
+        our interactive `quickstart guide
+        <https://docs.spacetraders.io/quickstart/new-game>`_ which
         will walk you through a few basic API requests in just a few
         minutes.
         """
@@ -118,10 +113,7 @@ class Client(backend.Backend):
 
     # spec_name: get-agents
     def agents(self) -> Paged[models.PublicAgent]:
-        """List all public agent details.
-
-        List all public agent details.
-        """
+        """List all public agent details."""
 
         return self._call_paginated(
             models.PublicAgent,
@@ -131,10 +123,7 @@ class Client(backend.Backend):
 
     # spec_name: get-agent
     def agent(self, agent_symbol: str) -> models.PublicAgent:
-        """Get public details for a specific agent.
-
-        Get public details for a specific agent.
-        """
+        """Get public details for a specific agent."""
 
         return self._call(
             models.PublicAgent,
@@ -147,10 +136,7 @@ class Client(backend.Backend):
 
     # spec_name: get-my-agent
     def my_agent(self) -> models.Agent:
-        """Get Agent
-
-        Fetch your agent's details.
-        """
+        """Fetch your agent's details."""
 
         return self._call(
             models.Agent,
@@ -160,10 +146,7 @@ class Client(backend.Backend):
 
     # spec_name: get-my-agent-events
     def my_agent_events(self) -> list[models.AgentEvent]:
-        """Get Agent Events
-
-        Get recent events for your agent.
-        """
+        """Get recent events for your agent."""
 
         return self._call(
             list[models.AgentEvent],
@@ -177,10 +160,7 @@ class Client(backend.Backend):
 
     # spec_name: get-contracts
     def contracts(self) -> Paged[models.Contract]:
-        """List Contracts
-
-        Return a paginated list of all your contracts.
-        """
+        """Return a paginated list of all your contracts."""
 
         return self._call_paginated(
             models.Contract,
@@ -190,10 +170,7 @@ class Client(backend.Backend):
 
     # spec_name: get-contract
     def contract(self, contract_id: str) -> models.Contract:
-        """Get Contract
-
-        Get the details of a specific contract.
-        """
+        """Get the details of a specific contract."""
 
         return self._call(
             models.Contract,
@@ -206,9 +183,7 @@ class Client(backend.Backend):
 
     # spec_name: accept-contract
     def accept_contract(self, contract_id: str) -> responses.AcceptContract:
-        """Accept Contract
-
-        Accept a contract by ID.
+        """Accept a contract by ID.
 
         You can only accept contracts that were offered to you, were
         not accepted yet, and whose deadlines has not passed yet.
@@ -225,10 +200,8 @@ class Client(backend.Backend):
 
     # spec_name: fulfill-contract
     def fulfill_contract(self, contract_id: str) -> responses.FulfillContract:
-        """Fulfill Contract
-
-        Fulfill a contract. Can only be used on contracts that have
-        all of their delivery terms fulfilled.
+        """Fulfill a contract. Can only be used on contracts
+        that have all of their delivery terms fulfilled.
         """
 
         return self._call(
@@ -242,14 +215,12 @@ class Client(backend.Backend):
 
     # spec_name: deliver-contract
     def deliver_contract(self, contract_id: str, ship_symbol: str, trade_symbol: str, units: int) -> responses.DeliverContract:
-        """Deliver Cargo to Contract
-
-        Deliver cargo to a contract.
+        """Deliver cargo to a contract.
 
         In order to use this API, a ship must be at the delivery
-        location (denoted in the delivery terms as `destinationSymbol`
-        of a contract) and must have a number of units of a good
-        required by this contract in its cargo.
+        location (denoted in the delivery terms as
+        ``destinationSymbol`` of a contract) and must have a number of
+        units of a good required by this contract in its cargo.
 
         Cargo that was delivered will be removed from the ship's
         cargo.
@@ -271,9 +242,7 @@ class Client(backend.Backend):
 
     # spec_name: negotiate-contract
     def negotiate_contract(self, ship_symbol: str) -> responses.NegotiateContract:
-        """Negotiate Contract
-
-        Negotiate a new contract with the HQ.
+        """Negotiate a new contract with the HQ.
 
         In order to negotiate a new contract, an agent must not have
         ongoing or offered contracts over the allowed maximum amount.
@@ -303,9 +272,8 @@ class Client(backend.Backend):
 
     # spec_name: get-factions
     def factions(self) -> Paged[models.Faction]:
-        """List factions
-
-        Return a paginated list of all the factions in the game.
+        """Return a paginated list of all the factions in the
+        game.
         """
 
         return self._call_paginated(
@@ -316,10 +284,7 @@ class Client(backend.Backend):
 
     # spec_name: get-faction
     def faction(self, faction_symbol: str) -> models.Faction:
-        """Faction details
-
-        View the details of a faction.
-        """
+        """View the details of a faction."""
 
         return self._call(
             models.Faction,
@@ -332,9 +297,8 @@ class Client(backend.Backend):
 
     # spec_name: get-my-factions
     def my_factions(self) -> Paged[responses.MyFaction]:
-        """Get My Factions
-
-        Retrieve factions with which the agent has reputation.
+        """Retrieve factions with which the agent has
+        reputation.
         """
 
         return self._call_paginated(
@@ -349,10 +313,8 @@ class Client(backend.Backend):
 
     # spec_name: get-my-ships
     def my_ships(self) -> Paged[models.Ship]:
-        """List Ships
-
-        Return a paginated list of all of ships under your agent's
-        ownership.
+        """Return a paginated list of all of ships under your
+        agent's ownership.
         """
 
         return self._call_paginated(
@@ -363,12 +325,10 @@ class Client(backend.Backend):
 
     # spec_name: purchase-ship
     def purchase_ship(self, ship_type: models.ShipType, waypoint_symbol: str) -> responses.PurchaseShip:
-        """Purchase Ship
-
-        Purchase a ship from a Shipyard. In order to use this
+        """Purchase a ship from a Shipyard. In order to use this
         function, a ship under your agent's ownership must be in a
-        waypoint that has the `Shipyard` trait, and the Shipyard must
-        sell the type of the desired ship.
+        waypoint that has the ``Shipyard`` trait, and the Shipyard
+        must sell the type of the desired ship.
 
         Shipyards typically offer ship types, which are predefined
         templates of ships that have dedicated roles. A template comes
@@ -388,9 +348,8 @@ class Client(backend.Backend):
 
     # spec_name: get-my-ship
     def my_ship(self, ship_symbol: str) -> models.Ship:
-        """Get Ship
-
-        Retrieve the details of a ship under your agent's ownership.
+        """Retrieve the details of a ship under your agent's
+        ownership.
         """
 
         return self._call(
@@ -404,9 +363,8 @@ class Client(backend.Backend):
 
     # spec_name: create-chart
     def create_chart(self, ship_symbol: str) -> responses.CreateChart:
-        """Create Chart
-
-        Command a ship to chart the waypoint at its current location.
+        """Command a ship to chart the waypoint at its current
+        location.
 
         Most waypoints in the universe are uncharted by default. These
         waypoints have their traits hidden until they have been
@@ -430,10 +388,8 @@ class Client(backend.Backend):
 
     # spec_name: get-ship-cooldown
     def ship_cooldown(self, ship_symbol: str) -> models.Cooldown:
-        """Get Ship Cooldown
-
-        Retrieve the details of your ship's reactor cooldown. Some
-        actions such as activating your jump drive, scanning, or
+        """Retrieve the details of your ship's reactor cooldown.
+        Some actions such as activating your jump drive, scanning, or
         extracting resources taxes your reactor and results in a
         cooldown.
 
@@ -457,11 +413,9 @@ class Client(backend.Backend):
 
     # spec_name: dock-ship
     def dock_ship(self, ship_symbol: str) -> responses.DockShip:
-        """Dock Ship
-
-        Attempt to dock your ship at its current location. Docking
-        will only succeed if your ship is capable of docking at the
-        time of the request.
+        """Attempt to dock your ship at its current location.
+        Docking will only succeed if your ship is capable of docking
+        at the time of the request.
 
         Docked ships can access elements in their current location,
         such as the market or a shipyard, but cannot do actions that
@@ -483,19 +437,17 @@ class Client(backend.Backend):
 
     # spec_name: extract-resources
     def extract_resources(self, ship_symbol: str) -> responses.ExtractResources:
-        """Extract Resources
-
-        Extract resources from a waypoint that can be extracted, such
-        as asteroid fields, into your ship. Send an optional survey as
-        the payload to target specific yields.
+        """Extract resources from a waypoint that can be
+        extracted, such as asteroid fields, into your ship. Send an
+        optional survey as the payload to target specific yields.
 
         The ship must be in orbit to be able to extract and must have
         mining equipments installed that can extract goods, such as
-        the `Gas Siphon` mount for gas-based goods or `Mining Laser`
-        mount for ore-based goods.
+        the ``Gas Siphon`` mount for gas-based goods or ``Mining
+        Laser`` mount for ore-based goods.
 
         The survey property is now deprecated. See the
-        `extract/survey` endpoint for more details.
+        ``extract/survey`` endpoint for more details.
         """
 
         return self._call(
@@ -509,11 +461,9 @@ class Client(backend.Backend):
 
     # spec_name: extract-resources-with-survey
     def extract_resources_with_survey(self, ship_symbol: str, survey: models.Survey | None = None) -> responses.ExtractResourcesWithSurvey:
-        """Extract Resources with Survey
-
-        Use a survey when extracting resources from a waypoint. This
-        endpoint requires a survey as the payload, which allows your
-        ship to extract specific yields.
+        """Use a survey when extracting resources from a
+        waypoint. This endpoint requires a survey as the payload,
+        which allows your ship to extract specific yields.
 
         Send the full survey object as the payload which will be
         validated according to the signature. If the signature is
@@ -533,10 +483,7 @@ class Client(backend.Backend):
 
     # spec_name: jettison
     def jettison(self, ship_symbol: str, symbol: models.TradeSymbol, units: int) -> responses.Jettison:
-        """Jettison Cargo
-
-        Jettison cargo from your ship's cargo hold.
-        """
+        """Jettison cargo from your ship's cargo hold."""
 
         return self._call(
             responses.Jettison,
@@ -553,10 +500,8 @@ class Client(backend.Backend):
 
     # spec_name: jump-ship
     def jump_ship(self, ship_symbol: str, waypoint_symbol: str) -> responses.JumpShip:
-        """Jump Ship
-
-        Jump your ship instantly to a target connected waypoint. The
-        ship must be in orbit to execute a jump.
+        """Jump your ship instantly to a target connected
+        waypoint. The ship must be in orbit to execute a jump.
 
         A unit of antimatter is purchased and consumed from the market
         when jumping. The price of antimatter is determined by the
@@ -578,11 +523,10 @@ class Client(backend.Backend):
 
     # spec_name: create-ship-system-scan
     def create_ship_system_scan(self, ship_symbol: str) -> responses.CreateShipSystemScan:
-        """Scan Systems
-
-        Scan for nearby systems, retrieving information on the
-        systems' distance from the ship and their waypoints. Requires
-        a ship to have the `Sensor Array` mount installed to use.
+        """Scan for nearby systems, retrieving information on
+        the systems' distance from the ship and their waypoints.
+        Requires a ship to have the ``Sensor Array`` mount installed
+        to use.
 
         The ship will enter a cooldown after using this function,
         during which it cannot execute certain actions.
@@ -599,15 +543,13 @@ class Client(backend.Backend):
 
     # spec_name: create-ship-waypoint-scan
     def create_ship_waypoint_scan(self, ship_symbol: str) -> responses.CreateShipWaypointScan:
-        """Scan Waypoints
+        """Scan for nearby waypoints, retrieving detailed
+        information on each waypoint in range. Scanning uncharted
+        waypoints will allow you to ignore their uncharted state and
+        will list the waypoints' traits.
 
-        Scan for nearby waypoints, retrieving detailed information on
-        each waypoint in range. Scanning uncharted waypoints will
-        allow you to ignore their uncharted state and will list the
-        waypoints' traits.
-
-        Requires a ship to have the `Sensor Array` mount installed to
-        use.
+        Requires a ship to have the ``Sensor Array`` mount installed
+        to use.
 
         The ship will enter a cooldown after using this function,
         during which it cannot execute certain actions.
@@ -624,13 +566,11 @@ class Client(backend.Backend):
 
     # spec_name: create-ship-ship-scan
     def create_ship_ship_scan(self, ship_symbol: str) -> responses.CreateShipShipScan:
-        """Scan Ships
+        """Scan for nearby ships, retrieving information for all
+        ships in range.
 
-        Scan for nearby ships, retrieving information for all ships in
-        range.
-
-        Requires a ship to have the `Sensor Array` mount installed to
-        use.
+        Requires a ship to have the ``Sensor Array`` mount installed
+        to use.
 
         The ship will enter a cooldown after using this function,
         during which it cannot execute certain actions.
@@ -647,11 +587,9 @@ class Client(backend.Backend):
 
     # spec_name: scrap-ship
     def scrap_ship(self, ship_symbol: str) -> responses.ScrapShip:
-        """Scrap Ship
-
-        Scrap a ship, removing it from the game and receiving a
-        portion of the ship's value back in credits. The ship must be
-        docked in a waypoint that has the `Shipyard` trait to be
+        """Scrap a ship, removing it from the game and receiving
+        a portion of the ship's value back in credits. The ship must
+        be docked in a waypoint that has the ``Shipyard`` trait to be
         scrapped.
         """
 
@@ -666,10 +604,8 @@ class Client(backend.Backend):
 
     # spec_name: get-scrap-ship
     def get_scrap_ship(self, ship_symbol: str) -> responses.GetScrapShip:
-        """Get Scrap Ship
-
-        Get the value of scrapping a ship. Requires the ship to be
-        docked at a waypoint that has the `Shipyard` trait.
+        """Get the value of scrapping a ship. Requires the ship
+        to be docked at a waypoint that has the ``Shipyard`` trait.
         """
 
         return self._call(
@@ -683,13 +619,11 @@ class Client(backend.Backend):
 
     # spec_name: navigate-ship
     def navigate_ship(self, ship_symbol: str, waypoint_symbol: str) -> responses.NavigateShip:
-        """Navigate Ship
-
-        Navigate to a target destination. The ship must be in orbit to
-        use this function. The destination waypoint must be within the
-        same system as the ship's current location. Navigating will
-        consume the necessary fuel from the ship's manifest based on
-        the distance to the target waypoint.
+        """Navigate to a target destination. The ship must be in
+        orbit to use this function. The destination waypoint must be
+        within the same system as the ship's current location.
+        Navigating will consume the necessary fuel from the ship's
+        manifest based on the distance to the target waypoint.
 
         The returned response will detail the route information
         including the expected time of arrival. Most ship actions are
@@ -713,12 +647,10 @@ class Client(backend.Backend):
 
     # spec_name: warp-ship
     def warp_ship(self, ship_symbol: str, waypoint_symbol: str) -> responses.WarpShip:
-        """Warp Ship
-
-        Warp your ship to a target destination in another system. The
-        ship must be in orbit to use this function and must have the
-        `Warp Drive` module installed. Warping will consume the
-        necessary fuel from the ship's manifest.
+        """Warp your ship to a target destination in another
+        system. The ship must be in orbit to use this function and
+        must have the ``Warp Drive`` module installed. Warping will
+        consume the necessary fuel from the ship's manifest.
 
         The returned response will detail the route information
         including the expected time of arrival. Most ship actions are
@@ -739,11 +671,9 @@ class Client(backend.Backend):
 
     # spec_name: orbit-ship
     def orbit_ship(self, ship_symbol: str) -> responses.OrbitShip:
-        """Orbit Ship
-
-        Attempt to move your ship into orbit at its current location.
-        The request will only succeed if your ship is capable of
-        moving into orbit at the time of the request.
+        """Attempt to move your ship into orbit at its current
+        location. The request will only succeed if your ship is
+        capable of moving into orbit at the time of the request.
 
         Orbiting ships are able to do actions that require the ship to
         be above surface such as navigating or extracting, but cannot
@@ -765,17 +695,15 @@ class Client(backend.Backend):
 
     # spec_name: purchase-cargo
     def purchase_cargo(self, ship_symbol: str, symbol: models.TradeSymbol, units: int) -> responses.PurchaseCargo:
-        """Purchase Cargo
+        """Purchase cargo from a market.
 
-        Purchase cargo from a market.
-
-        The ship must be docked in a waypoint that has `Marketplace`
+        The ship must be docked in a waypoint that has ``Marketplace``
         trait, and the market must be selling a good to be able to
         purchase it.
 
         The maximum amount of units of a good that can be purchased in
-        each transaction are denoted by the `tradeVolume` value of the
-        good, which can be viewed by using the Get Market action.
+        each transaction are denoted by the ``tradeVolume`` value of
+        the good, which can be viewed by using the Get Market action.
 
         Purchased goods are added to the ship's cargo hold.
         """
@@ -795,13 +723,11 @@ class Client(backend.Backend):
 
     # spec_name: ship-refine
     def ship_refine(self, ship_symbol: str, produce: responses.Produce) -> responses.ShipRefine:
-        """Ship Refine
-
-        Attempt to refine the raw materials on your ship. The request
-        will only succeed if your ship is capable of refining at the
-        time of the request. In order to be able to refine, a ship
-        must have goods that can be refined and have installed a
-        `Refinery` module that can refine it.
+        """Attempt to refine the raw materials on your ship. The
+        request will only succeed if your ship is capable of refining
+        at the time of the request. In order to be able to refine, a
+        ship must have goods that can be refined and have installed a
+        ``Refinery`` module that can refine it.
 
         When refining, 100 basic goods will be converted into 10
         processed goods.
@@ -821,12 +747,11 @@ class Client(backend.Backend):
 
     # spec_name: refuel-ship
     def refuel_ship(self, ship_symbol: str, units: int | None = None, from_cargo: bool | None = None) -> responses.RefuelShip:
-        """Refuel Ship
-
-        Refuel your ship by buying fuel from the local market.
+        """Refuel your ship by buying fuel from the local
+        market.
 
         Requires the ship to be docked in a waypoint that has the
-        `Marketplace` trait, and the market must be selling fuel in
+        ``Marketplace`` trait, and the market must be selling fuel in
         order to refuel.
 
         Each fuel bought from the market replenishes 100 units in your
@@ -851,12 +776,10 @@ class Client(backend.Backend):
 
     # spec_name: repair-ship
     def repair_ship(self, ship_symbol: str) -> responses.RepairShip:
-        """Repair Ship
-
-        Repair a ship, restoring the ship to maximum condition. The
-        ship must be docked at a waypoint that has the `Shipyard`
-        trait in order to use this function. To preview the cost of
-        repairing the ship, use the Get action.
+        """Repair a ship, restoring the ship to maximum
+        condition. The ship must be docked at a waypoint that has the
+        ``Shipyard`` trait in order to use this function. To preview
+        the cost of repairing the ship, use the Get action.
         """
 
         return self._call(
@@ -870,10 +793,8 @@ class Client(backend.Backend):
 
     # spec_name: get-repair-ship
     def get_repair_ship(self, ship_symbol: str) -> responses.GetRepairShip:
-        """Get Repair Ship
-
-        Get the cost of repairing a ship. Requires the ship to be
-        docked at a waypoint that has the `Shipyard` trait.
+        """Get the cost of repairing a ship. Requires the ship
+        to be docked at a waypoint that has the ``Shipyard`` trait.
         """
 
         return self._call(
@@ -887,11 +808,9 @@ class Client(backend.Backend):
 
     # spec_name: sell-cargo
     def sell_cargo(self, ship_symbol: str, symbol: models.TradeSymbol, units: int) -> responses.SellCargo:
-        """Sell Cargo
-
-        Sell cargo in your ship to a market that trades this cargo.
-        The ship must be docked in a waypoint that has the
-        `Marketplace` trait in order to use this function.
+        """Sell cargo in your ship to a market that trades this
+        cargo. The ship must be docked in a waypoint that has the
+        ``Marketplace`` trait in order to use this function.
         """
 
         return self._call(
@@ -909,9 +828,7 @@ class Client(backend.Backend):
 
     # spec_name: siphon-resources
     def siphon_resources(self, ship_symbol: str) -> responses.SiphonResources:
-        """Siphon Resources
-
-        Siphon gases or other resources from gas giants.
+        """Siphon gases or other resources from gas giants.
 
         The ship must be in orbit to be able to siphon and must have
         siphon mounts and a gas processor installed.
@@ -928,10 +845,8 @@ class Client(backend.Backend):
 
     # spec_name: create-survey
     def create_survey(self, ship_symbol: str) -> responses.CreateSurvey:
-        """Create Survey
-
-        Create surveys on a waypoint that can be extracted such as
-        asteroid fields. A survey focuses on specific types of
+        """Create surveys on a waypoint that can be extracted
+        such as asteroid fields. A survey focuses on specific types of
         deposits from the extracted location. When ships extract using
         this survey, they are guaranteed to procure a high amount of
         one of the goods in the survey.
@@ -949,7 +864,7 @@ class Client(backend.Backend):
         extracted several times based on the survey's size. Multiple
         ships can use the same survey for extraction.
 
-        A ship must have the `Surveyor` mount installed in order to
+        A ship must have the ``Surveyor`` mount installed in order to
         use this function.
         """
 
@@ -964,9 +879,7 @@ class Client(backend.Backend):
 
     # spec_name: transfer-cargo
     def transfer_cargo(self, from_ship: str, trade_symbol: models.TradeSymbol, units: int, to_ship: str) -> responses.TransferCargo:
-        """Transfer Cargo
-
-        Transfer cargo between ships.
+        """Transfer cargo between ships.
 
         The receiving ship must be in the same waypoint as the
         transferring ship, and it must able to hold the additional
@@ -994,9 +907,8 @@ class Client(backend.Backend):
 
     # spec_name: get-my-ship-cargo
     def my_ship_cargo(self, ship_symbol: str) -> models.ShipCargo:
-        """Get Ship Cargo
-
-        Retrieve the cargo of a ship under your agent's ownership.
+        """Retrieve the cargo of a ship under your agent's
+        ownership.
         """
 
         return self._call(
@@ -1010,10 +922,7 @@ class Client(backend.Backend):
 
     # spec_name: get-ship-modules
     def ship_modules(self, ship_symbol: str) -> list[models.ShipModule]:
-        """Get Ship Modules
-
-        Get the modules installed on a ship.
-        """
+        """Get the modules installed on a ship."""
 
         return self._call(
             list[models.ShipModule],
@@ -1026,9 +935,8 @@ class Client(backend.Backend):
 
     # spec_name: install-ship-module
     def install_ship_module(self, ship_symbol: str, symbol: str) -> responses.InstallShipModule:
-        """Install Ship Module
-
-        Install a module on a ship. The module must be in your cargo.
+        """Install a module on a ship. The module must be in
+        your cargo.
         """
 
         return self._call(
@@ -1045,10 +953,8 @@ class Client(backend.Backend):
 
     # spec_name: remove-ship-module
     def remove_ship_module(self, ship_symbol: str, symbol: str) -> responses.RemoveShipModule:
-        """Remove Ship Module
-
-        Remove a module from a ship. The module will be placed in
-        cargo.
+        """Remove a module from a ship. The module will be
+        placed in cargo.
         """
 
         return self._call(
@@ -1065,10 +971,7 @@ class Client(backend.Backend):
 
     # spec_name: get-mounts
     def mounts(self, ship_symbol: str) -> list[models.ShipMount]:
-        """Get Mounts
-
-        Get the mounts installed on a ship.
-        """
+        """Get the mounts installed on a ship."""
 
         return self._call(
             list[models.ShipMount],
@@ -1081,12 +984,10 @@ class Client(backend.Backend):
 
     # spec_name: install-mount
     def install_mount(self, ship_symbol: str, symbol: str) -> responses.InstallMount:
-        """Install Mount
-
-        Install a mount on a ship.
+        """Install a mount on a ship.
 
         In order to install a mount, the ship must be docked and
-        located in a waypoint that has a `Shipyard` trait. The ship
+        located in a waypoint that has a ``Shipyard`` trait. The ship
         also must have the mount to install in its cargo hold.
 
         An installation fee will be deduced by the Shipyard for
@@ -1107,13 +1008,11 @@ class Client(backend.Backend):
 
     # spec_name: remove-mount
     def remove_mount(self, ship_symbol: str, symbol: str) -> responses.RemoveMount:
-        """Remove Mount
+        """Remove a mount from a ship.
 
-        Remove a mount from a ship.
-
-        The ship must be docked in a waypoint that has the `Shipyard`
-        trait, and must have the desired mount that it wish to remove
-        installed.
+        The ship must be docked in a waypoint that has the
+        ``Shipyard`` trait, and must have the desired mount that it
+        wish to remove installed.
 
         A removal fee will be deduced from the agent by the Shipyard.
         """
@@ -1132,10 +1031,7 @@ class Client(backend.Backend):
 
     # spec_name: get-ship-nav
     def ship_nav(self, ship_symbol: str) -> models.ShipNav:
-        """Get Ship Nav
-
-        Get the current nav status of a ship.
-        """
+        """Get the current nav status of a ship."""
 
         return self._call(
             models.ShipNav,
@@ -1148,9 +1044,7 @@ class Client(backend.Backend):
 
     # spec_name: patch-ship-nav
     def patch_ship_nav(self, ship_symbol: str, flight_mode: models.FlightMode | None = None) -> responses.PatchShipNav:
-        """Patch Ship Nav
-
-        Update the nav configuration of a ship.
+        """Update the nav configuration of a ship.
 
         Currently only supports configuring the Flight Mode of the
         ship, which affects its speed and fuel consumption.
@@ -1174,10 +1068,7 @@ class Client(backend.Backend):
 
     # spec_name: get-systems
     def systems(self) -> Paged[models.System]:
-        """List Systems
-
-        Return a paginated list of all systems.
-        """
+        """Return a paginated list of all systems."""
 
         return self._call_paginated(
             models.System,
@@ -1187,10 +1078,8 @@ class Client(backend.Backend):
 
     # spec_name: get-system
     def system(self, system_symbol: str) -> models.System:
-        """Get System
-
-        Get the details of a system. Requires the system to have been
-        visited or charted.
+        """Get the details of a system. Requires the system to
+        have been visited or charted.
         """
 
         return self._call(
@@ -1204,12 +1093,10 @@ class Client(backend.Backend):
 
     # spec_name: get-system-waypoints
     def system_waypoints(self, system_symbol: str, type: models.WaypointType | None = None, traits: list[models.WaypointTrait] | None = None) -> Paged[models.Waypoint]:
-        """List Waypoints in System
+        """Return a paginated list of all of the waypoints for a
+        given system.
 
-        Return a paginated list of all of the waypoints for a given
-        system.
-
-        If a waypoint is uncharted, it will return the `Uncharted`
+        If a waypoint is uncharted, it will return the ``Uncharted``
         trait instead of its actual traits.
         """
 
@@ -1228,9 +1115,7 @@ class Client(backend.Backend):
 
     # spec_name: get-waypoint
     def waypoint(self, system_symbol: str, waypoint_symbol: str) -> models.Waypoint:
-        """Get Waypoint
-
-        View the details of a waypoint.
+        """View the details of a waypoint.
 
         If the waypoint is uncharted, it will return the 'Uncharted'
         trait instead of its actual traits.
@@ -1248,10 +1133,9 @@ class Client(backend.Backend):
 
     # spec_name: get-construction
     def construction(self, system_symbol: str, waypoint_symbol: str) -> models.Construction:
-        """Get Construction Site
-
-        Get construction details for a waypoint. Requires a waypoint
-        with a property of `isUnderConstruction` to be true.
+        """Get construction details for a waypoint. Requires a
+        waypoint with a property of ``isUnderConstruction`` to be
+        true.
         """
 
         return self._call(
@@ -1266,10 +1150,9 @@ class Client(backend.Backend):
 
     # spec_name: supply-construction
     def supply_construction(self, system_symbol: str, waypoint_symbol: str, ship_symbol: str, trade_symbol: models.TradeSymbol, units: int) -> responses.SupplyConstruction:
-        """Supply Construction Site
-
-        Supply a construction site with the specified good. Requires a
-        waypoint with a property of `isUnderConstruction` to be true.
+        """Supply a construction site with the specified good.
+        Requires a waypoint with a property of ``isUnderConstruction``
+        to be true.
 
         The good must be in your ship's cargo. The good will be
         removed from your ship's cargo and added to the construction
@@ -1293,16 +1176,14 @@ class Client(backend.Backend):
 
     # spec_name: get-market
     def market(self, system_symbol: str, waypoint_symbol: str) -> models.Market:
-        """Get Market
-
-        Retrieve imports, exports and exchange data from a
-        marketplace. Requires a waypoint that has the `Marketplace`
+        """Retrieve imports, exports and exchange data from a
+        marketplace. Requires a waypoint that has the ``Marketplace``
         trait to use.
 
         Send a ship to the waypoint to access trade good prices and
-        recent transactions. Refer to the [Market Overview
-        page](https://docs.spacetraders.io/game-concepts/markets) to
-        gain better a understanding of the market in the game.
+        recent transactions. Refer to the `Market Overview page
+        <https://docs.spacetraders.io/game-concepts/markets>`_ to gain
+        better a understanding of the market in the game.
         """
 
         return self._call(
@@ -1317,10 +1198,8 @@ class Client(backend.Backend):
 
     # spec_name: get-jump-gate
     def jump_gate(self, system_symbol: str, waypoint_symbol: str) -> models.JumpGate:
-        """Get Jump Gate
-
-        Get jump gate details for a waypoint. Requires a waypoint of
-        type `JUMP_GATE` to use.
+        """Get jump gate details for a waypoint. Requires a
+        waypoint of type ``JUMP_GATE`` to use.
 
         Waypoints connected to this jump gate can be found by querying
         the waypoints in the system.
@@ -1338,12 +1217,10 @@ class Client(backend.Backend):
 
     # spec_name: get-shipyard
     def shipyard(self, system_symbol: str, waypoint_symbol: str) -> models.Shipyard:
-        """Get Shipyard
-
-        Get the shipyard for a waypoint. Requires a waypoint that has
-        the `Shipyard` trait to use. Send a ship to the waypoint to
-        access data on ships that are currently available for purchase
-        and recent transactions.
+        """Get the shipyard for a waypoint. Requires a waypoint
+        that has the ``Shipyard`` trait to use. Send a ship to the
+        waypoint to access data on ships that are currently available
+        for purchase and recent transactions.
         """
 
         return self._call(
@@ -1362,10 +1239,7 @@ class Client(backend.Backend):
 
     # spec_name: get-status
     def status(self) -> responses.ServerStatus:
-        """Server status
-
-        Return the status of the game server.
-
+        """Return the status of the game server.
         This also includes a few global elements, such as
         announcements, server reset dates and leaderboards.
         """
@@ -1379,10 +1253,8 @@ class Client(backend.Backend):
 
     # spec_name: get-error-codes
     def error_codes(self) -> responses.ErrorCodes:
-        """Error code list
-
-        Return a list of all possible error codes thrown by the game
-        server.
+        """Return a list of all possible error codes thrown by
+        the game server.
         """
 
         return self._call(
