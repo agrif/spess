@@ -32,6 +32,8 @@ class ServerStatus:
     # spec_name: get-status.response.stats
     @dataclasses.dataclass
     class Stats:
+        __doc__ = ' '
+
         #: Number of registered agents in the game.
         agents: int
         #: Total number of ships in the game.
@@ -69,6 +71,8 @@ class ServerStatus:
     # spec_name: get-status.response.health
     @dataclasses.dataclass
     class Health:
+        __doc__ = ' '
+
         #: The date/time when the market was last updated.
         last_market_update: datetime | None = None
 
@@ -90,9 +94,13 @@ class ServerStatus:
     # spec_name: get-status.response.leaderboards
     @dataclasses.dataclass
     class Leaderboards:
+        __doc__ = ' '
+
         # spec_name: get-status.response.leaderboards.mostCredits
         @dataclasses.dataclass
         class MostCredit:
+            __doc__ = ' '
+
             #: Symbol of the agent.
             agent_symbol: str
             #: Amount of credits.
@@ -117,6 +125,8 @@ class ServerStatus:
         # spec_name: get-status.response.leaderboards.mostSubmittedCharts
         @dataclasses.dataclass
         class MostSubmittedChart:
+            __doc__ = ' '
+
             #: Symbol of the agent.
             agent_symbol: str
             #: Amount of charts done by the agent.
@@ -162,6 +172,8 @@ class ServerStatus:
     # spec_name: get-status.response.serverResets
     @dataclasses.dataclass
     class ServerResets:
+        __doc__ = ' '
+
         #: The date and time when the game server will reset.
         next: datetime
         #: How often we intend to reset the game server.
@@ -186,6 +198,8 @@ class ServerStatus:
     # spec_name: get-status.response.announcements
     @dataclasses.dataclass
     class Announcement:
+        __doc__ = ' '
+
         title: str
         body: str
 
@@ -208,6 +222,8 @@ class ServerStatus:
     # spec_name: get-status.response.links
     @dataclasses.dataclass
     class Link:
+        __doc__ = ' '
+
         name: str
         url: str
 
@@ -281,6 +297,8 @@ class ErrorCodes:
     # spec_name: get-error-codes.response.errorCodes
     @dataclasses.dataclass
     class ErrorCode:
+        __doc__ = ' '
+
         code: int
         name: str
 
@@ -423,6 +441,8 @@ class DeliverContract:
 # spec_name: get-my-factions.response
 @dataclasses.dataclass
 class MyFaction:
+    __doc__ = ' '
+
     symbol: models.FactionSymbol
     reputation: int
 
@@ -480,6 +500,8 @@ class MyAccount:
     # spec_name: get-my-account.response.account
     @dataclasses.dataclass
     class Account:
+        __doc__ = ' '
+
         id: str
         email: str
         created_at: datetime
@@ -1008,6 +1030,8 @@ class ShipRefine:
     # spec_name: ship-refine.response.produced
     @dataclasses.dataclass
     class ProducedItem:
+        __doc__ = ' '
+
         #: The good's symbol.
         trade_symbol: models.TradeSymbol
         #: Amount of units of the good.
@@ -1032,6 +1056,8 @@ class ShipRefine:
     # spec_name: ship-refine.response.consumed
     @dataclasses.dataclass
     class ConsumedItem:
+        __doc__ = ' '
+
         #: The good's symbol.
         trade_symbol: models.TradeSymbol
         #: Amount of units of the good.

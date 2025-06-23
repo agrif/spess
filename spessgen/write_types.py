@@ -28,7 +28,13 @@ class WriteTypes(writer.Writer):
     def _write_struct(self, type: types.Type, struct: types.Struct, children: types.Resolver.IterTypes) -> None:
         self.print('@dataclasses.dataclass')
         with self.print(f'class {type.py_name}:'):
-            self.doc_string(type.doc)
+            if type.doc:
+                self.doc_string(type.doc)
+            else:
+                # dataclass adds a docstring that is very noisy in real docs
+                # it's not enough to set this to None or empty string
+                self.print("__doc__ = ' '")
+                self.print()
             self.write_types(children)
             self.print()
             for field in struct.fields.values():

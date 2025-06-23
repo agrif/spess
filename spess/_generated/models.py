@@ -101,6 +101,8 @@ class FactionSymbol(Enum):
 # spec_name: FactionTrait
 @dataclasses.dataclass
 class FactionTraitInfo:
+    __doc__ = ' '
+
     #: The unique identifier of the trait.
     symbol: FactionTrait
     #: The name of the trait.
@@ -424,6 +426,8 @@ class WaypointOrbital:
 # spec_name: SystemFaction
 @dataclasses.dataclass
 class SystemFaction:
+    __doc__ = ' '
+
     #: The symbol of the faction.
     symbol: FactionSymbol
 
@@ -542,6 +546,8 @@ class WaypointFaction:
 # spec_name: WaypointTrait
 @dataclasses.dataclass
 class WaypointTraitInfo:
+    __doc__ = ' '
+
     #: The unique identifier of the trait.
     symbol: WaypointTrait
     #: The name of the trait.
@@ -644,6 +650,8 @@ class WaypointTrait(Enum):
 # spec_name: WaypointModifier
 @dataclasses.dataclass
 class WaypointModifierInfo:
+    __doc__ = ' '
+
     #: The unique identifier of the modifier.
     symbol: WaypointModifier
     #: The name of the trait.
@@ -1125,6 +1133,8 @@ class MarketTransaction:
 # spec_name: MarketTradeGood
 @dataclasses.dataclass
 class MarketTradeGood:
+    __doc__ = ' '
+
     # spec_name: MarketTradeGood.type
     class Type(Enum):
         """The type of trade good (export, import, or exchange)."""
@@ -1243,6 +1253,8 @@ class Shipyard:
     # spec_name: Shipyard.shipTypes
     @dataclasses.dataclass
     class ShipType:
+        __doc__ = ' '
+
         #: Type of ship
         type: ShipType
 
@@ -1371,6 +1383,8 @@ class ShipyardShip:
     # spec_name: ShipyardShip.crew
     @dataclasses.dataclass
     class Crew:
+        __doc__ = ' '
+
         #: The minimum number of crew members required to maintain the
         #: ship.
         required: int
@@ -2982,6 +2996,8 @@ class ScannedShip:
     # spec_name: ScannedShip.mounts
     @dataclasses.dataclass
     class Mount:
+        __doc__ = ' '
+
         #: The symbol of the mount.
         symbol: str
 
