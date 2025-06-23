@@ -6,9 +6,9 @@ import spessgen.writer as writer
 
 KEY_TYPE_DOCS = ' '.join([
     "This abstract class represents all objects that unambiguously refer",
-    "to a single `{type.py_name}`. Any type that has the",
-    "`{type.keyed.foreign}` attribute is accepted as a valid",
-    "`{type.keyed.name}`.",
+    "to a single :class:`.{type.py_name}`. Any type that has the",
+    "``{type.keyed.foreign}`` attribute is accepted as a valid",
+    "``{type.keyed.name}``.",
 ])
 
 class WriteTypes(writer.Writer):
@@ -37,7 +37,7 @@ class WriteTypes(writer.Writer):
         if type.keyed:
             self.print()
             with self.print(f'class {type.keyed.name}(typing.Protocol):'):
-                self.doc_string(KEY_TYPE_DOCS.format(type=type))
+                self.doc_string(KEY_TYPE_DOCS.format(type=type), rest=True)
                 self.print('@property')
                 self.print(f'def {type.keyed.foreign}(self) -> str: ...')
 
@@ -51,6 +51,7 @@ class WriteTypes(writer.Writer):
             self.print()
             self.print('@property')
             with self.print(f'def {type.keyed.foreign}(self) -> str:'):
+                self.doc_string(f'Alias for `self.{type.keyed.local}`.')
                 self.print(f'return self.{type.keyed.local}')
 
     def _write_struct(self, type: types.Type, struct: types.Struct, children: types.Resolver.IterTypes) -> None:

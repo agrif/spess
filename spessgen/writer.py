@@ -67,9 +67,10 @@ class Writer:
         rst = commonmark.ReStructuredTextRenderer().render(ast).strip()
         return rst
 
-    def doc_string(self, doc: str | None) -> None:
+    def doc_string(self, doc: str | None, rest=False) -> None:
         if doc:
-            doc = self._markdown_to_rest(doc)
+            if not rest:
+                doc = self._markdown_to_rest(doc)
             lines = list(self.textwrap(doc, initial_indent='   ' * 3))
             for i, line in enumerate(lines):
                 bare_repr = repr(line)[1:-1]
@@ -84,9 +85,10 @@ class Writer:
                 self.print('"' * 3)
             self.print()
 
-    def doc_comment(self, doc: str | None) -> None:
+    def doc_comment(self, doc: str | None, rest=False) -> None:
         if doc:
-            doc = self._markdown_to_rest(doc)
+            if not rest:
+                doc = self._markdown_to_rest(doc)
             lines = self.textwrap(doc, indent='#: ')
             for line in lines:
                 self.print(line)

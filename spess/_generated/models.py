@@ -2085,8 +2085,9 @@ class ContractDeliverGood:
 
 class AgentLike(typing.Protocol):
     """This abstract class represents all objects that
-    unambiguously refer to a single ``Agent``. Any type that has the
-    ``agent_symbol`` attribute is accepted as a valid ``AgentLike``.
+    unambiguously refer to a single :class:`.Agent`. Any type that has
+    the ``agent_symbol`` attribute is accepted as a valid
+    ``AgentLike``.
     """
 
     @property
@@ -2140,6 +2141,8 @@ class Agent(Keyed):
 
     @property
     def agent_symbol(self) -> str:
+        """Alias for ``self.symbol``."""
+
         return self.symbol
 
 # spec_name: AgentEvent
