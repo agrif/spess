@@ -280,16 +280,15 @@ class Resolver:
         if definition is None:
             raise NotImplementedError(f'no definition for {schema!r}')
 
-        key_spec = KEYED_TYPES.get(py_name)
-        if isinstance(key_spec, str):
-            key_spec = (key_spec, key_spec)
+        keyspec = KEYED_TYPES.get(py_name)
+        keyed = Type.Keyed(py_name + 'Like', *keyspec) if keyspec else None
 
         ty = Type(
             spec_name = spec_name,
             py_name = py_name,
             doc = schema.description,
             definition = definition,
-            keyed = Type.Keyed(py_name + 'Like', *key_spec) if key_spec else None,
+            keyed = keyed,
         )
 
         if define:

@@ -57,8 +57,6 @@ class Converter:
         if py_arg_type != 'str':
             return None
         for k, spec in KEYED_TYPES.items():
-            if isinstance(spec, str):
-                spec = (spec, spec)
             if py_arg_name == spec[1]:
                 return k
         return None

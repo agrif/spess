@@ -131,7 +131,7 @@ METHOD_ARG_NAME: dict[str, dict[str, str]] = {
 #
 
 # types with keys, python.Name to either key_name or (local_key, foreign_key)
-KEYED_TYPES: dict[str, tuple[str, str] | str] = {
+KEYED_TYPES: dict[str, tuple[str, str]] = {
     'models.Agent': ('symbol', 'agent_symbol'),
     'models.Contract': ('id', 'contract_id'),
     'models.Ship': ('symbol', 'ship_symbol'),
