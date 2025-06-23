@@ -37,6 +37,7 @@ import typing
 import spess._backend as backend
 from spess._json import Json, from_json, to_json, Enum, datetime, date
 import spess.models as models
+from spess._paged import Paged
 import spess.responses as responses
 
 __all__ = [
@@ -46,7 +47,6 @@ __all__ = [
 Error = backend.Error
 ClientError = backend.ClientError
 ServerError = backend.ServerError
-Paged = backend.Paged
 
 class Client(backend.Backend):
     SERVER_URL = 'https://api.spacetraders.io/v2'
