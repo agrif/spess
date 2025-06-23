@@ -31,6 +31,7 @@ class ClientWriter(write_methods.WriteMethods):
 
         re_exports = [
             'backend.Error',
+            'backend.ParseError',
             'backend.ClientError',
             'backend.ServerError',
             'Paged',

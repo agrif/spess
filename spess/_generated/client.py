@@ -38,10 +38,12 @@ from spess._paged import Paged
 import spess.responses as responses
 
 __all__ = [
-    'Client', 'Error', 'ClientError', 'ServerError', 'Paged',
+    'Client', 'Error', 'ParseError', 'ClientError', 'ServerError',
+    'Paged',
 ]
 
 Error = backend.Error
+ParseError = backend.ParseError
 ClientError = backend.ClientError
 ServerError = backend.ServerError
 

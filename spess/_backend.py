@@ -9,8 +9,10 @@ import spess.models
 import spess._paged
 import spess._rate_limit
 
-# any sort of error
 class Error(Exception):
+    """Base error class thrown by :class:`spess.client.Client`."""
+
+    #: The error code reported by the server, if any.
     code: int | None
 
     def __init__(self, code: int | None = None, message: str | None = None):
@@ -27,17 +29,26 @@ class Error(Exception):
         super().__init__(m)
         self.code = code
 
-# we did something wrong
+class ParseError(Error):
+    """ParseError indicates that the server provided a response, but
+    it was not in the expected form and could not be parsed."""
+
 class ClientError(Error):
-    pass
+    """ClientError indicates the server received the message but can't
+    act on it, either because that action is not possible right now or
+    because the message was not understood.
+    """
 
-# they did something wrong
 class ServerError(Error):
-    pass
+    """ServerError indicates the server received the message but
+    encountered an internal error.
+    """
 
-# HTTP 204 no content, sometimes signals empty
 class NoContentError(Error):
-    pass
+    """NoContentError indicates an HTTP 204 response, which some
+    commands interpret specially. This is handled internally when
+    appropriate.
+    """
 
 class Backend:
     SERVER_URL: str
@@ -106,7 +117,7 @@ class Backend:
             json = r.json()
         except Exception:
             self._debug('<<<', r.status_code, repr(r.content))
-            raise
+            raise ParseError(message='response is not JSON')
 
         self._debug('<<<', r.status_code, json)
 
@@ -114,13 +125,12 @@ class Backend:
             return json
 
         # otherwise, an error
-        err = json.get('error', {})
         try:
-            msg = str(err.get('message'))
+            msg = str(json['error']['message'])
         except Exception:
             msg = None
         try:
-            code = int(err.get('code'))
+            code = int(json['error']['code'])
         except Exception:
             code = None
 
@@ -149,11 +159,15 @@ class Backend:
 
         # parse json
         if not adhoc:
-            if isinstance(json, dict):
+            try:
+                assert isinstance(json, dict)
                 json = json['data']
-            else:
-                raise TypeError(type(json))
-        return spess._json.from_json(ty, json)
+            except Exception:
+                raise ParseError(message=f'response has no {"data"!r} key')
+        try:
+            return spess._json.from_json(ty, json)
+        except Exception:
+            raise ParseError(message=f'response is not {ty!r}')
 
     def _call_paginated[T](
             self,
@@ -178,11 +192,22 @@ class Backend:
             page_query_args['limit'] = str(limit)
 
             json = self._call_json(method, path, page_query_args, body)
-            if not isinstance(json, dict):
-                raise TypeError(type(json))
 
-            meta = spess.models.Meta.from_json(json['meta'])
-            data = spess._json.from_json(list[ty], json['data']) # type: ignore
+            try:
+                assert isinstance(json, dict)
+                meta_j = json['meta']
+                data_j = json['data']
+            except Exception:
+                raise ParseError(message=f'paged response missing {"meta"!r} or {"data"!r} key')
+
+            try:
+                meta = spess.models.Meta.from_json(meta_j)
+            except Exception:
+                raise ParseError(message='paged response has bad meta')
+            try:
+                data = spess._json.from_json(list[ty], data_j) # type: ignore
+            except Exception:
+                raise ParseError(message=f'paged response data is not {ty!r}')
 
             return (meta, data)
 
