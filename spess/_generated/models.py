@@ -12,23 +12,25 @@ from spess._model_bases import date, datetime, Enum, Keyed
 __all__ = [
     'ActivityLevel', 'Agent', 'AgentEvent', 'AgentLike', 'Chart',
     'ChartTransaction', 'Construction', 'ConstructionMaterial',
-    'Contract', 'ContractDeliverGood', 'ContractPayment', 'ContractTerms',
-    'Cooldown', 'Extraction', 'ExtractionYield', 'Faction',
-    'FactionSymbol', 'FactionTrait', 'FactionTraitInfo', 'FlightMode',
-    'JumpGate', 'Market', 'MarketTradeGood', 'MarketTransaction', 'Meta',
-    'Produce', 'PublicAgent', 'RepairTransaction', 'ScannedShip',
-    'ScannedSystem', 'ScannedWaypoint', 'ScrapTransaction', 'Ship',
-    'ShipCargo', 'ShipCargoItem', 'ShipConditionEvent', 'ShipCrew',
-    'ShipEngine', 'ShipFrame', 'ShipFuel', 'ShipModificationTransaction',
+    'Contract', 'ContractDeliverGood', 'ContractLike', 'ContractPayment',
+    'ContractTerms', 'Cooldown', 'Extraction', 'ExtractionYield',
+    'Faction', 'FactionSymbol', 'FactionTrait', 'FactionTraitInfo',
+    'FlightMode', 'JumpGate', 'Market', 'MarketTradeGood',
+    'MarketTransaction', 'Meta', 'Produce', 'PublicAgent',
+    'RepairTransaction', 'ScannedShip', 'ScannedSystem',
+    'ScannedWaypoint', 'ScrapTransaction', 'Ship', 'ShipCargo',
+    'ShipCargoItem', 'ShipConditionEvent', 'ShipCrew', 'ShipEngine',
+    'ShipFrame', 'ShipFuel', 'ShipLike', 'ShipModificationTransaction',
     'ShipModule', 'ShipMount', 'ShipNav', 'ShipNavRoute',
     'ShipNavRouteWaypoint', 'ShipReactor', 'ShipRegistration',
     'ShipRequirements', 'ShipRole', 'ShipStatus', 'ShipType', 'Shipyard',
     'ShipyardShip', 'ShipyardTransaction', 'Siphon', 'SiphonYield',
     'SupplyLevel', 'Survey', 'SurveyDeposit', 'SurveySize', 'System',
-    'SystemFaction', 'SystemType', 'SystemWaypoint', 'TradeGood',
-    'TradeSymbol', 'Waypoint', 'WaypointFaction', 'WaypointModifier',
-    'WaypointModifierInfo', 'WaypointOrbital', 'WaypointTrait',
-    'WaypointTraitInfo', 'WaypointType',
+    'SystemFaction', 'SystemLike', 'SystemType', 'SystemWaypoint',
+    'TradeGood', 'TradeSymbol', 'Waypoint', 'WaypointFaction',
+    'WaypointLike', 'WaypointModifier', 'WaypointModifierInfo',
+    'WaypointOrbital', 'WaypointTrait', 'WaypointTraitInfo',
+    'WaypointType',
 ]
 
 # spec_name: Faction
@@ -263,10 +265,22 @@ class PublicAgent:
             ship_count = from_json(int, v['shipCount']),
         )
 
+class SystemLike(typing.Protocol):
+    """This abstract class represents all objects that
+    unambiguously refer to a single :class:`.System`. Any type that
+    has the ``system_symbol`` attribute is accepted as a valid
+    ``SystemLike``.
+    """
+
+    @property
+    def system_symbol(self) -> str: ...
+
 # spec_name: System
-@dataclasses.dataclass
-class System:
+@dataclasses.dataclass(eq=False)
+class System(Keyed):
     """System details."""
+
+    _class_key: typing.ClassVar[str] = 'system_symbol'
 
     #: The symbol of the system.
     symbol: str
@@ -318,6 +332,12 @@ class System:
             constellation = from_json(str, v['constellation']) if 'constellation' in v else None,
             name = from_json(str, v['name']) if 'name' in v else None,
         )
+
+    @property
+    def system_symbol(self) -> str:
+        """Alias for ``self.symbol``."""
+
+        return self.symbol
 
 # spec_name: SystemType
 class SystemType(Enum):
@@ -445,12 +465,24 @@ class SystemFaction:
             symbol = from_json(FactionSymbol, v['symbol']),
         )
 
+class WaypointLike(typing.Protocol):
+    """This abstract class represents all objects that
+    unambiguously refer to a single :class:`.Waypoint`. Any type that
+    has the ``waypoint_symbol`` attribute is accepted as a valid
+    ``WaypointLike``.
+    """
+
+    @property
+    def waypoint_symbol(self) -> str: ...
+
 # spec_name: Waypoint
-@dataclasses.dataclass
-class Waypoint:
+@dataclasses.dataclass(eq=False)
+class Waypoint(Keyed):
     """A waypoint is a location that ships can travel to such as
     a Planet, Moon or Space Station.
     """
+
+    _class_key: typing.ClassVar[str] = 'waypoint_symbol'
 
     #: The symbol of the waypoint.
     symbol: str
@@ -520,6 +552,12 @@ class Waypoint:
             modifiers = from_json(list[WaypointModifierInfo], v['modifiers']) if 'modifiers' in v else None,
             chart = from_json(Chart, v['chart']) if 'chart' in v else None,
         )
+
+    @property
+    def waypoint_symbol(self) -> str:
+        """Alias for ``self.symbol``."""
+
+        return self.symbol
 
 # spec_name: WaypointFaction
 @dataclasses.dataclass
@@ -1929,10 +1967,22 @@ class ShipMount:
             deposits = from_json(list[ShipMount.Deposit], v['deposits']) if 'deposits' in v else None,
         )
 
+class ContractLike(typing.Protocol):
+    """This abstract class represents all objects that
+    unambiguously refer to a single :class:`.Contract`. Any type that
+    has the ``contract_id`` attribute is accepted as a valid
+    ``ContractLike``.
+    """
+
+    @property
+    def contract_id(self) -> str: ...
+
 # spec_name: Contract
-@dataclasses.dataclass
-class Contract:
+@dataclasses.dataclass(eq=False)
+class Contract(Keyed):
     """Contract details."""
+
+    _class_key: typing.ClassVar[str] = 'contract_id'
 
     # spec_name: Contract.type
     class Type(Enum):
@@ -1988,6 +2038,12 @@ class Contract:
             expiration = from_json(datetime, v['expiration']),
             deadline_to_accept = from_json(datetime, v['deadlineToAccept']) if 'deadlineToAccept' in v else None,
         )
+
+    @property
+    def contract_id(self) -> str:
+        """Alias for ``self.id``."""
+
+        return self.id
 
 # spec_name: ContractTerms
 @dataclasses.dataclass
@@ -2179,10 +2235,21 @@ class AgentEvent:
             data = v['data'] if 'data' in v else None,
         )
 
+class ShipLike(typing.Protocol):
+    """This abstract class represents all objects that
+    unambiguously refer to a single :class:`.Ship`. Any type that has
+    the ``ship_symbol`` attribute is accepted as a valid ``ShipLike``.
+    """
+
+    @property
+    def ship_symbol(self) -> str: ...
+
 # spec_name: Ship
-@dataclasses.dataclass
-class Ship:
+@dataclasses.dataclass(eq=False)
+class Ship(Keyed):
     """Ship details."""
+
+    _class_key: typing.ClassVar[str] = 'ship_symbol'
 
     #: The globally unique identifier of the ship in the following
     #: format: ``[AGENT_SYMBOL]-[HEX_ID]``
@@ -2253,6 +2320,12 @@ class Ship:
             fuel = from_json(ShipFuel, v['fuel']),
             cooldown = from_json(Cooldown, v['cooldown']),
         )
+
+    @property
+    def ship_symbol(self) -> str:
+        """Alias for ``self.symbol``."""
+
+        return self.symbol
 
 # spec_name: ShipRegistration
 @dataclasses.dataclass
