@@ -40,6 +40,7 @@ class ClientWriter(write_methods.WriteMethods):
         for export in re_exports:
             self.print(f'{export} = backend.{export}')
 
+        self.print()
         with self.print('class Client(backend.Backend):'):
             self.print(f'SERVER_URL = {self.spec.servers[0].url!r}')
 

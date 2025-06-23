@@ -47,6 +47,7 @@ Error = backend.Error
 ClientError = backend.ClientError
 ServerError = backend.ServerError
 Paged = backend.Paged
+
 class Client(backend.Backend):
     SERVER_URL = 'https://api.spacetraders.io/v2'
 
