@@ -55,13 +55,25 @@ class WriteTypes(write_methods.WriteMethods):
 
     def _write_bottom(self, type: types.Type) -> None:
         self._write_key_bottom(type)
+        self._write_convenience_methods(type)
 
+    def _write_convenience_methods(self, type: types.Type) -> None:
         # convenience methods are anything with arguments keyed to us
-        if type.keyed:
-            def is_ours(method: methods.Method) -> bool:
-                return bool(method.all_args) and method.all_args[0].keyed == type.py_full_name
-            for method, banner in self.converter.iter_methods(is_ours):
-                self.write_convenience_method(type, method, banner=banner)
+        if not type.keyed:
+            return
+
+        def is_ours(method: methods.Method) -> bool:
+            for arg in method.all_args:
+                if arg.consolidated:
+                    continue
+                if arg.keyed == type.py_full_name:
+                    return True
+                # only check the first argument
+                break
+            return False
+
+        for method, banner in self.converter.iter_methods(is_ours):
+            self.write_convenience_method(type, method, banner=banner)
 
     def _write_struct(self, type: types.Type, struct: types.Struct, children: types.Resolver.IterTypes) -> None:
         dataclass_args: dict[str, typing.Any] = {}

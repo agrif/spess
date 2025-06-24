@@ -364,73 +364,6 @@ class System(Keyed):
 
         return self._c.system_waypoints(self.symbol, type=type, traits=traits)
 
-    # spec_name: get-waypoint
-    def waypoint(self, waypoint: str | WaypointLike) -> Waypoint:
-        """View the details of a waypoint.
-
-        If the waypoint is uncharted, it will return the 'Uncharted'
-        trait instead of its actual traits.
-        """
-
-        return self._c.waypoint(self.symbol, waypoint)
-
-    # spec_name: get-construction
-    def construction(self, waypoint: str | WaypointLike) -> Construction:
-        """Get construction details for a waypoint. Requires a
-        waypoint with a property of ``isUnderConstruction`` to be
-        true.
-        """
-
-        return self._c.construction(self.symbol, waypoint)
-
-    # spec_name: supply-construction
-    def supply_construction(self, waypoint: str | WaypointLike, ship: str | ShipLike, trade_symbol: TradeSymbol, units: int) -> responses.SupplyConstruction:
-        """Supply a construction site with the specified good.
-        Requires a waypoint with a property of ``isUnderConstruction``
-        to be true.
-
-        The good must be in your ship's cargo. The good will be
-        removed from your ship's cargo and added to the construction
-        site's materials.
-        """
-
-        return self._c.supply_construction(self.symbol, waypoint, ship, trade_symbol, units)
-
-    # spec_name: get-market
-    def market(self, waypoint: str | WaypointLike) -> Market:
-        """Retrieve imports, exports and exchange data from a
-        marketplace. Requires a waypoint that has the ``Marketplace``
-        trait to use.
-
-        Send a ship to the waypoint to access trade good prices and
-        recent transactions. Refer to the `Market Overview page
-        <https://docs.spacetraders.io/game-concepts/markets>`_ to gain
-        better a understanding of the market in the game.
-        """
-
-        return self._c.market(self.symbol, waypoint)
-
-    # spec_name: get-jump-gate
-    def jump_gate(self, waypoint: str | WaypointLike) -> JumpGate:
-        """Get jump gate details for a waypoint. Requires a
-        waypoint of type ``JUMP_GATE`` to use.
-
-        Waypoints connected to this jump gate can be found by querying
-        the waypoints in the system.
-        """
-
-        return self._c.jump_gate(self.symbol, waypoint)
-
-    # spec_name: get-shipyard
-    def shipyard(self, waypoint: str | WaypointLike) -> Shipyard:
-        """Get the shipyard for a waypoint. Requires a waypoint
-        that has the ``Shipyard`` trait to use. Send a ship to the
-        waypoint to access data on ships that are currently available
-        for purchase and recent transactions.
-        """
-
-        return self._c.shipyard(self.symbol, waypoint)
-
 # spec_name: SystemType
 class SystemType(Enum):
     """The type of system."""
@@ -650,6 +583,77 @@ class Waypoint(Keyed):
         """Alias for ``self.symbol``."""
 
         return self.symbol
+
+    #
+    # Systems
+    #
+
+    # spec_name: get-waypoint
+    def update(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.symbol)
+
+    # spec_name: get-construction
+    def construction(self) -> Construction:
+        """Get construction details for a waypoint. Requires a
+        waypoint with a property of ``isUnderConstruction`` to be
+        true.
+        """
+
+        return self._c.construction(self.symbol)
+
+    # spec_name: supply-construction
+    def supply_construction(self, ship: str | ShipLike, trade_symbol: TradeSymbol, units: int) -> responses.SupplyConstruction:
+        """Supply a construction site with the specified good.
+        Requires a waypoint with a property of ``isUnderConstruction``
+        to be true.
+
+        The good must be in your ship's cargo. The good will be
+        removed from your ship's cargo and added to the construction
+        site's materials.
+        """
+
+        return self._c.supply_construction(self.symbol, ship, trade_symbol, units)
+
+    # spec_name: get-market
+    def market(self) -> Market:
+        """Retrieve imports, exports and exchange data from a
+        marketplace. Requires a waypoint that has the ``Marketplace``
+        trait to use.
+
+        Send a ship to the waypoint to access trade good prices and
+        recent transactions. Refer to the `Market Overview page
+        <https://docs.spacetraders.io/game-concepts/markets>`_ to gain
+        better a understanding of the market in the game.
+        """
+
+        return self._c.market(self.symbol)
+
+    # spec_name: get-jump-gate
+    def jump_gate(self) -> JumpGate:
+        """Get jump gate details for a waypoint. Requires a
+        waypoint of type ``JUMP_GATE`` to use.
+
+        Waypoints connected to this jump gate can be found by querying
+        the waypoints in the system.
+        """
+
+        return self._c.jump_gate(self.symbol)
+
+    # spec_name: get-shipyard
+    def shipyard(self) -> Shipyard:
+        """Get the shipyard for a waypoint. Requires a waypoint
+        that has the ``Shipyard`` trait to use. Send a ship to the
+        waypoint to access data on ships that are currently available
+        for purchase and recent transactions.
+        """
+
+        return self._c.shipyard(self.symbol)
 
 # spec_name: WaypointFaction
 @dataclasses.dataclass

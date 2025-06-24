@@ -238,6 +238,20 @@ class Backend:
                 pass
         return ty._resolve(key)
 
+    def _waypoint_to_system(self, waypoint: str | spess.models.WaypointLike) -> str:
+        # try it as a system first (but strings are always waypoints)
+        if not isinstance(waypoint, str):
+            try:
+                return self._resolve(spess.models.System, waypoint)
+            except AttributeError:
+                pass
+
+        # fall back to a waypoint or waypoint alias
+        waypoint = self._resolve(spess.models.Waypoint, waypoint)
+        if not '-' in waypoint:
+            raise ValueError(f'bad waypoint: {waypoint}')
+        return waypoint.rsplit('-', 1)[0]
+
     def add_alias[T](self, ty: type[spess._model_bases.Keyed[T]], name: str, value: str | T) -> None:
         """Add an alias for the given type. This alias will be
         accepted as a valid name for this object in API calls. For

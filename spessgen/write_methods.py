@@ -69,7 +69,9 @@ class WriteMethods(writer.Writer):
         return result
 
     def _cast_arg(self, method: methods.Method, arg: methods.Method.Argument) -> None:
-        if arg.keyed:
+        if arg.consolidated:
+            self.print(f'{arg.py_name} = {arg.consolidated.convert}({arg.consolidated.src})')
+        elif arg.keyed:
             self.print(f'{arg.py_name} = self._resolve({arg.keyed}, {arg.py_name})')
 
     def write_method(self, method: methods.Method, banner: str | None = None) -> None:
@@ -77,6 +79,8 @@ class WriteMethods(writer.Writer):
 
         method_args = ''
         for arg in method.all_args:
+            if arg.consolidated:
+                continue
             method_args += f', {arg.py_name}: {self._resolve_type(method, arg)}'
             if arg.optional:
                 method_args += ' | None = None'
@@ -139,6 +143,8 @@ class WriteMethods(writer.Writer):
 
         used_self = False
         for arg in method.all_args:
+            if arg.consolidated:
+                continue
             ma = f'{arg.py_name}: {self._resolve_type(method, arg)}'
             ca = arg.py_name
             if arg.optional:

@@ -1202,14 +1202,14 @@ class Client(backend.Backend):
         )
 
     # spec_name: get-waypoint
-    def waypoint(self, system: str | models.SystemLike, waypoint: str | models.WaypointLike) -> models.Waypoint:
+    def waypoint(self, waypoint: str | models.WaypointLike) -> models.Waypoint:
         """View the details of a waypoint.
 
         If the waypoint is uncharted, it will return the 'Uncharted'
         trait instead of its actual traits.
         """
 
-        system = self._resolve(models.System, system)
+        system = self._waypoint_to_system(waypoint)
         waypoint = self._resolve(models.Waypoint, waypoint)
 
         return self._call(
@@ -1223,13 +1223,13 @@ class Client(backend.Backend):
         )
 
     # spec_name: get-construction
-    def construction(self, system: str | models.SystemLike, waypoint: str | models.WaypointLike) -> models.Construction:
+    def construction(self, waypoint: str | models.WaypointLike) -> models.Construction:
         """Get construction details for a waypoint. Requires a
         waypoint with a property of ``isUnderConstruction`` to be
         true.
         """
 
-        system = self._resolve(models.System, system)
+        system = self._waypoint_to_system(waypoint)
         waypoint = self._resolve(models.Waypoint, waypoint)
 
         return self._call(
@@ -1243,7 +1243,7 @@ class Client(backend.Backend):
         )
 
     # spec_name: supply-construction
-    def supply_construction(self, system: str | models.SystemLike, waypoint: str | models.WaypointLike, ship: str | models.ShipLike, trade_symbol: models.TradeSymbol, units: int) -> responses.SupplyConstruction:
+    def supply_construction(self, waypoint: str | models.WaypointLike, ship: str | models.ShipLike, trade_symbol: models.TradeSymbol, units: int) -> responses.SupplyConstruction:
         """Supply a construction site with the specified good.
         Requires a waypoint with a property of ``isUnderConstruction``
         to be true.
@@ -1253,7 +1253,7 @@ class Client(backend.Backend):
         site's materials.
         """
 
-        system = self._resolve(models.System, system)
+        system = self._waypoint_to_system(waypoint)
         waypoint = self._resolve(models.Waypoint, waypoint)
         ship = self._resolve(models.Ship, ship)
 
@@ -1273,7 +1273,7 @@ class Client(backend.Backend):
         )
 
     # spec_name: get-market
-    def market(self, system: str | models.SystemLike, waypoint: str | models.WaypointLike) -> models.Market:
+    def market(self, waypoint: str | models.WaypointLike) -> models.Market:
         """Retrieve imports, exports and exchange data from a
         marketplace. Requires a waypoint that has the ``Marketplace``
         trait to use.
@@ -1284,7 +1284,7 @@ class Client(backend.Backend):
         better a understanding of the market in the game.
         """
 
-        system = self._resolve(models.System, system)
+        system = self._waypoint_to_system(waypoint)
         waypoint = self._resolve(models.Waypoint, waypoint)
 
         return self._call(
@@ -1298,7 +1298,7 @@ class Client(backend.Backend):
         )
 
     # spec_name: get-jump-gate
-    def jump_gate(self, system: str | models.SystemLike, waypoint: str | models.WaypointLike) -> models.JumpGate:
+    def jump_gate(self, waypoint: str | models.WaypointLike) -> models.JumpGate:
         """Get jump gate details for a waypoint. Requires a
         waypoint of type ``JUMP_GATE`` to use.
 
@@ -1306,7 +1306,7 @@ class Client(backend.Backend):
         the waypoints in the system.
         """
 
-        system = self._resolve(models.System, system)
+        system = self._waypoint_to_system(waypoint)
         waypoint = self._resolve(models.Waypoint, waypoint)
 
         return self._call(
@@ -1320,14 +1320,14 @@ class Client(backend.Backend):
         )
 
     # spec_name: get-shipyard
-    def shipyard(self, system: str | models.SystemLike, waypoint: str | models.WaypointLike) -> models.Shipyard:
+    def shipyard(self, waypoint: str | models.WaypointLike) -> models.Shipyard:
         """Get the shipyard for a waypoint. Requires a waypoint
         that has the ``Shipyard`` trait to use. Send a ship to the
         waypoint to access data on ships that are currently available
         for purchase and recent transactions.
         """
 
-        system = self._resolve(models.System, system)
+        system = self._waypoint_to_system(waypoint)
         waypoint = self._resolve(models.Waypoint, waypoint)
 
         return self._call(

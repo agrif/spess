@@ -49,6 +49,7 @@ class Type:
     py_name: str
     doc: str | None
     definition: Struct | Enum
+
     keyed: Keyed | None
 
     def _map_types(self, f: typing.Callable[[str], str]) -> typing.Self:

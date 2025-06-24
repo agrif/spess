@@ -141,6 +141,15 @@ KEYED_TYPES: dict[str, tuple[str, str, str]] = {
     'models.Waypoint': ('waypoint', 'symbol', 'waypoint_symbol'),
 }
 
+# types with keys that also necessarily provide other keys
+# from SuperKeyedType, SubKeyedType to convert_if_missing
+KEY_CONSOLIDATE: dict[str, dict[str, str]] = {
+    # waypoints imply a system
+    'models.Waypoint': {
+        'models.System': 'self._waypoint_to_system',
+    }
+}
+
 # override convenience method names, from PyType, spec_name to py_method_name
 CONVENIENCE_METHOD_NAME: dict[str, dict[str, str]] = {
     # prevent collision with attributes

@@ -11,12 +11,19 @@ import spessgen.types as types
 class Method:
     @dataclasses.dataclass
     class Argument:
+        @dataclasses.dataclass
+        class Consolidated:
+            src: str
+            convert: str
+
         json_name: str
         py_name: str
         py_type: str
         optional: bool
         doc: str | None
+
         keyed: str | None
+        consolidated: Consolidated | None
 
     spec_name: str
     py_name: str
@@ -93,6 +100,7 @@ class Converter:
                 optional = not param.required,
                 doc = param.description,
                 keyed = keyed,
+                consolidated = None,
             )
 
             match param.in_:
@@ -138,6 +146,7 @@ class Converter:
                 doc = None,
                 optional = not body.required,
                 keyed = keyed,
+                consolidated = None,
             )
         else:
             # composite type, break it out into arguments
@@ -160,6 +169,7 @@ class Converter:
                     doc = field.doc,
                     optional = field.optional or not body.required,
                     keyed = keyed,
+                    consolidated = None,
                 ))
             return args
 
@@ -193,6 +203,20 @@ class Converter:
 
         py_result = self.resolver.resolve(spec_name + '.response', schema, parent=self.responses_module, name_hint=py_name)
         return (py_result, adhoc)
+
+    def _consolidate(self, m: Method, arg_super: Method.Argument, py_sub: str, convert: str):
+        found = False
+        for arg in m.all_args:
+            if arg.keyed == py_sub:
+                if found:
+                    raise RuntimeError(f'multiple consolidation on method {m.spec_name} with super {arg_super.py_name}')
+                if arg.consolidated:
+                    raise RuntimeError(f'ambiguous consolidation on method {m.spec_name} with super {arg_super.py_name} and {arg.consolidated.src}')
+                found = True
+                arg.consolidated = Method.Argument.Consolidated(
+                    src = arg_super.py_name,
+                    convert = convert,
+                )
 
     def add_op(self, path: str, method: spec.Path.Method, op: spec.Operation) -> None:
         spec_name = op.operationId
@@ -245,6 +269,12 @@ class Converter:
             adhoc = adhoc,
             paginated = paginated,
         )
+
+        for arg in m.all_args:
+            if not arg.keyed:
+                continue
+            for sub_key, convert in KEY_CONSOLIDATE.get(arg.keyed, {}).items():
+                self._consolidate(m, arg, sub_key, convert)
 
         if m.py_name in self.methods:
             raise RuntimeError(f'conflicting method names: {m.py_name}')
