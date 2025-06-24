@@ -242,7 +242,10 @@ class AgentLike(typing.Protocol):
 # spec_name: PublicAgent
 @dataclasses.dataclass(eq=False)
 class PublicAgent(Keyed):
-    """Public agent details."""
+    """Public agent details.
+
+    This model is ``AgentLike``.
+    """
 
     _class_key: typing.ClassVar[str] = 'agent_symbol'
 
@@ -309,7 +312,10 @@ class SystemLike(typing.Protocol):
 # spec_name: System
 @dataclasses.dataclass(eq=False)
 class System(Keyed):
-    """System details."""
+    """System details.
+
+    This model is ``SystemLike``.
+    """
 
     _class_key: typing.ClassVar[str] = 'system_symbol'
 
@@ -411,7 +417,10 @@ class SystemType(Enum):
 # spec_name: SystemWaypoint
 @dataclasses.dataclass
 class SystemWaypoint:
-    """Waypoint details."""
+    """Waypoint details.
+
+    This model is ``WaypointLike``.
+    """
 
     #: The symbol of the waypoint.
     symbol: str
@@ -484,6 +493,8 @@ class WaypointType(Enum):
 class WaypointOrbital:
     """An orbital is another waypoint that orbits a parent
     waypoint.
+
+    This model is ``WaypointLike``.
     """
 
     #: The symbol of the orbiting waypoint.
@@ -546,6 +557,8 @@ class WaypointLike(typing.Protocol):
 class Waypoint(Keyed):
     """A waypoint is a location that ships can travel to such as
     a Planet, Moon or Space Station.
+
+    This model is ``SystemLike`` and ``WaypointLike``.
     """
 
     _class_key: typing.ClassVar[str] = 'waypoint_symbol'
@@ -867,6 +880,8 @@ class WaypointModifier(Enum):
 class Chart:
     """The chart of a system or waypoint, which makes the
     location visible to other agents.
+
+    This model is ``WaypointLike``.
     """
 
     #: The symbol of the waypoint.
@@ -897,7 +912,10 @@ class Chart:
 # spec_name: Construction
 @dataclasses.dataclass
 class Construction:
-    """The construction details of a waypoint."""
+    """The construction details of a waypoint.
+
+    This model is ``WaypointLike``.
+    """
 
     #: The symbol of the waypoint.
     symbol: str
@@ -1179,7 +1197,10 @@ class ShipCargoItem:
 # spec_name: Market
 @dataclasses.dataclass
 class Market:
-    """Market details."""
+    """Market details.
+
+    This model is ``WaypointLike``.
+    """
 
     #: The symbol of the market. The symbol is the same as the
     #: waypoint where the market is located.
@@ -1263,7 +1284,10 @@ class TradeGood:
 # spec_name: MarketTransaction
 @dataclasses.dataclass
 class MarketTransaction:
-    """Result of a transaction with a market."""
+    """Result of a transaction with a market.
+
+    This model is ``ShipLike`` and ``WaypointLike``.
+    """
 
     # spec_name: MarketTransaction.type
     class Type(Enum):
@@ -1409,7 +1433,10 @@ class ActivityLevel(Enum):
 # spec_name: JumpGate
 @dataclasses.dataclass
 class JumpGate:
-    """Details of a jump gate waypoint."""
+    """Details of a jump gate waypoint.
+
+    This model is ``WaypointLike``.
+    """
 
     #: The symbol of the waypoint.
     symbol: str
@@ -1441,7 +1468,10 @@ class JumpGate:
 # spec_name: Shipyard
 @dataclasses.dataclass
 class Shipyard:
-    """Shipyard details."""
+    """Shipyard details.
+
+    This model is ``WaypointLike``.
+    """
 
     # spec_name: Shipyard.shipTypes
     @dataclasses.dataclass
@@ -1532,7 +1562,10 @@ class ShipType(Enum):
 # spec_name: ShipyardTransaction
 @dataclasses.dataclass
 class ShipyardTransaction:
-    """Results of a transaction with a shipyard."""
+    """Results of a transaction with a shipyard.
+
+    This model is ``AgentLike``, ``ShipLike``, and ``WaypointLike``.
+    """
 
     #: The symbol of the waypoint.
     waypoint_symbol: str
@@ -2141,7 +2174,10 @@ class ContractLike(typing.Protocol):
 # spec_name: Contract
 @dataclasses.dataclass(eq=False)
 class Contract(Keyed):
-    """Contract details."""
+    """Contract details.
+
+    This model is ``ContractLike``.
+    """
 
     _class_key: typing.ClassVar[str] = 'contract_id'
 
@@ -2312,6 +2348,8 @@ class ContractPayment:
 class ContractDeliverGood:
     """The details of a delivery contract. Includes the type of
     good, units needed, and the destination.
+
+    This model is ``WaypointLike``.
     """
 
     #: The symbol of the trade good to deliver.
@@ -2439,7 +2477,10 @@ class ShipLike(typing.Protocol):
 # spec_name: Ship
 @dataclasses.dataclass(eq=False)
 class Ship(Keyed):
-    """Ship details."""
+    """Ship details.
+
+    This model is ``ShipLike``, ``SystemLike``, and ``WaypointLike``.
+    """
 
     _class_key: typing.ClassVar[str] = 'ship_symbol'
 
@@ -3045,7 +3086,10 @@ class ShipRole(Enum):
 # spec_name: ShipNav
 @dataclasses.dataclass
 class ShipNav:
-    """The navigation information of the ship."""
+    """The navigation information of the ship.
+
+    This model is ``SystemLike`` and ``WaypointLike``.
+    """
 
     #: The symbol of the system.
     system_symbol: str
@@ -3162,7 +3206,10 @@ class ShipNavRoute:
 # spec_name: ShipNavRouteWaypoint
 @dataclasses.dataclass
 class ShipNavRouteWaypoint:
-    """The destination or departure of a ships nav route."""
+    """The destination or departure of a ships nav route.
+
+    This model is ``SystemLike`` and ``WaypointLike``.
+    """
 
     #: The symbol of the waypoint.
     symbol: str
@@ -3350,6 +3397,8 @@ class ShipFuel:
 class Cooldown:
     """A cooldown is a period of time in which a ship cannot
     perform certain actions.
+
+    This model is ``ShipLike``.
     """
 
     #: The symbol of the ship that is on cooldown
@@ -3405,7 +3454,10 @@ class Cooldown:
 # spec_name: ChartTransaction
 @dataclasses.dataclass
 class ChartTransaction:
-    """Result of a chart transaction."""
+    """Result of a chart transaction.
+
+    This model is ``ShipLike`` and ``WaypointLike``.
+    """
 
     #: The symbol of the waypoint.
     waypoint_symbol: str
@@ -3439,7 +3491,10 @@ class ChartTransaction:
 # spec_name: Extraction
 @dataclasses.dataclass
 class Extraction:
-    """Extraction details."""
+    """Extraction details.
+
+    This model is ``ShipLike``.
+    """
 
     #: Symbol of the ship that executed the extraction.
     ship_symbol: str
@@ -3568,6 +3623,8 @@ class Survey:
     """A resource survey of a waypoint, detailing a specific
     extraction location and the types of resources that can be found
     there.
+
+    This model is ``WaypointLike``.
     """
 
     #: A unique signature for the location of this survey. This
@@ -3653,7 +3710,10 @@ class SurveySize(Enum):
 # spec_name: ScannedSystem
 @dataclasses.dataclass
 class ScannedSystem:
-    """Details of a system was that scanned."""
+    """Details of a system was that scanned.
+
+    This model is ``SystemLike``.
+    """
 
     #: Symbol of the system.
     symbol: str
@@ -3701,7 +3761,10 @@ class ScannedSystem:
 # spec_name: ScannedWaypoint
 @dataclasses.dataclass
 class ScannedWaypoint:
-    """A waypoint that was scanned by a ship."""
+    """A waypoint that was scanned by a ship.
+
+    This model is ``SystemLike`` and ``WaypointLike``.
+    """
 
     #: The symbol of the waypoint.
     symbol: str
@@ -3766,6 +3829,8 @@ class ScannedWaypoint:
 class ScannedShip:
     """The ship that was scanned. Details include information
     about the ship that could be detected by the scanner.
+
+    This model is ``ShipLike``.
     """
 
     # spec_name: ScannedShip.engine
@@ -3909,7 +3974,10 @@ class ScannedShip:
 # spec_name: ScrapTransaction
 @dataclasses.dataclass
 class ScrapTransaction:
-    """Result of a scrap transaction."""
+    """Result of a scrap transaction.
+
+    This model is ``ShipLike`` and ``WaypointLike``.
+    """
 
     #: The symbol of the waypoint.
     waypoint_symbol: str
@@ -3943,7 +4011,10 @@ class ScrapTransaction:
 # spec_name: RepairTransaction
 @dataclasses.dataclass
 class RepairTransaction:
-    """Result of a repair transaction."""
+    """Result of a repair transaction.
+
+    This model is ``ShipLike`` and ``WaypointLike``.
+    """
 
     #: The symbol of the waypoint.
     waypoint_symbol: str
@@ -3977,7 +4048,10 @@ class RepairTransaction:
 # spec_name: Siphon
 @dataclasses.dataclass
 class Siphon:
-    """Siphon details."""
+    """Siphon details.
+
+    This model is ``ShipLike``.
+    """
 
     #: Symbol of the ship that executed the siphon.
     ship_symbol: str
@@ -4032,6 +4106,8 @@ class SiphonYield:
 class ShipModificationTransaction:
     """Result of a transaction for a ship modification, such as
     installing a mount or a module.
+
+    This model is ``ShipLike`` and ``WaypointLike``.
     """
 
     #: The symbol of the waypoint where the transaction took place.

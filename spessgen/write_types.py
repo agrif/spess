@@ -58,8 +58,19 @@ class WriteTypes(write_methods.WriteMethods):
                 self.doc_string(f'Alias for `{v}`.')
                 self.print(f'return {v}')
 
+    def _doc_like_str(self, type: types.Type):
+        likes = []
+        for key in type.as_keyed:
+            keyed = self.resolver.get(key).keyed
+            if keyed:
+                likes.append(f'`{keyed.name.rsplit(".", 1)[-1]}`')
+        likes.sort()
+        if likes:
+            return f'\n\nThis model is {self.english_list(likes)}.'
+        return ''
+
     def _write_top(self, type: types.Type, children: types.Resolver.IterTypes) -> None:
-        self.doc_string(type.doc)
+        self.doc_string((type.doc if type.doc else '') + self._doc_like_str(type))
         self._write_key_var(type)
         self.write_types(children)
 

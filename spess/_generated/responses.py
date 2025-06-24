@@ -103,6 +103,8 @@ class ServerStatus:
         class MostCredit:
             __doc__ = ' '
 
+            """This model is ``AgentLike``."""
+
             #: Symbol of the agent.
             agent_symbol: str
             #: Amount of credits.
@@ -128,6 +130,8 @@ class ServerStatus:
         @dataclasses.dataclass
         class MostSubmittedChart:
             __doc__ = ' '
+
+            """This model is ``AgentLike``."""
 
             #: Symbol of the agent.
             agent_symbol: str

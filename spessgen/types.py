@@ -41,6 +41,7 @@ class Type:
     definition: Struct | Enum
 
     keyed: Keyed | None
+    as_keyed: list[str]
     properties: dict[str, str]
     wait: list[str]
 
@@ -170,6 +171,16 @@ class Resolver:
         variants.sort(key=lambda t: t[0])
         return Enum(dict(variants))
 
+    def _set_as_keyed(self, ty: Type) -> None:
+        field_names = []
+        if isinstance(ty.definition, Struct):
+            field_names += list(ty.definition.fields.keys())
+        field_names += list(ty.properties.keys())
+
+        for key_type, keyed in KEYED_TYPES.items():
+            if keyed.foreign in field_names:
+                ty.as_keyed.append(key_type)
+
     def resolve_schema(self, schema: spec.SchemaLike) -> spec.Schema:
         return self.resolve_schema_named(schema)[1]
 
@@ -297,7 +308,10 @@ class Resolver:
             keyed = keyed,
             properties = properties,
             wait = WAIT.get(py_name, []),
+            as_keyed = [],
         )
+
+        self._set_as_keyed(ty)
 
         if define:
             self._add_type(ty, subtypes)
