@@ -87,27 +87,7 @@ class WriteTypes(write_methods.WriteMethods):
             self.write_convenience_method(type, method, banner=banner)
 
     def _write_wait(self, type: types.Type) -> None:
-        def collect_waits(ty: types.Type) -> list[str]:
-            if not ty.wait:
-                return []
-            if not isinstance(ty.definition, types.Struct):
-                raise TypeError(f'wait only works on structs, not {type.py_name}')
-            waits = []
-            for w in ty.wait:
-                try:
-                    subty_name = ty.definition.fields[w].py_full_type
-                except KeyError:
-                    print(ty.definition.fields)
-                    raise ValueError(f'bad wait attribute {w} on {ty.py_name}')
-                if subty_name == 'datetime':
-                    return [w]
-                subty = self.resolver.get(subty_name)
-                for x in collect_waits(subty):
-                    waits.append(f'{w}.{x}')
-            return waits
-
-        waits = collect_waits(type)
-        if not waits:
+        if not type.wait:
             return
 
         self.print()
@@ -115,8 +95,8 @@ class WriteTypes(write_methods.WriteMethods):
             self.doc_string(WAIT_DOCS, rest=True)
             self.print()
             with self.print('backend._wait(message, ['):
-                for wait in waits:
-                    self.print(f'self.{wait},')
+                for wait in type.wait:
+                    self.print(f'{wait},')
             self.print('])')
 
         self.print()
@@ -124,8 +104,8 @@ class WriteTypes(write_methods.WriteMethods):
             self.doc_string(AWAIT_DOCS, rest=True)
             self.print()
             with self.print('return backend._await(['):
-                for wait in waits:
-                    self.print(f'self.{wait},')
+                for wait in type.wait:
+                    self.print(f'{wait},')
             self.print('])')
 
     def _write_struct(self, type: types.Type, struct: types.Struct, children: types.Resolver.IterTypes) -> None:

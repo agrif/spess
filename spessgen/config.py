@@ -224,15 +224,15 @@ CONVENIENCE_METHOD_NAME: dict[str, dict[str, str]] = {
     },
 }
 
-# add wait methods. map from PyType to [field_name, ...]
-# field name is a datetime (when the wait is over) or an object with .wait()
+# add wait methods. map from PyType to [expr, ...]
+# expr is a datetime representing when the wait is over
 WAIT: dict[str, list[str]] = {
     # cooldown has a direct expiration
-    'models.Cooldown': ['expiration'],
+    'models.Cooldown': ['self.expiration'],
     # ships have two possible waits
-    'models.Ship': ['cooldown', 'nav'],
+    'models.Ship': ['self.cooldown.expiration', 'self.nav.route.arrival'],
     # waiting on nav waits on route
-    'models.ShipNav': ['route'],
+    'models.ShipNav': ['self.route.arrival'],
     # routes have an arrival time
-    'models.ShipNavRoute': ['arrival'],
+    'models.ShipNavRoute': ['self.arrival'],
 }
