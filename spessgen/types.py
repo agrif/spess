@@ -34,16 +34,6 @@ def remove_prefix(name: str, prefix: str | None = None, replace: str | None = No
 
 @dataclasses.dataclass
 class Type:
-    @dataclasses.dataclass
-    class Keyed:
-        name: str
-        arg: str
-        local: str
-        foreign: str
-
-        def _map_types(self, f: typing.Callable[[str], str]) -> typing.Self:
-            return dataclasses.replace(self, name=f(self.name))
-
     spec_name: str | None
     py_full_name: str
     py_name: str
@@ -287,8 +277,10 @@ class Resolver:
         if definition is None:
             raise NotImplementedError(f'no definition for {schema!r}')
 
-        keyspec = KEYED_TYPES.get(py_name)
-        keyed = Type.Keyed(py_name + 'Like', *keyspec) if keyspec else None
+        keyed = KEYED_TYPES.get(py_name)
+        if keyed and parent is not None:
+            keyed = dataclasses.replace(keyed)
+            keyed.name = parent + '.' + keyed.name
 
         properties = PROPERTIES.get(py_name, {})
         if keyed and keyed.local != keyed.foreign:

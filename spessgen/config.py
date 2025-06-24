@@ -1,4 +1,5 @@
 import dataclasses
+import typing
 
 # Many of these overrides refer to an item by spec_name. These are derived
 # from the name of the item in the OpenAPI spec file, but it gets a bit
@@ -132,13 +133,27 @@ METHOD_ARG_NAME: dict[str, dict[str, str]] = {
 # Extensions. Unlike above, *these* work in python names
 #
 
+@dataclasses.dataclass
+class Keyed:
+    # KeyClassName
+    name: str
+    # new_arg_name
+    arg: str
+    # local_name
+    local: str
+    # foreign/arg_name
+    foreign: str
+
+    def _map_types(self, f: typing.Callable[[str], str]) -> typing.Self:
+        return dataclasses.replace(self, name=f(self.name))
+
 # types with keys, python.Name to (new_arg_name, local_name, foreign/arg_name)
-KEYED_TYPES: dict[str, tuple[str, str, str]] = {
-    'models.Agent': ('agent', 'symbol', 'agent_symbol'),
-    'models.Contract': ('contract', 'id', 'contract_id'),
-    'models.Ship': ('ship', 'symbol', 'ship_symbol'),
-    'models.System': ('system', 'symbol', 'system_symbol'),
-    'models.Waypoint': ('waypoint', 'symbol', 'waypoint_symbol'),
+KEYED_TYPES: dict[str, Keyed] = {
+    'models.Agent': Keyed('AgentLike', 'agent', 'symbol', 'agent_symbol'),
+    'models.Contract': Keyed('ContractLike', 'contract', 'id', 'contract_id'),
+    'models.Ship': Keyed('ShipLike', 'ship', 'symbol', 'ship_symbol'),
+    'models.System': Keyed('SystemLike', 'system', 'symbol', 'system_symbol'),
+    'models.Waypoint': Keyed('WaypointLike', 'waypoint', 'symbol', 'waypoint_symbol'),
 }
 
 # types with keys that also necessarily provide other keys

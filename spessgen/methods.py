@@ -65,8 +65,8 @@ class Converter:
         if py_arg_type != 'str':
             return (py_arg_name, None)
         for k, spec in KEYED_TYPES.items():
-            if py_arg_name == spec[2]:
-                return (spec[0], k)
+            if py_arg_name == spec.foreign:
+                return (spec.arg, k)
         return (py_arg_name, None)
 
     def _collect_args(self, spec_name: str, op: spec.Operation) -> tuple[list[Method.Argument], list[Method.Argument], bool]:
