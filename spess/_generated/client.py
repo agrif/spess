@@ -1196,8 +1196,8 @@ class Client(backend.Backend):
                 'systemSymbol': system,
             },
             query_args = {
-                'type': str(type),
-                'traits': str(traits),
+                'type': str(type) if type is not None else None,
+                'traits': ','.join(str(x) for x in traits) if traits is not None else None,
             },
         )
 

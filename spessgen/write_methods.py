@@ -42,8 +42,14 @@ class WriteMethods(writer.Writer):
                 val = arg.py_name
                 if json:
                     val = f'to_json({val})'
+                elif arg.py_type.startswith('list['):
+                    val = f"','.join(str(x) for x in {val})"
+                    if arg.optional:
+                        val += f' if {arg.py_name} is not None else None'
                 elif arg.py_type != 'str':
                     val = f'str({val})'
+                    if arg.optional:
+                        val += f' if {arg.py_name} is not None else None'
                 self.print(f'{arg.json_name!r}: {val},')
         self.print('},')
 
