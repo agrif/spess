@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import sys
 import time
 import typing
@@ -52,7 +54,9 @@ class NoContentError(Error):
     """
 
 class Backend:
+    #: The default base url to use for requests.
     SERVER_URL: str
+
     def __init__(self, token: str, url: str | None = None, debug: bool = False):
         self.debug = debug
 
@@ -71,9 +75,15 @@ class Backend:
             spess._rate_limit.Windowed(30, 60.0, margin=0.05),
         ).synced()
 
+        self._aliases: dict[tuple[type[spess._model_bases.Keyed], str], str] = {}
+
     def _debug(self, *args, **kwargs):
         if self.debug:
             print(*args, file=sys.stderr, **kwargs)
+
+    #
+    # Requests
+    #
 
     def _call_json(
             self,
@@ -215,6 +225,50 @@ class Backend:
             return (meta, [self._merge(x) for x in data])
 
         return spess._paged.Paged(get_page)
+
+    #
+    # Aliases and Keys
+    #
+
+    def _resolve[T](self, ty: type[spess._model_bases.Keyed[T]], key: str | T) -> str:
+        if isinstance(key, str):
+            try:
+                return self._aliases[(ty, key)]
+            except KeyError:
+                pass
+        return ty._resolve(key)
+
+    def add_alias[T](self, ty: type[spess._model_bases.Keyed[T]], name: str, value: str | T) -> None:
+        """Add an alias for the given type. This alias will be
+        accepted as a valid name for this object in API calls. For
+        example,
+
+        .. code-block::
+
+           ship = c.ship('NAME-2')
+           c.add_alias(spess.models.Ship, 'hauler', ship)
+           c.add_alias(spess.models.Ship, 'also-hauler', 'NAME-2')
+
+           assert c.ship('hauler').symbol == 'NAME-2'
+           assert c.ship('also-hauler').symbol == 'NAME-2'
+        """
+        self._aliases[(ty, name)] = self._resolve(ty, value)
+
+    def remove_alias(self, ty: type[spess._model_bases.Keyed], name: str) -> str:
+        """Removes an alias. See :func:`add_alias` for more info."""
+        return self._aliases.pop((ty, name))
+
+    @property
+    def aliases(self) -> typing.Iterable[tuple[type[spess._model_bases.Keyed], str, str]]:
+        """Iterate over the defined aliases. See :func:`add_alias`
+        for more info.
+        """
+        for (ty, name), value in self._aliases.items():
+            yield ty, name, value
+
+    #
+    # Model Manipulation
+    #
 
     def _merge[T](self, obj: T) -> T:
         if isinstance(obj, spess._model_bases.Keyed):

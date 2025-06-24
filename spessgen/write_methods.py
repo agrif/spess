@@ -70,7 +70,7 @@ class WriteMethods(writer.Writer):
 
     def _cast_arg(self, method: methods.Method, arg: methods.Method.Argument) -> None:
         if arg.keyed:
-            self.print(f'{arg.py_name} = {arg.keyed}._resolve({arg.py_name})')
+            self.print(f'{arg.py_name} = self._resolve({arg.keyed}, {arg.py_name})')
 
     def write_method(self, method: methods.Method, banner: str | None = None) -> None:
         self.write_banner(banner)

@@ -125,7 +125,7 @@ class Client(backend.Backend):
     def agent(self, agent: str | models.AgentLike) -> models.PublicAgent:
         """Get public details for a specific agent."""
 
-        agent = models.Agent._resolve(agent)
+        agent = self._resolve(models.Agent, agent)
 
         return self._call(
             models.PublicAgent,
@@ -174,7 +174,7 @@ class Client(backend.Backend):
     def contract(self, contract: str | models.ContractLike) -> models.Contract:
         """Get the details of a specific contract."""
 
-        contract = models.Contract._resolve(contract)
+        contract = self._resolve(models.Contract, contract)
 
         return self._call(
             models.Contract,
@@ -193,7 +193,7 @@ class Client(backend.Backend):
         not accepted yet, and whose deadlines has not passed yet.
         """
 
-        contract = models.Contract._resolve(contract)
+        contract = self._resolve(models.Contract, contract)
 
         return self._call(
             responses.AcceptContract,
@@ -210,7 +210,7 @@ class Client(backend.Backend):
         that have all of their delivery terms fulfilled.
         """
 
-        contract = models.Contract._resolve(contract)
+        contract = self._resolve(models.Contract, contract)
 
         return self._call(
             responses.FulfillContract,
@@ -234,8 +234,8 @@ class Client(backend.Backend):
         cargo.
         """
 
-        contract = models.Contract._resolve(contract)
-        ship = models.Ship._resolve(ship)
+        contract = self._resolve(models.Contract, contract)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.DeliverContract,
@@ -268,7 +268,7 @@ class Client(backend.Backend):
         present to negotiate a contract with that faction.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.NegotiateContract,
@@ -349,7 +349,7 @@ class Client(backend.Backend):
         also include a few modules and mounts.
         """
 
-        waypoint = models.Waypoint._resolve(waypoint)
+        waypoint = self._resolve(models.Waypoint, waypoint)
 
         return self._call(
             responses.PurchaseShip,
@@ -367,7 +367,7 @@ class Client(backend.Backend):
         ownership.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             models.Ship,
@@ -394,7 +394,7 @@ class Client(backend.Backend):
         traits.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.CreateChart,
@@ -421,7 +421,7 @@ class Client(backend.Backend):
         has no cooldown.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             models.Cooldown,
@@ -447,7 +447,7 @@ class Client(backend.Backend):
         even if the ship is already docked.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.DockShip,
@@ -473,7 +473,7 @@ class Client(backend.Backend):
         ``extract/survey`` endpoint for more details.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.ExtractResources,
@@ -496,7 +496,7 @@ class Client(backend.Backend):
         request will fail.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.ExtractResourcesWithSurvey,
@@ -512,7 +512,7 @@ class Client(backend.Backend):
     def jettison(self, ship: str | models.ShipLike, symbol: models.TradeSymbol, units: int) -> responses.Jettison:
         """Jettison cargo from your ship's cargo hold."""
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.Jettison,
@@ -538,8 +538,8 @@ class Client(backend.Backend):
         connected waypoints
         """
 
-        ship = models.Ship._resolve(ship)
-        waypoint = models.Waypoint._resolve(waypoint)
+        ship = self._resolve(models.Ship, ship)
+        waypoint = self._resolve(models.Waypoint, waypoint)
 
         return self._call(
             responses.JumpShip,
@@ -564,7 +564,7 @@ class Client(backend.Backend):
         during which it cannot execute certain actions.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.CreateShipSystemScan,
@@ -589,7 +589,7 @@ class Client(backend.Backend):
         during which it cannot execute certain actions.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.CreateShipWaypointScan,
@@ -612,7 +612,7 @@ class Client(backend.Backend):
         during which it cannot execute certain actions.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.CreateShipShipScan,
@@ -631,7 +631,7 @@ class Client(backend.Backend):
         scrapped.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.ScrapShip,
@@ -648,7 +648,7 @@ class Client(backend.Backend):
         to be docked at a waypoint that has the ``Shipyard`` trait.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.GetScrapShip,
@@ -675,8 +675,8 @@ class Client(backend.Backend):
         actions.
         """
 
-        ship = models.Ship._resolve(ship)
-        waypoint = models.Waypoint._resolve(waypoint)
+        ship = self._resolve(models.Ship, ship)
+        waypoint = self._resolve(models.Waypoint, waypoint)
 
         return self._call(
             responses.NavigateShip,
@@ -702,8 +702,8 @@ class Client(backend.Backend):
         unavailable until the ship has arrived at its destination.
         """
 
-        ship = models.Ship._resolve(ship)
-        waypoint = models.Waypoint._resolve(waypoint)
+        ship = self._resolve(models.Ship, ship)
+        waypoint = self._resolve(models.Waypoint, waypoint)
 
         return self._call(
             responses.WarpShip,
@@ -732,7 +732,7 @@ class Client(backend.Backend):
         even if the ship is already in orbit.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.OrbitShip,
@@ -758,7 +758,7 @@ class Client(backend.Backend):
         Purchased goods are added to the ship's cargo hold.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.PurchaseCargo,
@@ -785,7 +785,7 @@ class Client(backend.Backend):
         processed goods.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.ShipRefine,
@@ -815,7 +815,7 @@ class Client(backend.Backend):
         capacity when using this action.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.RefuelShip,
@@ -838,7 +838,7 @@ class Client(backend.Backend):
         the cost of repairing the ship, use the Get action.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.RepairShip,
@@ -855,7 +855,7 @@ class Client(backend.Backend):
         to be docked at a waypoint that has the ``Shipyard`` trait.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.GetRepairShip,
@@ -873,7 +873,7 @@ class Client(backend.Backend):
         ``Marketplace`` trait in order to use this function.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.SellCargo,
@@ -896,7 +896,7 @@ class Client(backend.Backend):
         siphon mounts and a gas processor installed.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.SiphonResources,
@@ -932,7 +932,7 @@ class Client(backend.Backend):
         use this function.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.CreateSurvey,
@@ -977,7 +977,7 @@ class Client(backend.Backend):
         ownership.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             models.ShipCargo,
@@ -992,7 +992,7 @@ class Client(backend.Backend):
     def ship_modules(self, ship: str | models.ShipLike) -> list[models.ShipModule]:
         """Get the modules installed on a ship."""
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             list[models.ShipModule],
@@ -1009,7 +1009,7 @@ class Client(backend.Backend):
         your cargo.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.InstallShipModule,
@@ -1029,7 +1029,7 @@ class Client(backend.Backend):
         placed in cargo.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.RemoveShipModule,
@@ -1047,7 +1047,7 @@ class Client(backend.Backend):
     def mounts(self, ship: str | models.ShipLike) -> list[models.ShipMount]:
         """Get the mounts installed on a ship."""
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             list[models.ShipMount],
@@ -1070,7 +1070,7 @@ class Client(backend.Backend):
         installing the mount on the ship.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.InstallMount,
@@ -1095,7 +1095,7 @@ class Client(backend.Backend):
         A removal fee will be deduced from the agent by the Shipyard.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.RemoveMount,
@@ -1113,7 +1113,7 @@ class Client(backend.Backend):
     def ship_nav(self, ship: str | models.ShipLike) -> models.ShipNav:
         """Get the current nav status of a ship."""
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             models.ShipNav,
@@ -1132,7 +1132,7 @@ class Client(backend.Backend):
         ship, which affects its speed and fuel consumption.
         """
 
-        ship = models.Ship._resolve(ship)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.PatchShipNav,
@@ -1166,7 +1166,7 @@ class Client(backend.Backend):
         have been visited or charted.
         """
 
-        system = models.System._resolve(system)
+        system = self._resolve(models.System, system)
 
         return self._call(
             models.System,
@@ -1186,7 +1186,7 @@ class Client(backend.Backend):
         trait instead of its actual traits.
         """
 
-        system = models.System._resolve(system)
+        system = self._resolve(models.System, system)
 
         return self._call_paginated(
             models.Waypoint,
@@ -1209,8 +1209,8 @@ class Client(backend.Backend):
         trait instead of its actual traits.
         """
 
-        system = models.System._resolve(system)
-        waypoint = models.Waypoint._resolve(waypoint)
+        system = self._resolve(models.System, system)
+        waypoint = self._resolve(models.Waypoint, waypoint)
 
         return self._call(
             models.Waypoint,
@@ -1229,8 +1229,8 @@ class Client(backend.Backend):
         true.
         """
 
-        system = models.System._resolve(system)
-        waypoint = models.Waypoint._resolve(waypoint)
+        system = self._resolve(models.System, system)
+        waypoint = self._resolve(models.Waypoint, waypoint)
 
         return self._call(
             models.Construction,
@@ -1253,9 +1253,9 @@ class Client(backend.Backend):
         site's materials.
         """
 
-        system = models.System._resolve(system)
-        waypoint = models.Waypoint._resolve(waypoint)
-        ship = models.Ship._resolve(ship)
+        system = self._resolve(models.System, system)
+        waypoint = self._resolve(models.Waypoint, waypoint)
+        ship = self._resolve(models.Ship, ship)
 
         return self._call(
             responses.SupplyConstruction,
@@ -1284,8 +1284,8 @@ class Client(backend.Backend):
         better a understanding of the market in the game.
         """
 
-        system = models.System._resolve(system)
-        waypoint = models.Waypoint._resolve(waypoint)
+        system = self._resolve(models.System, system)
+        waypoint = self._resolve(models.Waypoint, waypoint)
 
         return self._call(
             models.Market,
@@ -1306,8 +1306,8 @@ class Client(backend.Backend):
         the waypoints in the system.
         """
 
-        system = models.System._resolve(system)
-        waypoint = models.Waypoint._resolve(waypoint)
+        system = self._resolve(models.System, system)
+        waypoint = self._resolve(models.Waypoint, waypoint)
 
         return self._call(
             models.JumpGate,
@@ -1327,8 +1327,8 @@ class Client(backend.Backend):
         for purchase and recent transactions.
         """
 
-        system = models.System._resolve(system)
-        waypoint = models.Waypoint._resolve(waypoint)
+        system = self._resolve(models.System, system)
+        waypoint = self._resolve(models.Waypoint, waypoint)
 
         return self._call(
             models.Shipyard,

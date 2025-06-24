@@ -8,6 +8,7 @@
    :undoc-members:
    :class-doc-from: init
    :member-order: bysource
+   :inherited-members:
 
 .. autoclass:: spess.client.Paged
    :members:
