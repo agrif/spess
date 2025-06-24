@@ -149,7 +149,7 @@ class Keyed:
 
 # types with keys, python.Name to (new_arg_name, local_name, foreign/arg_name)
 KEYED_TYPES: dict[str, Keyed] = {
-    'models.Agent': Keyed('AgentLike', 'agent', 'symbol', 'agent_symbol'),
+    'models.PublicAgent': Keyed('AgentLike', 'agent', 'symbol', 'agent_symbol'),
     'models.Contract': Keyed('ContractLike', 'contract', 'id', 'contract_id'),
     'models.Ship': Keyed('ShipLike', 'ship', 'symbol', 'ship_symbol'),
     'models.System': Keyed('SystemLike', 'system', 'symbol', 'system_symbol'),
@@ -225,6 +225,10 @@ PROPERTIES: dict[str, dict[str, str]] = {
 
 # override convenience method names, from PyType, spec_name to py_method_name
 CONVENIENCE_METHOD_NAME: dict[str, dict[str, str]] = {
+    # this is, by rights, an update function
+    'models.PublicAgent': {
+        'get-agent': 'update',
+    },
     # prevent collision with attributes
     'models.Ship': {
         'get-mounts': 'update_mounts',

@@ -125,7 +125,7 @@ class Client(backend.Backend):
     def agent(self, agent: str | models.AgentLike) -> models.PublicAgent:
         """Get public details for a specific agent."""
 
-        agent = self._resolve(models.Agent, agent)
+        agent = self._resolve(models.PublicAgent, agent)
 
         return self._call(
             models.PublicAgent,

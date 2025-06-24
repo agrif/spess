@@ -229,10 +229,22 @@ class Meta:
             limit = from_json(int, v['limit']),
         )
 
+class AgentLike(typing.Protocol):
+    """This abstract class represents all objects that
+    unambiguously refer to a single :class:`.PublicAgent`. Any type
+    that has the ``agent_symbol`` attribute is accepted as a valid
+    ``AgentLike``.
+    """
+
+    @property
+    def agent_symbol(self) -> str: ...
+
 # spec_name: PublicAgent
-@dataclasses.dataclass
-class PublicAgent:
+@dataclasses.dataclass(eq=False)
+class PublicAgent(Keyed):
     """Public agent details."""
+
+    _class_key: typing.ClassVar[str] = 'agent_symbol'
 
     #: Symbol of the agent.
     symbol: str
@@ -267,6 +279,22 @@ class PublicAgent:
             starting_faction = from_json(FactionSymbol, v['startingFaction']),
             ship_count = from_json(int, v['shipCount']),
         )
+
+    @property
+    def agent_symbol(self) -> str:
+        """Alias for ``self.symbol``."""
+
+        return self.symbol
+
+    #
+    # Agents
+    #
+
+    # spec_name: get-agent
+    def update(self) -> PublicAgent:
+        """Get public details for a specific agent."""
+
+        return self._c.agent(self.symbol)
 
 class SystemLike(typing.Protocol):
     """This abstract class represents all objects that
@@ -2321,22 +2349,10 @@ class ContractDeliverGood:
 
         return self.destination_symbol
 
-class AgentLike(typing.Protocol):
-    """This abstract class represents all objects that
-    unambiguously refer to a single :class:`.Agent`. Any type that has
-    the ``agent_symbol`` attribute is accepted as a valid
-    ``AgentLike``.
-    """
-
-    @property
-    def agent_symbol(self) -> str: ...
-
 # spec_name: Agent
-@dataclasses.dataclass(eq=False)
-class Agent(Keyed):
+@dataclasses.dataclass
+class Agent:
     """Agent details."""
-
-    _class_key: typing.ClassVar[str] = 'agent_symbol'
 
     #: Account ID that is tied to this agent. Only included on your
     #: own agent.
@@ -2376,22 +2392,6 @@ class Agent(Keyed):
             starting_faction = from_json(FactionSymbol, v['startingFaction']),
             ship_count = from_json(int, v['shipCount']),
         )
-
-    @property
-    def agent_symbol(self) -> str:
-        """Alias for ``self.symbol``."""
-
-        return self.symbol
-
-    #
-    # Agents
-    #
-
-    # spec_name: get-agent
-    def update(self) -> PublicAgent:
-        """Get public details for a specific agent."""
-
-        return self._c.agent(self.symbol)
 
 # spec_name: AgentEvent
 @dataclasses.dataclass
