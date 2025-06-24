@@ -2390,7 +2390,10 @@ class ContractDeliverGood:
 # spec_name: Agent
 @dataclasses.dataclass
 class Agent:
-    """Agent details."""
+    """Agent details.
+
+    This model is ``AgentLike``.
+    """
 
     #: Account ID that is tied to this agent. Only included on your
     #: own agent.
@@ -2430,6 +2433,12 @@ class Agent:
             starting_faction = from_json(FactionSymbol, v['startingFaction']),
             ship_count = from_json(int, v['shipCount']),
         )
+
+    @property
+    def agent_symbol(self) -> str:
+        """Alias for ``self.symbol``."""
+
+        return self.symbol
 
 # spec_name: AgentEvent
 @dataclasses.dataclass

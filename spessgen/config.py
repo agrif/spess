@@ -168,6 +168,10 @@ KEY_CONSOLIDATE: dict[str, dict[str, str]] = {
 # extra property aliases
 # from PyName, prop_name to expr
 PROPERTIES: dict[str, dict[str, str]] = {
+    # Agent is a sort of PublicAgent. Sort of.
+    'models.Agent': {
+        'agent_symbol': 'self.symbol',
+    },
     # constructions are a sort of waypoint
     'models.Construction': {
         'waypoint_symbol': 'self.symbol',
