@@ -5,10 +5,20 @@ import spessgen.types as types
 import spessgen.write_methods as write_methods
 
 KEY_TYPE_DOCS = ' '.join([
-    "This abstract class represents all objects that unambiguously refer",
-    "to a single :class:`.{type.py_name}`. Any type that has the",
-    "``{type.keyed.foreign}`` attribute is accepted as a valid",
-    "``{type.keyed.name}``.",
+    'This abstract class represents all objects that unambiguously refer',
+    'to a single :class:`.{type.py_name}`. Any type that has the',
+    '``{type.keyed.foreign}`` attribute is accepted as a valid',
+    '``{type.keyed.name}``.',
+])
+
+WAIT_DOCS = ' '.join([
+    'Wait interactively until this object is ready for more actions.',
+    'For a non-interactive, async wait, await this object directly.',
+])
+
+AWAIT_DOCS = ' '.join([
+    'Wait asynchronously until this object is ready for more actions.',
+    'For an interactive, blocking wait, see :func:`wait`.',
 ])
 
 class WriteTypes(write_methods.WriteMethods):
@@ -55,6 +65,7 @@ class WriteTypes(write_methods.WriteMethods):
 
     def _write_bottom(self, type: types.Type) -> None:
         self._write_properties(type)
+        self._write_wait(type)
         self._write_convenience_methods(type)
 
     def _write_convenience_methods(self, type: types.Type) -> None:
@@ -74,6 +85,48 @@ class WriteTypes(write_methods.WriteMethods):
 
         for method, banner in self.converter.iter_methods(is_ours):
             self.write_convenience_method(type, method, banner=banner)
+
+    def _write_wait(self, type: types.Type) -> None:
+        def collect_waits(ty: types.Type) -> list[str]:
+            if not ty.wait:
+                return []
+            if not isinstance(ty.definition, types.Struct):
+                raise TypeError(f'wait only works on structs, not {type.py_name}')
+            waits = []
+            for w in ty.wait:
+                try:
+                    subty_name = ty.definition.fields[w].py_full_type
+                except KeyError:
+                    print(ty.definition.fields)
+                    raise ValueError(f'bad wait attribute {w} on {ty.py_name}')
+                if subty_name == 'datetime':
+                    return [w]
+                subty = self.resolver.get(subty_name)
+                for x in collect_waits(subty):
+                    waits.append(f'{w}.{x}')
+            return waits
+
+        waits = collect_waits(type)
+        if not waits:
+            return
+
+        self.print()
+        with self.print("def wait(self, message: str = 'waiting') -> None:"):
+            self.doc_string(WAIT_DOCS, rest=True)
+            self.print()
+            with self.print('backend._wait(message, ['):
+                for wait in waits:
+                    self.print(f'self.{wait},')
+            self.print('])')
+
+        self.print()
+        with self.print("def __await__(self) -> typing.Awaitable[None]:"):
+            self.doc_string(AWAIT_DOCS, rest=True)
+            self.print()
+            with self.print('return backend._await(['):
+                for wait in waits:
+                    self.print(f'self.{wait},')
+            self.print('])')
 
     def _write_struct(self, type: types.Type, struct: types.Struct, children: types.Resolver.IterTypes) -> None:
         dataclass_args: dict[str, typing.Any] = {}

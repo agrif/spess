@@ -13,6 +13,7 @@ class ModelWriter(write_types.WriteTypes):
         self.print('import dataclasses')
         self.print('import typing')
         self.print()
+        self.print('import spess._backend as backend')
         self.print('from spess._json import Json, from_json, to_json')
         if self.resolver.models_module != self.module:
             models = self.resolver.models_module

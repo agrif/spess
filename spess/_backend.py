@@ -1,16 +1,60 @@
 from __future__ import annotations
 
+import asyncio
+import datetime as dt
 import sys
 import time
 import typing
 
 import requests
+import rich.progress
 
 import spess._json
 import spess.models
 import spess._model_bases
 import spess._paged
 import spess._rate_limit
+
+#: Set to False to turn off interactive waits.
+_wait_interactive: bool = True
+
+def _wait(message: str, expirations: list[dt.datetime | None]) -> None:
+    """Backend for model wait methods."""
+    expiration = max(e for e in expirations if e is not None)
+    start = dt.datetime.now(dt.UTC)
+    expiration += dt.timedelta(seconds=1)
+    amt = (expiration - start).total_seconds()
+
+    if amt < 0:
+        return
+
+    if not _wait_interactive:
+        time.sleep(amt)
+        return
+
+    prog = rich.progress.Progress(
+        rich.progress.SpinnerColumn(),
+        rich.progress.TextColumn('[progress.description]{task.description}'),
+        rich.progress.TimeRemainingColumn(),
+    )
+
+    with prog:
+        task = prog.add_task(message if message else 'waiting', total=amt)
+        while True:
+            now = dt.datetime.now(dt.UTC)
+            elapsed = (now - start).total_seconds()
+            prog.update(task, completed=elapsed)
+            if now > expiration:
+                return
+            time.sleep(1)
+
+async def _await(expirations: list[dt.datetime | None]) -> None:
+    """Backend for model __await__ methods."""
+    expiration = max(e for e in expirations if e is not None)
+    start = dt.datetime.now(dt.UTC)
+    expiration += dt.timedelta(seconds=1)
+    amt = (expiration - start).total_seconds()
+    await asyncio.sleep(amt)
 
 class Error(Exception):
     """Base error class thrown by :class:`spess.client.Client`."""

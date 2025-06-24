@@ -52,6 +52,7 @@ class Type:
 
     keyed: Keyed | None
     properties: dict[str, str]
+    wait: list[str]
 
     def _map_types(self, f: typing.Callable[[str], str]) -> typing.Self:
         return dataclasses.replace(
@@ -67,6 +68,7 @@ class Struct:
     class Field:
         py_name: str
         json_name: str
+        py_full_type: str
         py_type: str
         doc: str | None
         optional: bool
@@ -157,6 +159,7 @@ class Resolver:
                 py_name = py_name,
                 json_name = k,
                 py_type = py_type,
+                py_full_type = py_type,
                 doc = self.resolve_schema(v).description,
                 optional = k not in required,
             )
@@ -301,6 +304,7 @@ class Resolver:
             definition = definition,
             keyed = keyed,
             properties = properties,
+            wait = WAIT.get(py_name, []),
         )
 
         if define:
