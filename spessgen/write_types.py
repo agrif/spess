@@ -17,7 +17,7 @@ class WriteTypes(write_methods.WriteMethods):
             self.write_type(type, children)
 
     def write_type(self, type: types.Type, children: types.Resolver.IterTypes) -> None:
-        self._write_key(type)
+        self._write_key_class(type)
         self.print()
         self.print(f'# spec_name: {type.spec_name}')
         if isinstance(type.definition, types.Struct):
@@ -27,7 +27,7 @@ class WriteTypes(write_methods.WriteMethods):
         else:
             typing.assert_never(type.definition)
 
-    def _write_key(self, type: types.Type) -> None:
+    def _write_key_class(self, type: types.Type) -> None:
         if type.keyed:
             self.print()
             with self.print(f'class {type.keyed.name}(typing.Protocol):'):
@@ -35,26 +35,26 @@ class WriteTypes(write_methods.WriteMethods):
                 self.print('@property')
                 self.print(f'def {type.keyed.foreign}(self) -> str: ...')
 
-    def _write_key_top(self, type: types.Type) -> None:
+    def _write_key_var(self, type: types.Type) -> None:
         if type.keyed:
             self.print()
             self.print(f'_class_key: typing.ClassVar[str] = {type.keyed.foreign!r}')
 
-    def _write_key_bottom(self, type: types.Type) -> None:
-        if type.keyed and type.keyed.local != type.keyed.foreign:
+    def _write_properties(self, type: types.Type) -> None:
+        for k, v in type.properties.items():
             self.print()
             self.print('@property')
-            with self.print(f'def {type.keyed.foreign}(self) -> str:'):
-                self.doc_string(f'Alias for `self.{type.keyed.local}`.')
-                self.print(f'return self.{type.keyed.local}')
+            with self.print(f'def {k}(self) -> str:'):
+                self.doc_string(f'Alias for `{v}`.')
+                self.print(f'return {v}')
 
     def _write_top(self, type: types.Type, children: types.Resolver.IterTypes) -> None:
         self.doc_string(type.doc)
-        self._write_key_top(type)
+        self._write_key_var(type)
         self.write_types(children)
 
     def _write_bottom(self, type: types.Type) -> None:
-        self._write_key_bottom(type)
+        self._write_properties(type)
         self._write_convenience_methods(type)
 
     def _write_convenience_methods(self, type: types.Type) -> None:

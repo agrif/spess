@@ -425,6 +425,12 @@ class SystemWaypoint:
             orbits = from_json(str, v['orbits']) if 'orbits' in v else None,
         )
 
+    @property
+    def waypoint_symbol(self) -> str:
+        """Alias for ``self.symbol``."""
+
+        return self.symbol
+
 # spec_name: WaypointType
 class WaypointType(Enum):
     """The type of waypoint."""
@@ -467,6 +473,12 @@ class WaypointOrbital:
         return cls(
             symbol = from_json(str, v['symbol']),
         )
+
+    @property
+    def waypoint_symbol(self) -> str:
+        """Alias for ``self.symbol``."""
+
+        return self.symbol
 
 # spec_name: SystemFaction
 @dataclasses.dataclass
@@ -883,6 +895,12 @@ class Construction:
             is_complete = from_json(bool, v['isComplete']),
         )
 
+    @property
+    def waypoint_symbol(self) -> str:
+        """Alias for ``self.symbol``."""
+
+        return self.symbol
+
 # spec_name: ConstructionMaterial
 @dataclasses.dataclass
 class ConstructionMaterial:
@@ -1177,6 +1195,12 @@ class Market:
             trade_goods = from_json(list[MarketTradeGood], v['tradeGoods']) if 'tradeGoods' in v else None,
         )
 
+    @property
+    def waypoint_symbol(self) -> str:
+        """Alias for ``self.symbol``."""
+
+        return self.symbol
+
 # spec_name: TradeGood
 @dataclasses.dataclass
 class TradeGood:
@@ -1379,6 +1403,12 @@ class JumpGate:
             connections = from_json(list[str], v['connections']),
         )
 
+    @property
+    def waypoint_symbol(self) -> str:
+        """Alias for ``self.symbol``."""
+
+        return self.symbol
+
 # spec_name: Shipyard
 @dataclasses.dataclass
 class Shipyard:
@@ -1445,6 +1475,12 @@ class Shipyard:
             transactions = from_json(list[ShipyardTransaction], v['transactions']) if 'transactions' in v else None,
             ships = from_json(list[ShipyardShip], v['ships']) if 'ships' in v else None,
         )
+
+    @property
+    def waypoint_symbol(self) -> str:
+        """Alias for ``self.symbol``."""
+
+        return self.symbol
 
 # spec_name: ShipType
 class ShipType(Enum):
@@ -2278,6 +2314,12 @@ class ContractDeliverGood:
             units_fulfilled = from_json(int, v['unitsFulfilled']),
         )
 
+    @property
+    def waypoint_symbol(self) -> str:
+        """Alias for ``self.destination_symbol``."""
+
+        return self.destination_symbol
+
 class AgentLike(typing.Protocol):
     """This abstract class represents all objects that
     unambiguously refer to a single :class:`.Agent`. Any type that has
@@ -2475,6 +2517,18 @@ class Ship(Keyed):
         """Alias for ``self.symbol``."""
 
         return self.symbol
+
+    @property
+    def system_symbol(self) -> str:
+        """Alias for ``self.nav.system_symbol``."""
+
+        return self.nav.system_symbol
+
+    @property
+    def waypoint_symbol(self) -> str:
+        """Alias for ``self.nav.waypoint_symbol``."""
+
+        return self.nav.waypoint_symbol
 
     #
     # Contracts
@@ -3080,6 +3134,12 @@ class ShipNavRouteWaypoint:
             y = from_json(int, v['y']),
         )
 
+    @property
+    def waypoint_symbol(self) -> str:
+        """Alias for ``self.symbol``."""
+
+        return self.symbol
+
 # spec_name: ShipNavStatus
 class ShipStatus(Enum):
     """The current status of the ship"""
@@ -3467,6 +3527,12 @@ class Survey:
             size = from_json(SurveySize, v['size']),
         )
 
+    @property
+    def waypoint_symbol(self) -> str:
+        """Alias for ``self.symbol``."""
+
+        return self.symbol
+
 # spec_name: SurveyDeposit
 @dataclasses.dataclass
 class SurveyDeposit:
@@ -3543,6 +3609,12 @@ class ScannedSystem:
             distance = from_json(int, v['distance']),
         )
 
+    @property
+    def system_symbol(self) -> str:
+        """Alias for ``self.symbol``."""
+
+        return self.symbol
+
 # spec_name: ScannedWaypoint
 @dataclasses.dataclass
 class ScannedWaypoint:
@@ -3599,6 +3671,12 @@ class ScannedWaypoint:
             faction = from_json(WaypointFaction, v['faction']) if 'faction' in v else None,
             chart = from_json(Chart, v['chart']) if 'chart' in v else None,
         )
+
+    @property
+    def waypoint_symbol(self) -> str:
+        """Alias for ``self.symbol``."""
+
+        return self.symbol
 
 # spec_name: ScannedShip
 @dataclasses.dataclass
@@ -3738,6 +3816,12 @@ class ScannedShip:
             reactor = from_json(ScannedShip.Reactor, v['reactor']) if 'reactor' in v else None,
             mounts = from_json(list[ScannedShip.Mount], v['mounts']) if 'mounts' in v else None,
         )
+
+    @property
+    def ship_symbol(self) -> str:
+        """Alias for ``self.symbol``."""
+
+        return self.symbol
 
 # spec_name: ScrapTransaction
 @dataclasses.dataclass

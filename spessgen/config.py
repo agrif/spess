@@ -150,6 +150,64 @@ KEY_CONSOLIDATE: dict[str, dict[str, str]] = {
     }
 }
 
+# extra property aliases
+# from PyName, prop_name to expr
+PROPERTIES: dict[str, dict[str, str]] = {
+    # constructions are a sort of waypoint
+    'models.Construction': {
+        'waypoint_symbol': 'self.symbol',
+    },
+    # deliveries have a waypoint
+    'models.ContractDeliverGood': {
+        'waypoint_symbol': 'self.destination_symbol',
+    },
+    # jump gates are a sort of waypoint
+    'models.JumpGate': {
+        'waypoint_symbol': 'self.symbol',
+    },
+    # markets are a sort of waypoint
+    'models.Market': {
+        'waypoint_symbol': 'self.symbol',
+    },
+    # scanned ships are a sort of ship
+    'models.ScannedShip': {
+        'ship_symbol': 'self.symbol',
+    },
+    # scanned systems are a sort of system
+    'models.ScannedSystem': {
+        'system_symbol': 'self.symbol',
+    },
+    # scanned waypoints are a sort of waypoint
+    'models.ScannedWaypoint': {
+        'waypoint_symbol': 'self.symbol',
+    },
+    # give Ship the location properties of ShipNav
+    'models.Ship': {
+        'system_symbol': 'self.nav.system_symbol',
+        'waypoint_symbol': 'self.nav.waypoint_symbol',
+    },
+    # ShipNavRouteWaypoint is a sort of waypoint
+    'models.ShipNavRouteWaypoint': {
+        'waypoint_symbol': 'self.symbol',
+    },
+    # Surveys have a waypoint
+    'models.Survey': {
+        'waypoint_symbol': 'self.symbol',
+    },
+    # SystemWaypoint is a sort of waypoint
+    'models.SystemWaypoint': {
+        'waypoint_symbol': 'self.symbol',
+    },
+    # shipyards are a sort of waypoint
+    'models.Shipyard': {
+        'waypoint_symbol': 'self.symbol',
+    },
+    # WaypointOrbital is a sort of waypoint
+    'models.WaypointOrbital': {
+        'waypoint_symbol': 'self.symbol',
+    },
+}
+
 # override convenience method names, from PyType, spec_name to py_method_name
 CONVENIENCE_METHOD_NAME: dict[str, dict[str, str]] = {
     # prevent collision with attributes

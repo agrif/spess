@@ -51,6 +51,7 @@ class Type:
     definition: Struct | Enum
 
     keyed: Keyed | None
+    properties: dict[str, str]
 
     def _map_types(self, f: typing.Callable[[str], str]) -> typing.Self:
         return dataclasses.replace(
@@ -286,6 +287,12 @@ class Resolver:
         keyspec = KEYED_TYPES.get(py_name)
         keyed = Type.Keyed(py_name + 'Like', *keyspec) if keyspec else None
 
+        properties = PROPERTIES.get(py_name, {})
+        if keyed and keyed.local != keyed.foreign:
+            props_with_key = {keyed.foreign: 'self.' + keyed.local}
+            props_with_key.update(properties)
+            properties = props_with_key
+
         ty = Type(
             spec_name = spec_name,
             py_full_name = py_name,
@@ -293,6 +300,7 @@ class Resolver:
             doc = schema.description,
             definition = definition,
             keyed = keyed,
+            properties = properties,
         )
 
         if define:
