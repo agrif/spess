@@ -54,7 +54,7 @@ class Type:
     keyed: Keyed | None
     as_keyed: list[str]
     properties: dict[str, str]
-    convenience: list[methods.Convenience]
+    convenience: dict[str, methods.Convenience]
 
     def _map_types(self, f: typing.Callable[[str], str]) -> typing.Self:
         return dataclasses.replace(
@@ -63,6 +63,16 @@ class Type:
             definition=self.definition._map_types(f),
             keyed=self.keyed._map_types(f) if self.keyed else None
         )
+
+    def attributes(self) -> list[str]:
+        attrs = self.definition.attributes()
+        attrs += self.properties.keys()
+        attrs += self.convenience.keys()
+        return attrs
+
+    def check_name(self, name: str) -> None:
+        if name in self.attributes():
+            raise RuntimeError(f'duplicate attributes on {self.py_name}: {name}')
 
 @dataclasses.dataclass
 class Struct:
@@ -86,12 +96,18 @@ class Struct:
             fields={k: v._map_types(f) for k, v in self.fields.items()},
         )
 
+    def attributes(self) -> list[str]:
+        return list(self.fields.keys())
+
 @dataclasses.dataclass
 class Enum:
     variants: dict[str, str]
 
     def _map_types(self, f: typing.Callable[[str], str]) -> typing.Self:
         return self
+
+    def attributes(self) -> list[str]:
+        return list(self.variants.keys())
 
 TypeTree: typing.TypeAlias = tuple[Type, list['TypeTree']]
 
@@ -183,19 +199,16 @@ class Resolver:
         return Enum(dict(variants))
 
     def _set_as_keyed(self, ty: Type) -> None:
-        field_names = []
-        if isinstance(ty.definition, Struct):
-            field_names += list(ty.definition.fields.keys())
-        field_names += list(ty.properties.keys())
-
+        attrs = ty.attributes()
         for key_type, keyed in KEYED_TYPES.items():
-            if keyed.foreign in field_names:
+            if keyed.foreign in attrs:
                 ty.as_keyed.append(key_type)
 
     def _add_convenience(self, ty: Type) -> None:
         wait = WAIT.get(ty.py_name, [])
         if wait:
-            ty.convenience.append(methods.Convenience(
+            ty.check_name('wait')
+            ty.convenience['wait'] = methods.Convenience(
                 spec_name = None,
                 py_name = 'wait',
                 args = [w for w in wait] + [methods.Convenience.Argument(
@@ -207,9 +220,10 @@ class Resolver:
                 py_impl = 'backend._wait',
                 doc = WAIT_DOCS,
                 doc_rest = True,
-                banner = 'Waiting',
-            ))
-            ty.convenience.append(methods.Convenience(
+                tags = ['Waiting'],
+            )
+            ty.check_name('__await__')
+            ty.convenience['__await__'] = methods.Convenience(
                 spec_name = None,
                 py_name = '__await__',
                 args = [w for w in wait],
@@ -217,7 +231,8 @@ class Resolver:
                 py_impl = 'backend._await',
                 doc = AWAIT_DOCS,
                 doc_rest = True,
-            ))
+                tags = ['Waiting'],
+            )
 
     def resolve_schema(self, schema: spec.SchemaLike) -> spec.Schema:
         return self.resolve_schema_named(schema)[1]
@@ -331,12 +346,6 @@ class Resolver:
             keyed = dataclasses.replace(keyed)
             keyed.name = parent + '.' + keyed.name
 
-        properties = PROPERTIES.get(py_name, {})
-        if keyed and keyed.local != keyed.foreign:
-            props_with_key = {keyed.foreign: 'self.' + keyed.local}
-            props_with_key.update(properties)
-            properties = props_with_key
-
         ty = Type(
             spec_name = spec_name,
             py_full_name = py_name,
@@ -345,9 +354,18 @@ class Resolver:
             definition = definition,
             keyed = keyed,
             as_keyed = [],
-            properties = properties,
-            convenience = [],
+            properties = {},
+            convenience = {},
         )
+
+        properties = PROPERTIES.get(py_name, {})
+        if keyed and keyed.local != keyed.foreign:
+            props_with_key = {keyed.foreign: 'self.' + keyed.local}
+            props_with_key.update(properties)
+            properties = props_with_key
+        for prop, val in properties.items():
+            ty.check_name(prop)
+            ty.properties[prop] = val
 
         self._set_as_keyed(ty)
         self._add_convenience(ty)

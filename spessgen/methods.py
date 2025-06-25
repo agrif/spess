@@ -64,8 +64,8 @@ class Convenience:
 
     doc: str | None = None
     doc_rest: bool = False
+    tags: list[str] = dataclasses.field(default_factory=list)
     paginated: bool = False
-    banner: str | None = None
 
 class Converter:
     def __init__(self, spec: spec.Spec, resolver: types.Resolver, responses_module: str | None = None) -> None:
@@ -239,6 +239,69 @@ class Converter:
                     convert = convert,
                 )
 
+    def _add_convenience(self, m: Method, ty: types.Type) -> None:
+        if not ty.keyed:
+            return
+
+        do_conv = False
+        for arg in m.all_args:
+            if arg.consolidated:
+                continue
+            elif arg.keyed == ty.py_name:
+                do_conv = True
+                break
+            else:
+                # only check first argument
+                break
+
+        if not do_conv:
+            return
+
+        try:
+            method_name = CONVENIENCE_METHOD_NAME[ty.py_name][m.spec_name]
+        except KeyError:
+            method_name = m.py_name
+            common = humps.decamelize(ty.py_name.rsplit('.', 1)[-1])
+            if method_name.endswith('_' + common):
+                method_name = method_name[:-len(common) - 1]
+            if method_name.startswith(common + '_'):
+                method_name = method_name[len(common) + 1:]
+            if method_name == common:
+                method_name = 'update'
+
+        args: list[Convenience.Argument | str] = []
+        used_self = False
+        for arg in m.all_args:
+            if arg.consolidated:
+                continue
+            if arg.keyed == ty.py_name and not used_self:
+                used_self = True
+                if arg.optional:
+                    args.append(f'{arg.py_name}=self.{ty.keyed.local}')
+                else:
+                    args.append(f'self.{ty.keyed.local}')
+            else:
+                args.append(Convenience.Argument(
+                    py_name = arg.py_name,
+                    py_type = arg.py_type,
+                    optional = arg.optional,
+                    keyed = arg.keyed,
+                ))
+
+        conv = Convenience(
+            spec_name = m.spec_name,
+            py_name = method_name,
+            args = args,
+            py_result = m.py_result,
+            py_impl = f'self._c.{m.py_name}',
+            doc = m.doc,
+            paginated = m.paginated,
+            tags = m.tags,
+        )
+
+        ty.check_name(conv.py_name)
+        ty.convenience[conv.py_name] = conv
+
     def add_op(self, path: str, method: spec.Path.Method, op: spec.Operation) -> None:
         spec_name = op.operationId
         if spec_name in METHOD_SKIP:
@@ -297,23 +360,31 @@ class Converter:
             for sub_key, convert in KEY_CONSOLIDATE.get(arg.keyed, {}).items():
                 self._consolidate(m, arg, sub_key, convert)
 
+        for keyed_type, keyed in KEYED_TYPES.items():
+            ty = self.resolver.get(keyed_type)
+            self._add_convenience(m, ty)
+
         if m.py_name in self.methods:
             raise RuntimeError(f'conflicting method names: {m.py_name}')
 
         self.methods[m.py_name] = m
 
-    def iter_methods(self, predicate: typing.Callable[[Method], bool] | None = None) -> typing.Iterator[tuple[Method, str | None]]:
+    def iter_methods[M: Method | Convenience](
+            self,
+            methods: dict[str, M],
+            predicate: typing.Callable[[M], bool] | None = None,
+    ) -> typing.Iterator[tuple[M, str | None]]:
         methods_keyed = []
         spec_tags = [tag.name for tag in self.spec.tags]
-        for method in self.methods.values():
+        for method in methods.values():
             if predicate is not None and not predicate(method):
                 continue
             key = []
             for tag in method.tags:
                 if tag in spec_tags:
-                    key.append(spec_tags.index(tag))
+                    key.append((spec_tags.index(tag), tag))
                 else:
-                    key.append(len(spec_tags))
+                    key.append((len(spec_tags), tag))
             key.sort()
             methods_keyed.append((key, method))
 
@@ -321,8 +392,8 @@ class Converter:
         last_banner = None
         for key, method in methods_keyed:
             banner = None
-            if key and key[0] < len(spec_tags):
-                banner = spec_tags[key[0]]
+            if key:
+                banner = key[0][1]
             if banner != last_banner:
                 yield method, banner
                 last_banner = banner

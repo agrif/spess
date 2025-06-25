@@ -1,9 +1,6 @@
 import string
 import typing
 
-import humps
-
-from spessgen.config import *
 import spessgen.methods as methods
 import spessgen.types as types
 import spessgen.writer as writer
@@ -114,9 +111,8 @@ class WriteMethods(writer.Writer):
                     self.print('adhoc = True,')
             self.print(')')
 
-    def write_convenience(self, type: types.Type, conv: methods.Convenience) -> None:
-        if conv.banner:
-            self.write_banner(conv.banner)
+    def write_convenience_method(self, type: types.Type, conv: methods.Convenience, banner: str | None = None) -> None:
+        self.write_banner(banner)
 
         method_args = []
         call_args = []
@@ -145,66 +141,3 @@ class WriteMethods(writer.Writer):
             self.doc_string(conv.doc, rest=conv.doc_rest)
             self.print()
             self.print(f'return {conv.py_impl}({call_args_rep})')
-
-    def write_convenience_method(self, type: types.Type, method: methods.Method, banner: str | None = None) -> None:
-        if not type.keyed:
-            raise ValueError('convenience methods only work on keyed types')
-
-        if banner:
-            self.write_banner(banner)
-
-        try:
-            method_name = CONVENIENCE_METHOD_NAME[type.py_full_name][method.spec_name]
-        except KeyError:
-            method_name = method.py_name
-            common = humps.decamelize(type.py_name)
-            if method_name.endswith('_' + common):
-                method_name = method_name[:-len(common) - 1]
-            if method_name.startswith(common + '_'):
-                method_name = method_name[len(common) + 1:]
-            if method_name == common:
-                method_name = 'update'
-
-        # look for obvious collisions
-        if isinstance(type.definition, types.Struct):
-            if method_name in type.definition.fields:
-                raise RuntimeError(f'convenience method {method_name} ({method.spec_name}) conflicts with field on {type.py_name}')
-        elif isinstance(type.definition, types.Enum):
-            if method_name in type.definition.variants:
-                raise RuntimeError(f'convenience method {method_name} ({method.spec_name}) conflicts with variant on {type.py_name}')
-        else:
-            typing.assert_never(type.definition)
-
-        method_args = []
-        call_args = []
-        return_type = self._resolve_return(method)
-
-        used_self = False
-        for arg in method.all_args:
-            if arg.consolidated:
-                continue
-            ma = f'{arg.py_name}: {self._resolve_type(method, arg)}'
-            ca = arg.py_name
-            if arg.optional:
-                ma += ' | None = None'
-                ca += f'={arg.py_name}'
-
-            if arg.keyed == type.py_full_name and not used_self:
-                used_self = True
-                if arg.optional:
-                    call_args.append(f'{arg.py_name}=self.{type.keyed.local}')
-                else:
-                    call_args.append(f'self.{type.keyed.local}')
-            else:
-                method_args.append(ma)
-                call_args.append(ca)
-
-        method_args_rep = ''.join(', ' + ma for ma in method_args)
-        call_args_rep = ', '.join(call_args)
-
-        self.print()
-        self.print(f'# spec_name: {method.spec_name}')
-        with self.print(f'def {method_name}(self{method_args_rep}) -> {return_type}:'):
-            self.doc_string(method.doc)
-            self.print()
-            self.print(f'return self._c.{method.py_name}({call_args_rep})')

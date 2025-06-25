@@ -2582,26 +2582,6 @@ class Ship(Keyed):
         return self.nav.waypoint_symbol
 
     #
-    # Waiting
-    #
-
-    def wait(self, message: str | None = None) -> None:
-        """Wait interactively until this object is ready for
-        more actions. For a non-interactive, async wait, await this
-        object directly.
-        """
-
-        return backend._wait(self.cooldown.expiration, self.nav.route.arrival, message=message)
-
-    def __await__(self) -> typing.Awaitable[None]:
-        """Wait asynchronously until this object is ready for
-        more actions. For an interactive, blocking wait, see
-        :func:`wait`.
-        """
-
-        return backend._await(self.cooldown.expiration, self.nav.route.arrival)
-
-    #
     # Contracts
     #
 
@@ -3040,6 +3020,26 @@ class Ship(Keyed):
         """
 
         return self._c.patch_ship_nav(self.symbol, flight_mode=flight_mode)
+
+    #
+    # Waiting
+    #
+
+    def wait(self, message: str | None = None) -> None:
+        """Wait interactively until this object is ready for
+        more actions. For a non-interactive, async wait, await this
+        object directly.
+        """
+
+        return backend._wait(self.cooldown.expiration, self.nav.route.arrival, message=message)
+
+    def __await__(self) -> typing.Awaitable[None]:
+        """Wait asynchronously until this object is ready for
+        more actions. For an interactive, blocking wait, see
+        :func:`wait`.
+        """
+
+        return backend._await(self.cooldown.expiration, self.nav.route.arrival)
 
 # spec_name: ShipRegistration
 @dataclasses.dataclass

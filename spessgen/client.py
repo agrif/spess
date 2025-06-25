@@ -46,5 +46,5 @@ class ClientWriter(write_methods.WriteMethods):
         with self.print('class Client(backend.Backend):'):
             self.print(f'SERVER_URL = {self.spec.servers[0].url!r}')
 
-            for method, banner in self.converter.iter_methods():
+            for method, banner in self.converter.iter_methods(self.converter.methods):
                 self.write_method(method, banner)
