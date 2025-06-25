@@ -113,7 +113,8 @@ class Backend:
         self._base_url = self._base_url.lstrip('/')
 
         self._session = requests.Session()
-        self._session.headers.update({'Authorization': f'Bearer {token}'})
+        self._session.headers['User-Agent'] = f'{__package__}/{spess.__version__}'
+        self._session.headers['Authorization'] = f'Bearer {token}'
 
         # spacetrader limits to 2 per second, 30 in 60s
         # put a 5% margin on it to be safe
@@ -123,6 +124,11 @@ class Backend:
         ).synced()
 
         self._aliases: dict[tuple[type[spess._model_bases.Keyed], str], str] = {}
+
+        # grab some information and also test connection
+        self._reset_date = None
+        if isinstance(self, spess.client.Client):
+            self._reset_date = self.status().reset_date
 
     def _debug(self, *args, **kwargs):
         if self.debug:
