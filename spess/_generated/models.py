@@ -8,7 +8,7 @@ import typing
 
 import spess._backend as backend
 from spess._json import Json, from_json, to_json
-from spess._model_bases import date, datetime, Enum, Keyed
+from spess._model_bases import date, datetime, Enum, LocalClient, Keyed
 from spess._paged import Paged
 import spess.responses as responses
 
@@ -247,7 +247,7 @@ class AgentLike(typing.Protocol):
 
 # spec_name: PublicAgent
 @dataclasses.dataclass(eq=False)
-class PublicAgent(Keyed):
+class PublicAgent(LocalClient, Keyed[AgentLike]):
     """Public agent details.
 
     This model is :class:`AgentLike<spess.models.AgentLike>`.
@@ -327,7 +327,7 @@ class SystemLike(typing.Protocol):
 
 # spec_name: System
 @dataclasses.dataclass(eq=False)
-class System(Keyed):
+class System(LocalClient, Keyed[SystemLike]):
     """System details.
 
     This model is :class:`SystemLike<spess.models.SystemLike>`.
@@ -593,7 +593,7 @@ class WaypointLike(typing.Protocol):
 
 # spec_name: Waypoint
 @dataclasses.dataclass(eq=False)
-class Waypoint(Keyed):
+class Waypoint(LocalClient, Keyed[WaypointLike]):
     """A waypoint is a location that ships can travel to such as
     a Planet, Moon or Space Station.
 
@@ -2220,7 +2220,7 @@ class ContractLike(typing.Protocol):
 
 # spec_name: Contract
 @dataclasses.dataclass(eq=False)
-class Contract(Keyed):
+class Contract(LocalClient, Keyed[ContractLike]):
     """Contract details.
 
     This model is :class:`ContractLike<spess.models.ContractLike>`.
@@ -2546,7 +2546,7 @@ class ShipLike(typing.Protocol):
 
 # spec_name: Ship
 @dataclasses.dataclass(eq=False)
-class Ship(Keyed):
+class Ship(LocalClient, Keyed[ShipLike]):
     """Ship details.
 
     This model is :class:`ShipLike<spess.models.ShipLike>`,
@@ -3155,7 +3155,7 @@ class ShipRole(Enum):
 
 # spec_name: ShipNav
 @dataclasses.dataclass
-class ShipNav:
+class ShipNav(LocalClient):
     """The navigation information of the ship.
 
     This model is :class:`SystemLike<spess.models.SystemLike>` and
@@ -3219,7 +3219,7 @@ class ShipNav:
 
 # spec_name: ShipNavRoute
 @dataclasses.dataclass
-class ShipNavRoute:
+class ShipNavRoute(LocalClient):
     """The routing information for the ship's most recent
     transit or current location.
     """
@@ -3466,7 +3466,7 @@ class ShipFuel:
 
 # spec_name: Cooldown
 @dataclasses.dataclass
-class Cooldown:
+class Cooldown(LocalClient):
     """A cooldown is a period of time in which a ship cannot
     perform certain actions.
 

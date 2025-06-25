@@ -9,7 +9,7 @@ import typing
 import spess._backend as backend
 from spess._json import Json, from_json, to_json
 import spess.models as models
-from spess._model_bases import date, datetime, Enum, Keyed
+from spess._model_bases import date, datetime, Enum, LocalClient, Keyed
 from spess._paged import Paged
 
 __all__ = [

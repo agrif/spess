@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import dataclasses
 import datetime as dt
 import enum
 import functools
@@ -35,22 +36,32 @@ class Enum(enum.Enum):
             raise TypeError(type(v))
         return cls(v)
 
-@functools.total_ordering
-class Keyed[SelfKey]:
-    _class_key: typing.ClassVar[str]
+class LocalClient:
     _client: spess.client.Client | None
 
-    @classmethod
-    def _resolve(cls, other: str | SelfKey) -> str:
-        if isinstance(other, str):
-            return other
-        return getattr(other, cls._class_key)
+    def _set_client(self, client: spess.client.Client):
+        self._client = client
+        if dataclasses.is_dataclass(self):
+            for field in dataclasses.fields(self):
+                child = getattr(self, field.name, None)
+                if isinstance(child, LocalClient):
+                    child._set_client(client)
 
     @property
     def _c(self) -> spess.client.Client:
         if getattr(self, '_client', None) is None or self._client is None:
             raise RuntimeError('model has no reference to client')
         return self._client
+
+@functools.total_ordering
+class Keyed[SelfKey]:
+    _class_key: typing.ClassVar[str]
+
+    @classmethod
+    def _resolve(cls, other: str | SelfKey) -> str:
+        if isinstance(other, str):
+            return other
+        return getattr(other, cls._class_key)
 
     def _compare_keys(self, other: object) -> tuple[str, str] | None:
         if isinstance(other, Keyed):

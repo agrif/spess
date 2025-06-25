@@ -18,7 +18,7 @@ class ModelWriter(write_types.WriteTypes):
         if self.resolver.models_module != self.module:
             models = self.resolver.models_module
             self.print(f'import spess.{models} as {models}')
-        self.print(f'from spess._model_bases import date, datetime, Enum, Keyed')
+        self.print(f'from spess._model_bases import date, datetime, Enum, LocalClient, Keyed')
         self.print('from spess._paged import Paged')
         if self.converter.responses_module != self.module:
             responses = self.converter.responses_module

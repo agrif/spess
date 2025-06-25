@@ -88,8 +88,10 @@ class WriteTypes(write_methods.WriteMethods):
     def _write_struct(self, type: types.Type, struct: types.Struct, children: types.Resolver.IterTypes) -> None:
         dataclass_args: dict[str, typing.Any] = {}
         base_classes = []
+        if type.convenience:
+            base_classes.append('LocalClient')
         if type.keyed:
-            base_classes.append('Keyed')
+            base_classes.append(f'Keyed[{type.keyed.name}]')
             dataclass_args['eq'] = False
 
         base = ''

@@ -9,6 +9,7 @@ import typing
 import requests
 import rich.progress
 
+import spess.client
 import spess._json
 import spess.models
 import spess._model_bases
@@ -288,7 +289,7 @@ class Backend:
         # try it as a system first (but strings are always waypoints)
         if not isinstance(waypoint, str):
             try:
-                return self._resolve(spess.models.System, waypoint)
+                return self._resolve(spess.models.System, waypoint) # type: ignore
             except AttributeError:
                 pass
 
@@ -331,6 +332,6 @@ class Backend:
     #
 
     def _merge[T](self, obj: T) -> T:
-        if isinstance(obj, spess._model_bases.Keyed):
-            obj._client = self # type: ignore
+        if isinstance(obj, spess._model_bases.LocalClient) and isinstance(self, spess.client.Client):
+            obj._set_client(self)
         return obj
