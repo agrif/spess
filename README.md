@@ -1,8 +1,18 @@
 SPESS
 =====
 
-Stick your agent token in a file named *~/.config/spess/tokens.txt*,
-install the dependencies (see `pyproject.toml`) and run `python3 -m spess`.
+Install *spess* in a virtual environment:
+
+```
+python3 -m venv spess-env && source ./spess-env/bin/activate
+pip install git+https://github.com/agrif/spess
+```
+
+Stick your agent token in a file named *~/.config/spess/tokens.txt* on
+unix-ey systems. On other systems, check `python -m spess.config` for
+which paths to use.
+
+Run `spess` to get a REPL!
 
 ```py
 me = c.my_agent()
