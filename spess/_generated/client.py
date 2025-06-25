@@ -38,14 +38,8 @@ from spess._paged import Paged
 import spess.responses as responses
 
 __all__ = [
-    'Client', 'Error', 'ParseError', 'ClientError', 'ServerError',
-    'Paged',
+    'Client',
 ]
-
-Error = backend.Error
-ParseError = backend.ParseError
-ClientError = backend.ClientError
-ServerError = backend.ServerError
 
 class Client(backend.Backend):
     SERVER_URL = 'https://api.spacetraders.io/v2'

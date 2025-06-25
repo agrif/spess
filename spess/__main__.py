@@ -7,10 +7,7 @@ import rlcompleter
 import rich.logging
 import rich.pretty
 
-import spess.client
-import spess.models
-import spess.responses
-
+import spess
 from spess.models import *
 
 def main() -> None:

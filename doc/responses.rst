@@ -1,5 +1,5 @@
-`spess.responses`
-=================
+spess.responses
+===============
 
 .. automodule:: spess.responses
    :members:

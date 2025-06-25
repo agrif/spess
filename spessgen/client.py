@@ -25,22 +25,8 @@ class ClientWriter(write_methods.WriteMethods):
             responses = self.converter.responses_module
             self.print(f'import spess.{responses} as {responses}')
 
-        re_exports = [
-            'backend.Error',
-            'backend.ParseError',
-            'backend.ClientError',
-            'backend.ServerError',
-            'Paged',
-        ]
-
         self.print()
-        self.dunder_all(['Client'] + [r.rsplit('.', 1)[-1] for r in re_exports])
-
-        self.print()
-        for export in re_exports:
-            exportlocal = export.rsplit('.', 1)[-1]
-            if exportlocal != export:
-                self.print(f'{exportlocal} = {export}')
+        self.dunder_all(['Client'])
 
         self.print()
         with self.print('class Client(backend.Backend):'):

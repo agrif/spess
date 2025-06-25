@@ -1,5 +1,5 @@
-`spess.client`
-==============
+spess.client
+============
 
 .. automodule:: spess.client
 

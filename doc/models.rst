@@ -1,5 +1,5 @@
-`spess.models`
-==============
+spess.models
+============
 
 .. automodule:: spess.models
    :members:
