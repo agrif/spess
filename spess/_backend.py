@@ -18,8 +18,10 @@ import spess._rate_limit
 #: Set to False to turn off interactive waits.
 _wait_interactive: bool = True
 
-def _wait(message: str, expirations: list[dt.datetime | None]) -> None:
+def _wait(*expirations: dt.datetime | None, message: str | None = None) -> None:
     """Backend for model wait methods."""
+    if message is None:
+        message = 'waiting'
     expiration = max(e for e in expirations if e is not None)
     start = dt.datetime.now(dt.UTC)
     expiration += dt.timedelta(seconds=1)
@@ -48,7 +50,7 @@ def _wait(message: str, expirations: list[dt.datetime | None]) -> None:
                 return
             time.sleep(1)
 
-async def _await(expirations: list[dt.datetime | None]) -> None:
+async def _await(*expirations: dt.datetime | None) -> None:
     """Backend for model __await__ methods."""
     expiration = max(e for e in expirations if e is not None)
     start = dt.datetime.now(dt.UTC)

@@ -11,16 +11,6 @@ KEY_TYPE_DOCS = ' '.join([
     '``{type.keyed.name}``.',
 ])
 
-WAIT_DOCS = ' '.join([
-    'Wait interactively until this object is ready for more actions.',
-    'For a non-interactive, async wait, await this object directly.',
-])
-
-AWAIT_DOCS = ' '.join([
-    'Wait asynchronously until this object is ready for more actions.',
-    'For an interactive, blocking wait, see :func:`wait`.',
-])
-
 class WriteTypes(write_methods.WriteMethods):
     def write_types(self, iter_types: types.Resolver.IterTypes) -> None:
         for type, children in iter_types:
@@ -76,10 +66,11 @@ class WriteTypes(write_methods.WriteMethods):
 
     def _write_bottom(self, type: types.Type) -> None:
         self._write_properties(type)
-        self._write_wait(type)
         self._write_convenience_methods(type)
 
     def _write_convenience_methods(self, type: types.Type) -> None:
+        for conv in type.convenience:
+            self.write_convenience(type, conv)
         # convenience methods are anything with arguments keyed to us
         if not type.keyed:
             return
@@ -96,28 +87,6 @@ class WriteTypes(write_methods.WriteMethods):
 
         for method, banner in self.converter.iter_methods(is_ours):
             self.write_convenience_method(type, method, banner=banner)
-
-    def _write_wait(self, type: types.Type) -> None:
-        if not type.wait:
-            return
-
-        self.print()
-        with self.print("def wait(self, message: str = 'waiting') -> None:"):
-            self.doc_string(WAIT_DOCS, rest=True)
-            self.print()
-            with self.print('backend._wait(message, ['):
-                for wait in type.wait:
-                    self.print(f'{wait},')
-            self.print('])')
-
-        self.print()
-        with self.print("def __await__(self) -> typing.Awaitable[None]:"):
-            self.doc_string(AWAIT_DOCS, rest=True)
-            self.print()
-            with self.print('return backend._await(['):
-                for wait in type.wait:
-                    self.print(f'{wait},')
-            self.print('])')
 
     def _write_struct(self, type: types.Type, struct: types.Struct, children: types.Resolver.IterTypes) -> None:
         dataclass_args: dict[str, typing.Any] = {}

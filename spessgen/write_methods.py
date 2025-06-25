@@ -58,7 +58,7 @@ class WriteMethods(writer.Writer):
             return self._collect_args('body', args, json=True)
         self.print(f'body = to_json({args.py_name}),')
 
-    def _resolve_type(self, method: methods.Method, arg: methods.Method.Argument) -> str:
+    def _resolve_type(self, method: methods.Method | methods.Convenience, arg: methods.Method.Argument | methods.Convenience.Argument) -> str:
         py_type = types.remove_prefix(arg.py_type, prefix=self.module)
         if arg.keyed:
             ktype = self.resolver.get(arg.keyed)
@@ -68,7 +68,7 @@ class WriteMethods(writer.Writer):
             return f'{py_type} | {kname}'
         return py_type
 
-    def _resolve_return(self, method: methods.Method) -> str:
+    def _resolve_return(self, method: methods.Method | methods.Convenience) -> str:
         result = types.remove_prefix(method.py_result, prefix=self.module)
         if method.paginated:
             return f'Paged[{result}]'
@@ -113,6 +113,38 @@ class WriteMethods(writer.Writer):
                 if method.adhoc:
                     self.print('adhoc = True,')
             self.print(')')
+
+    def write_convenience(self, type: types.Type, conv: methods.Convenience) -> None:
+        if conv.banner:
+            self.write_banner(conv.banner)
+
+        method_args = []
+        call_args = []
+        return_type = self._resolve_return(conv)
+
+        for arg in conv.args:
+            if isinstance(arg, str):
+                call_args.append(arg)
+                continue
+
+            ma = f'{arg.py_name}: {self._resolve_type(conv, arg)}'
+            ca = arg.py_name
+            if arg.optional:
+                ma += ' | None = None'
+                ca += f'={arg.py_name}'
+            method_args.append(ma)
+            call_args.append(ca)
+
+        method_args_rep = ''.join(', ' + ma for ma in method_args)
+        call_args_rep = ', '.join(call_args)
+
+        self.print()
+        if conv.spec_name:
+            self.print(f'# spec_name: {conv.spec_name}')
+        with self.print(f'def {conv.py_name}(self{method_args_rep}) -> {return_type}:'):
+            self.doc_string(conv.doc, rest=conv.doc_rest)
+            self.print()
+            self.print(f'return {conv.py_impl}({call_args_rep})')
 
     def write_convenience_method(self, type: types.Type, method: methods.Method, banner: str | None = None) -> None:
         if not type.keyed:

@@ -2581,16 +2581,17 @@ class Ship(Keyed):
 
         return self.nav.waypoint_symbol
 
-    def wait(self, message: str = 'waiting') -> None:
+    #
+    # Waiting
+    #
+
+    def wait(self, message: str | None = None) -> None:
         """Wait interactively until this object is ready for
         more actions. For a non-interactive, async wait, await this
         object directly.
         """
 
-        backend._wait(message, [
-            self.cooldown.expiration,
-            self.nav.route.arrival,
-        ])
+        return backend._wait(self.cooldown.expiration, self.nav.route.arrival, message=message)
 
     def __await__(self) -> typing.Awaitable[None]:
         """Wait asynchronously until this object is ready for
@@ -2598,10 +2599,7 @@ class Ship(Keyed):
         :func:`wait`.
         """
 
-        return backend._await([
-            self.cooldown.expiration,
-            self.nav.route.arrival,
-        ])
+        return backend._await(self.cooldown.expiration, self.nav.route.arrival)
 
     #
     # Contracts
@@ -3135,15 +3133,17 @@ class ShipNav:
             flight_mode = from_json(FlightMode, v['flightMode']),
         )
 
-    def wait(self, message: str = 'waiting') -> None:
+    #
+    # Waiting
+    #
+
+    def wait(self, message: str | None = None) -> None:
         """Wait interactively until this object is ready for
         more actions. For a non-interactive, async wait, await this
         object directly.
         """
 
-        backend._wait(message, [
-            self.route.arrival,
-        ])
+        return backend._wait(self.route.arrival, message=message)
 
     def __await__(self) -> typing.Awaitable[None]:
         """Wait asynchronously until this object is ready for
@@ -3151,9 +3151,7 @@ class ShipNav:
         :func:`wait`.
         """
 
-        return backend._await([
-            self.route.arrival,
-        ])
+        return backend._await(self.route.arrival)
 
 # spec_name: ShipNavRoute
 @dataclasses.dataclass
@@ -3192,15 +3190,17 @@ class ShipNavRoute:
             arrival = from_json(datetime, v['arrival']),
         )
 
-    def wait(self, message: str = 'waiting') -> None:
+    #
+    # Waiting
+    #
+
+    def wait(self, message: str | None = None) -> None:
         """Wait interactively until this object is ready for
         more actions. For a non-interactive, async wait, await this
         object directly.
         """
 
-        backend._wait(message, [
-            self.arrival,
-        ])
+        return backend._wait(self.arrival, message=message)
 
     def __await__(self) -> typing.Awaitable[None]:
         """Wait asynchronously until this object is ready for
@@ -3208,9 +3208,7 @@ class ShipNavRoute:
         :func:`wait`.
         """
 
-        return backend._await([
-            self.arrival,
-        ])
+        return backend._await(self.arrival)
 
 # spec_name: ShipNavRouteWaypoint
 @dataclasses.dataclass
@@ -3440,15 +3438,17 @@ class Cooldown:
             expiration = from_json(datetime, v['expiration']) if 'expiration' in v else None,
         )
 
-    def wait(self, message: str = 'waiting') -> None:
+    #
+    # Waiting
+    #
+
+    def wait(self, message: str | None = None) -> None:
         """Wait interactively until this object is ready for
         more actions. For a non-interactive, async wait, await this
         object directly.
         """
 
-        backend._wait(message, [
-            self.expiration,
-        ])
+        return backend._wait(self.expiration, message=message)
 
     def __await__(self) -> typing.Awaitable[None]:
         """Wait asynchronously until this object is ready for
@@ -3456,9 +3456,7 @@ class Cooldown:
         :func:`wait`.
         """
 
-        return backend._await([
-            self.expiration,
-        ])
+        return backend._await(self.expiration)
 
 # spec_name: ChartTransaction
 @dataclasses.dataclass

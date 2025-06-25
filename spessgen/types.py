@@ -8,7 +8,18 @@ import typing
 import humps
 
 from spessgen.config import *
+import spessgen.methods as methods
 import spessgen.spec as spec
+
+WAIT_DOCS = ' '.join([
+    'Wait interactively until this object is ready for more actions.',
+    'For a non-interactive, async wait, await this object directly.',
+])
+
+AWAIT_DOCS = ' '.join([
+    'Wait asynchronously until this object is ready for more actions.',
+    'For an interactive, blocking wait, see :func:`wait`.',
+])
 
 def remove_prefix(name: str, prefix: str | None = None, replace: str | None = None) -> str:
     # generic arguments, apply to all
@@ -43,7 +54,7 @@ class Type:
     keyed: Keyed | None
     as_keyed: list[str]
     properties: dict[str, str]
-    wait: list[str]
+    convenience: list[methods.Convenience]
 
     def _map_types(self, f: typing.Callable[[str], str]) -> typing.Self:
         return dataclasses.replace(
@@ -181,6 +192,33 @@ class Resolver:
             if keyed.foreign in field_names:
                 ty.as_keyed.append(key_type)
 
+    def _add_convenience(self, ty: Type) -> None:
+        wait = WAIT.get(ty.py_name, [])
+        if wait:
+            ty.convenience.append(methods.Convenience(
+                spec_name = None,
+                py_name = 'wait',
+                args = [w for w in wait] + [methods.Convenience.Argument(
+                    py_name = 'message',
+                    py_type = 'str',
+                    optional = True,
+                )],
+                py_result = 'None',
+                py_impl = 'backend._wait',
+                doc = WAIT_DOCS,
+                doc_rest = True,
+                banner = 'Waiting',
+            ))
+            ty.convenience.append(methods.Convenience(
+                spec_name = None,
+                py_name = '__await__',
+                args = [w for w in wait],
+                py_result = 'typing.Awaitable[None]',
+                py_impl = 'backend._await',
+                doc = AWAIT_DOCS,
+                doc_rest = True,
+            ))
+
     def resolve_schema(self, schema: spec.SchemaLike) -> spec.Schema:
         return self.resolve_schema_named(schema)[1]
 
@@ -306,12 +344,13 @@ class Resolver:
             doc = schema.description,
             definition = definition,
             keyed = keyed,
-            properties = properties,
-            wait = WAIT.get(py_name, []),
             as_keyed = [],
+            properties = properties,
+            convenience = [],
         )
 
         self._set_as_keyed(ty)
+        self._add_convenience(ty)
 
         if define:
             self._add_type(ty, subtypes)

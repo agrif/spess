@@ -46,6 +46,27 @@ class Method:
             return self.path_args + self.query_args + self.body_args
         return self.path_args + self.query_args + [self.body_args]
 
+@dataclasses.dataclass
+class Convenience:
+    @dataclasses.dataclass
+    class Argument:
+        py_name: str
+        py_type: str
+        optional: bool = False
+        keyed: str | None = None
+
+    spec_name: str | None
+    py_name: str
+    #: list of argument where if argument is str, it's an input
+    args: list[Argument | str]
+    py_result: str
+    py_impl: str
+
+    doc: str | None = None
+    doc_rest: bool = False
+    paginated: bool = False
+    banner: str | None = None
+
 class Converter:
     def __init__(self, spec: spec.Spec, resolver: types.Resolver, responses_module: str | None = None) -> None:
         self.spec = spec
