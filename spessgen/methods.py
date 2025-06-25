@@ -239,40 +239,47 @@ class Converter:
                     convert = convert,
                 )
 
-    def _add_convenience(self, m: Method, ty: types.Type) -> None:
-        do_conv = False
+    def _check_convenience(self, m: Method, ty: types.Type) -> tuple[bool, str | None]:
+        try:
+            return (True, CONVENIENCE_METHOD_EXTRA[ty.py_name][m.spec_name])
+        except KeyError:
+            pass
+
         for arg in m.all_args:
             if arg.consolidated:
                 continue
 
             if arg.keyed == ty.py_name:
                 # first argument is us
-                do_conv = True
-                break
+                return (True, None)
             elif arg.keyed in ty.as_keyed:
                 key_common = humps.decamelize(arg.keyed.rsplit('.', 1)[-1])
                 if key_common == m.py_name:
                     # first argument is *like* us, and this is an update
-                    do_conv = True
-                    break
+                    return (True, None)
 
             # only check first argument
             break
 
+        return (False, None)
+
+    def _add_convenience(self, m: Method, ty: types.Type) -> None:
+        do_conv, method_name = self._check_convenience(m, ty)
         if not do_conv:
             return
 
-        try:
-            method_name = CONVENIENCE_METHOD_NAME[ty.py_name][m.spec_name]
-        except KeyError:
-            method_name = m.py_name
-            common = humps.decamelize(ty.py_name.rsplit('.', 1)[-1])
-            if method_name == common:
-                method_name = 'update'
-            if method_name.endswith('_' + common):
-                method_name = method_name[:-len(common) - 1]
-            if method_name.startswith(common + '_'):
-                method_name = method_name[len(common) + 1:]
+        if not method_name:
+            try:
+                method_name = CONVENIENCE_METHOD_NAME[ty.py_name][m.spec_name]
+            except KeyError:
+                method_name = m.py_name
+                common = humps.decamelize(ty.py_name.rsplit('.', 1)[-1])
+                if method_name == common:
+                    method_name = 'update'
+                if method_name.endswith('_' + common):
+                    method_name = method_name[:-len(common) - 1]
+                if method_name.startswith(common + '_'):
+                    method_name = method_name[len(common) + 1:]
 
         args: list[Convenience.Argument | str] = []
         used_self = False

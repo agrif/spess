@@ -2608,7 +2608,7 @@ class ContractDeliverGood(LocalClient):
 
 # spec_name: Agent
 @dataclasses.dataclass
-class Agent:
+class Agent(LocalClient):
     """Agent details.
 
     This model is :class:`AgentLike<spess.models.AgentLike>`.
@@ -2658,6 +2658,22 @@ class Agent:
         """Alias for ``self.symbol``."""
 
         return self.symbol
+
+    #
+    # Agents
+    #
+
+    # spec_name: get-agent
+    def public(self) -> PublicAgent:
+        """Get public details for a specific agent."""
+
+        return self._c.agent(self.symbol)
+
+    # spec_name: get-my-agent
+    def update(self) -> Agent:
+        """Fetch your agent's details."""
+
+        return self._c.my_agent()
 
 # spec_name: AgentEvent
 @dataclasses.dataclass

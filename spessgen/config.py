@@ -247,6 +247,14 @@ CONVENIENCE_METHOD_NAME: dict[str, dict[str, str]] = {
     },
 }
 
+CONVENIENCE_METHOD_EXTRA: dict[str, dict[str, str]] = {
+    # add an update to Agent, and a link to the PublicAgent
+    'models.Agent': {
+        'get-agent': 'public',
+        'get-my-agent': 'update',
+    }
+}
+
 # add wait methods. map from PyType to [expr, ...]
 # expr is a datetime representing when the wait is over
 WAIT: dict[str, list[str]] = {
