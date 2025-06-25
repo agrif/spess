@@ -5,6 +5,7 @@ import datetime as dt
 import sys
 import time
 import typing
+import weakref
 
 import requests
 import rich.progress
@@ -12,7 +13,7 @@ import rich.progress
 import spess.client
 import spess._json
 import spess.models
-import spess._model_bases
+import spess._model_bases as bases
 import spess._paged
 import spess._rate_limit
 
@@ -104,6 +105,16 @@ class Backend:
     #: The default base url to use for requests.
     SERVER_URL: str
 
+    debug: bool
+
+    _base_url: str
+    _session: requests.Session
+    _limit: spess._rate_limit.Limiter
+    _reset_date: dt.date | None
+
+    _aliases: dict[tuple[type[bases.Keyed], str], str]
+    _sync_table: weakref.WeakValueDictionary[tuple[type[bases.Synced], str], bases.Synced]
+
     def __init__(self, token: str, url: str | None = None, debug: bool = False):
         self.debug = debug
 
@@ -123,7 +134,8 @@ class Backend:
             spess._rate_limit.Windowed(30, 60.0, margin=0.05),
         ).synced()
 
-        self._aliases: dict[tuple[type[spess._model_bases.Keyed], str], str] = {}
+        self._aliases = {}
+        self._sync_table = weakref.WeakValueDictionary()
 
         # grab some information and also test connection
         self._reset_date = None
@@ -233,7 +245,7 @@ class Backend:
         except Exception:
             raise ParseError(message=f'response is not {ty!r}')
 
-        return self._merge(data)
+        return self._merge(ty, data)
 
     def _call_paginated[T](
             self,
@@ -275,7 +287,7 @@ class Backend:
             except Exception:
                 raise ParseError(message=f'paged response data is not {ty!r}')
 
-            return (meta, [self._merge(x) for x in data])
+            return (meta, [self._merge(ty, x) for x in data])
 
         return spess._paged.Paged(get_page)
 
@@ -283,7 +295,7 @@ class Backend:
     # Aliases and Keys
     #
 
-    def _resolve[T](self, ty: type[spess._model_bases.Keyed[T]], key: str | T) -> str:
+    def _resolve[T](self, ty: type[bases.Keyed[T]], key: str | T) -> str:
         if isinstance(key, str):
             try:
                 return self._aliases[(ty, key)]
@@ -305,7 +317,7 @@ class Backend:
             raise ValueError(f'bad waypoint: {waypoint}')
         return waypoint.rsplit('-', 1)[0]
 
-    def add_alias[T](self, ty: type[spess._model_bases.Keyed[T]], name: str, value: str | T) -> None:
+    def add_alias[T](self, ty: type[bases.Keyed[T]], name: str, value: str | T) -> None:
         """Add an alias for the given type. This alias will be
         accepted as a valid name for this object in API calls. For
         example,
@@ -321,12 +333,12 @@ class Backend:
         """
         self._aliases[(ty, name)] = self._resolve(ty, value)
 
-    def remove_alias(self, ty: type[spess._model_bases.Keyed], name: str) -> str:
+    def remove_alias(self, ty: type[bases.Keyed], name: str) -> str:
         """Removes an alias. See :func:`add_alias` for more info."""
         return self._aliases.pop((ty, name))
 
     @property
-    def aliases(self) -> typing.Iterable[tuple[type[spess._model_bases.Keyed], str, str]]:
+    def aliases(self) -> typing.Iterable[tuple[type[bases.Keyed], str, str]]:
         """Iterate over the defined aliases. See :func:`add_alias`
         for more info.
         """
@@ -337,7 +349,17 @@ class Backend:
     # Model Manipulation
     #
 
-    def _merge[T](self, obj: T) -> T:
-        if isinstance(obj, spess._model_bases.LocalClient) and isinstance(self, spess.client.Client):
+    def _merge[T](self, ty: type[T], obj: T) -> T:
+        if isinstance(obj, bases.LocalClient) and isinstance(self, spess.client.Client):
             obj._set_client(self)
+
+        if isinstance(obj, bases.Synced):
+            sync_key = (type(obj), obj._class_key)
+            try:
+                existing = self._sync_table[sync_key]
+            except KeyError:
+                self._sync_table[sync_key] = obj
+            else:
+                obj = existing._update(obj) # type: ignore
+
         return obj

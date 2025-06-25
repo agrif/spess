@@ -53,10 +53,18 @@ class LocalClient:
             raise RuntimeError('model has no reference to client')
         return self._client
 
-@functools.total_ordering
-class Keyed[SelfKey]:
+class Synced:
     _class_key: typing.ClassVar[str]
 
+    def _update(self, other: typing.Self) -> typing.Self:
+        if dataclasses.is_dataclass(other):
+            for field in dataclasses.fields(other):
+                setattr(self, field.name, getattr(other, field.name))
+            return self
+        return other
+
+@functools.total_ordering
+class Keyed[SelfKey](Synced):
     @classmethod
     def _resolve(cls, other: str | SelfKey) -> str:
         if isinstance(other, str):
