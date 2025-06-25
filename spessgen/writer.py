@@ -64,6 +64,9 @@ class Writer:
         lines = text.splitlines()
         for i, line in enumerate(lines):
             if line.strip():
+                if line.lstrip().startswith('*'):
+                    yield line
+                    continue
                 line = line.replace('\t', ' ')
                 indent_amt = len(line) - len(line.lstrip())
                 our_indent = ' ' * indent_amt + indent
@@ -72,7 +75,7 @@ class Writer:
             else:
                 yield ''
 
-    def _markdown_to_rest(self, md: str) -> str:
+    def markdown_to_rest(self, md: str) -> str:
         ast = commonmark.Parser().parse(md)
         rst = commonmark.ReStructuredTextRenderer().render(ast).strip()
         return rst
@@ -80,7 +83,7 @@ class Writer:
     def doc_string(self, doc: str | None, rest=False) -> None:
         if doc:
             if not rest:
-                doc = self._markdown_to_rest(doc)
+                doc = self.markdown_to_rest(doc)
             lines = list(self.textwrap(doc, initial_indent='   ' * 3))
             for i, line in enumerate(lines):
                 bare_repr = repr(line)[1:-1]
@@ -98,7 +101,7 @@ class Writer:
     def doc_comment(self, doc: str | None, rest=False) -> None:
         if doc:
             if not rest:
-                doc = self._markdown_to_rest(doc)
+                doc = self.markdown_to_rest(doc)
             lines = self.textwrap(doc, indent='#: ')
             for line in lines:
                 self.print(line)

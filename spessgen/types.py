@@ -404,6 +404,13 @@ class Resolver:
                 self.iter_tree(module=module, types=children, prefix=prefix if absolute else ty.py_name),
             )
 
+    def iter_flat(self, module: str | None, absolute: bool = False, types: IterTypes | None = None) -> typing.Iterator[Type]:
+        if types is None:
+            types = self.iter_tree(module=module, absolute=absolute)
+        for ty, children in types:
+            yield ty
+            yield from self.iter_flat(module=module, absolute=absolute, types=children)
+
     def get(self, py_name: str, from_types: IterTypes | None = None) -> Type:
         if from_types is None:
             from_types = self.iter_tree(absolute=True)

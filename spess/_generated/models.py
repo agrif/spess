@@ -234,6 +234,12 @@ class AgentLike(typing.Protocol):
     unambiguously refer to a single :class:`.PublicAgent`. Any type
     that has the ``agent_symbol`` attribute is accepted as a valid
     ``AgentLike``.
+
+    The following models are ``AgentLike``:
+
+    * :class:`Agent<spess.models.Agent>`
+    * :class:`PublicAgent<spess.models.PublicAgent>`
+    * :class:`ShipyardTransaction<spess.models.ShipyardTransaction>`
     """
 
     @property
@@ -244,7 +250,7 @@ class AgentLike(typing.Protocol):
 class PublicAgent(Keyed):
     """Public agent details.
 
-    This model is ``AgentLike``.
+    This model is :class:`AgentLike<spess.models.AgentLike>`.
     """
 
     _class_key: typing.ClassVar[str] = 'agent_symbol'
@@ -304,6 +310,16 @@ class SystemLike(typing.Protocol):
     unambiguously refer to a single :class:`.System`. Any type that
     has the ``system_symbol`` attribute is accepted as a valid
     ``SystemLike``.
+
+    The following models are ``SystemLike``:
+
+    * :class:`ScannedSystem<spess.models.ScannedSystem>`
+    * :class:`ScannedWaypoint<spess.models.ScannedWaypoint>`
+    * :class:`Ship<spess.models.Ship>`
+    * :class:`ShipNav<spess.models.ShipNav>`
+    * :class:`ShipNavRouteWaypoint<spess.models.ShipNavRouteWaypoint>`
+    * :class:`System<spess.models.System>`
+    * :class:`Waypoint<spess.models.Waypoint>`
     """
 
     @property
@@ -314,7 +330,7 @@ class SystemLike(typing.Protocol):
 class System(Keyed):
     """System details.
 
-    This model is ``SystemLike``.
+    This model is :class:`SystemLike<spess.models.SystemLike>`.
     """
 
     _class_key: typing.ClassVar[str] = 'system_symbol'
@@ -419,7 +435,7 @@ class SystemType(Enum):
 class SystemWaypoint:
     """Waypoint details.
 
-    This model is ``WaypointLike``.
+    This model is :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     #: The symbol of the waypoint.
@@ -494,7 +510,7 @@ class WaypointOrbital:
     """An orbital is another waypoint that orbits a parent
     waypoint.
 
-    This model is ``WaypointLike``.
+    This model is :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     #: The symbol of the orbiting waypoint.
@@ -547,6 +563,29 @@ class WaypointLike(typing.Protocol):
     unambiguously refer to a single :class:`.Waypoint`. Any type that
     has the ``waypoint_symbol`` attribute is accepted as a valid
     ``WaypointLike``.
+
+    The following models are ``WaypointLike``:
+
+    * :class:`Chart<spess.models.Chart>`
+    * :class:`ChartTransaction<spess.models.ChartTransaction>`
+    * :class:`Construction<spess.models.Construction>`
+    * :class:`ContractDeliverGood<spess.models.ContractDeliverGood>`
+    * :class:`JumpGate<spess.models.JumpGate>`
+    * :class:`Market<spess.models.Market>`
+    * :class:`MarketTransaction<spess.models.MarketTransaction>`
+    * :class:`RepairTransaction<spess.models.RepairTransaction>`
+    * :class:`ScannedWaypoint<spess.models.ScannedWaypoint>`
+    * :class:`ScrapTransaction<spess.models.ScrapTransaction>`
+    * :class:`Ship<spess.models.Ship>`
+    * :class:`ShipModificationTransaction<spess.models.ShipModificationTransaction>`
+    * :class:`ShipNav<spess.models.ShipNav>`
+    * :class:`ShipNavRouteWaypoint<spess.models.ShipNavRouteWaypoint>`
+    * :class:`Shipyard<spess.models.Shipyard>`
+    * :class:`ShipyardTransaction<spess.models.ShipyardTransaction>`
+    * :class:`Survey<spess.models.Survey>`
+    * :class:`SystemWaypoint<spess.models.SystemWaypoint>`
+    * :class:`Waypoint<spess.models.Waypoint>`
+    * :class:`WaypointOrbital<spess.models.WaypointOrbital>`
     """
 
     @property
@@ -558,7 +597,8 @@ class Waypoint(Keyed):
     """A waypoint is a location that ships can travel to such as
     a Planet, Moon or Space Station.
 
-    This model is ``SystemLike`` and ``WaypointLike``.
+    This model is :class:`SystemLike<spess.models.SystemLike>` and
+    :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     _class_key: typing.ClassVar[str] = 'waypoint_symbol'
@@ -881,7 +921,7 @@ class Chart:
     """The chart of a system or waypoint, which makes the
     location visible to other agents.
 
-    This model is ``WaypointLike``.
+    This model is :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     #: The symbol of the waypoint.
@@ -914,7 +954,7 @@ class Chart:
 class Construction:
     """The construction details of a waypoint.
 
-    This model is ``WaypointLike``.
+    This model is :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     #: The symbol of the waypoint.
@@ -1199,7 +1239,7 @@ class ShipCargoItem:
 class Market:
     """Market details.
 
-    This model is ``WaypointLike``.
+    This model is :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     #: The symbol of the market. The symbol is the same as the
@@ -1286,7 +1326,8 @@ class TradeGood:
 class MarketTransaction:
     """Result of a transaction with a market.
 
-    This model is ``ShipLike`` and ``WaypointLike``.
+    This model is :class:`ShipLike<spess.models.ShipLike>` and
+    :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     # spec_name: MarketTransaction.type
@@ -1435,7 +1476,7 @@ class ActivityLevel(Enum):
 class JumpGate:
     """Details of a jump gate waypoint.
 
-    This model is ``WaypointLike``.
+    This model is :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     #: The symbol of the waypoint.
@@ -1470,7 +1511,7 @@ class JumpGate:
 class Shipyard:
     """Shipyard details.
 
-    This model is ``WaypointLike``.
+    This model is :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     # spec_name: Shipyard.shipTypes
@@ -1564,7 +1605,9 @@ class ShipType(Enum):
 class ShipyardTransaction:
     """Results of a transaction with a shipyard.
 
-    This model is ``AgentLike``, ``ShipLike``, and ``WaypointLike``.
+    This model is :class:`AgentLike<spess.models.AgentLike>`,
+    :class:`ShipLike<spess.models.ShipLike>`, and
+    :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     #: The symbol of the waypoint.
@@ -2166,6 +2209,10 @@ class ContractLike(typing.Protocol):
     unambiguously refer to a single :class:`.Contract`. Any type that
     has the ``contract_id`` attribute is accepted as a valid
     ``ContractLike``.
+
+    The following models are ``ContractLike``:
+
+    * :class:`Contract<spess.models.Contract>`
     """
 
     @property
@@ -2176,7 +2223,7 @@ class ContractLike(typing.Protocol):
 class Contract(Keyed):
     """Contract details.
 
-    This model is ``ContractLike``.
+    This model is :class:`ContractLike<spess.models.ContractLike>`.
     """
 
     _class_key: typing.ClassVar[str] = 'contract_id'
@@ -2349,7 +2396,7 @@ class ContractDeliverGood:
     """The details of a delivery contract. Includes the type of
     good, units needed, and the destination.
 
-    This model is ``WaypointLike``.
+    This model is :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     #: The symbol of the trade good to deliver.
@@ -2392,7 +2439,7 @@ class ContractDeliverGood:
 class Agent:
     """Agent details.
 
-    This model is ``AgentLike``.
+    This model is :class:`AgentLike<spess.models.AgentLike>`.
     """
 
     #: Account ID that is tied to this agent. Only included on your
@@ -2478,6 +2525,20 @@ class ShipLike(typing.Protocol):
     """This abstract class represents all objects that
     unambiguously refer to a single :class:`.Ship`. Any type that has
     the ``ship_symbol`` attribute is accepted as a valid ``ShipLike``.
+
+    The following models are ``ShipLike``:
+
+    * :class:`ChartTransaction<spess.models.ChartTransaction>`
+    * :class:`Cooldown<spess.models.Cooldown>`
+    * :class:`Extraction<spess.models.Extraction>`
+    * :class:`MarketTransaction<spess.models.MarketTransaction>`
+    * :class:`RepairTransaction<spess.models.RepairTransaction>`
+    * :class:`ScannedShip<spess.models.ScannedShip>`
+    * :class:`ScrapTransaction<spess.models.ScrapTransaction>`
+    * :class:`Ship<spess.models.Ship>`
+    * :class:`ShipModificationTransaction<spess.models.ShipModificationTransaction>`
+    * :class:`ShipyardTransaction<spess.models.ShipyardTransaction>`
+    * :class:`Siphon<spess.models.Siphon>`
     """
 
     @property
@@ -2488,7 +2549,9 @@ class ShipLike(typing.Protocol):
 class Ship(Keyed):
     """Ship details.
 
-    This model is ``ShipLike``, ``SystemLike``, and ``WaypointLike``.
+    This model is :class:`ShipLike<spess.models.ShipLike>`,
+    :class:`SystemLike<spess.models.SystemLike>`, and
+    :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     _class_key: typing.ClassVar[str] = 'ship_symbol'
@@ -3095,7 +3158,8 @@ class ShipRole(Enum):
 class ShipNav:
     """The navigation information of the ship.
 
-    This model is ``SystemLike`` and ``WaypointLike``.
+    This model is :class:`SystemLike<spess.models.SystemLike>` and
+    :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     #: The symbol of the system.
@@ -3215,7 +3279,8 @@ class ShipNavRoute:
 class ShipNavRouteWaypoint:
     """The destination or departure of a ships nav route.
 
-    This model is ``SystemLike`` and ``WaypointLike``.
+    This model is :class:`SystemLike<spess.models.SystemLike>` and
+    :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     #: The symbol of the waypoint.
@@ -3405,7 +3470,7 @@ class Cooldown:
     """A cooldown is a period of time in which a ship cannot
     perform certain actions.
 
-    This model is ``ShipLike``.
+    This model is :class:`ShipLike<spess.models.ShipLike>`.
     """
 
     #: The symbol of the ship that is on cooldown
@@ -3463,7 +3528,8 @@ class Cooldown:
 class ChartTransaction:
     """Result of a chart transaction.
 
-    This model is ``ShipLike`` and ``WaypointLike``.
+    This model is :class:`ShipLike<spess.models.ShipLike>` and
+    :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     #: The symbol of the waypoint.
@@ -3500,7 +3566,7 @@ class ChartTransaction:
 class Extraction:
     """Extraction details.
 
-    This model is ``ShipLike``.
+    This model is :class:`ShipLike<spess.models.ShipLike>`.
     """
 
     #: Symbol of the ship that executed the extraction.
@@ -3631,7 +3697,7 @@ class Survey:
     extraction location and the types of resources that can be found
     there.
 
-    This model is ``WaypointLike``.
+    This model is :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     #: A unique signature for the location of this survey. This
@@ -3719,7 +3785,7 @@ class SurveySize(Enum):
 class ScannedSystem:
     """Details of a system was that scanned.
 
-    This model is ``SystemLike``.
+    This model is :class:`SystemLike<spess.models.SystemLike>`.
     """
 
     #: Symbol of the system.
@@ -3770,7 +3836,8 @@ class ScannedSystem:
 class ScannedWaypoint:
     """A waypoint that was scanned by a ship.
 
-    This model is ``SystemLike`` and ``WaypointLike``.
+    This model is :class:`SystemLike<spess.models.SystemLike>` and
+    :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     #: The symbol of the waypoint.
@@ -3837,7 +3904,7 @@ class ScannedShip:
     """The ship that was scanned. Details include information
     about the ship that could be detected by the scanner.
 
-    This model is ``ShipLike``.
+    This model is :class:`ShipLike<spess.models.ShipLike>`.
     """
 
     # spec_name: ScannedShip.engine
@@ -3983,7 +4050,8 @@ class ScannedShip:
 class ScrapTransaction:
     """Result of a scrap transaction.
 
-    This model is ``ShipLike`` and ``WaypointLike``.
+    This model is :class:`ShipLike<spess.models.ShipLike>` and
+    :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     #: The symbol of the waypoint.
@@ -4020,7 +4088,8 @@ class ScrapTransaction:
 class RepairTransaction:
     """Result of a repair transaction.
 
-    This model is ``ShipLike`` and ``WaypointLike``.
+    This model is :class:`ShipLike<spess.models.ShipLike>` and
+    :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     #: The symbol of the waypoint.
@@ -4057,7 +4126,7 @@ class RepairTransaction:
 class Siphon:
     """Siphon details.
 
-    This model is ``ShipLike``.
+    This model is :class:`ShipLike<spess.models.ShipLike>`.
     """
 
     #: Symbol of the ship that executed the siphon.
@@ -4114,7 +4183,8 @@ class ShipModificationTransaction:
     """Result of a transaction for a ship modification, such as
     installing a mount or a module.
 
-    This model is ``ShipLike`` and ``WaypointLike``.
+    This model is :class:`ShipLike<spess.models.ShipLike>` and
+    :class:`WaypointLike<spess.models.WaypointLike>`.
     """
 
     #: The symbol of the waypoint where the transaction took place.

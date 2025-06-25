@@ -31,7 +31,19 @@ class WriteTypes(write_methods.WriteMethods):
         if type.keyed:
             self.print()
             with self.print(f'class {type.keyed.name}(typing.Protocol):'):
-                self.doc_string(KEY_TYPE_DOCS.format(type=type), rest=True)
+                impls = []
+                for ty in self.resolver.iter_flat(module=self.module):
+                    if type.py_full_name in ty.as_keyed:
+                        nicename = ty.py_full_name.split('.', 1)[-1]
+                        impls.append(f'* :class:`{nicename}<spess.{ty.py_full_name}>`')
+                impls.sort()
+
+                doc = KEY_TYPE_DOCS.format(type=type)
+                if impls:
+                    doc += f'\n\nThe following models are ``{type.keyed.name}``:\n\n'
+                    doc += '\n'.join(impls)
+
+                self.doc_string(doc, rest=True)
                 self.print('@property')
                 self.print(f'def {type.keyed.foreign}(self) -> str: ...')
 
@@ -53,14 +65,18 @@ class WriteTypes(write_methods.WriteMethods):
         for key in type.as_keyed:
             keyed = self.resolver.get(key).keyed
             if keyed:
-                likes.append(f'`{keyed.name.rsplit(".", 1)[-1]}`')
+                likes.append(f':class:`{keyed.name.rsplit(".", 1)[-1]}<spess.{keyed.name}>`')
         likes.sort()
         if likes:
             return f'\n\nThis model is {self.english_list(likes)}.'
         return ''
 
     def _write_top(self, type: types.Type, children: types.Resolver.IterTypes) -> None:
-        self.doc_string((type.doc if type.doc else '') + self._doc_like_str(type))
+        doc = ''
+        if type.doc:
+            doc += self.markdown_to_rest(type.doc)
+        doc += self._doc_like_str(type)
+        self.doc_string(doc, rest=True)
         self._write_key_var(type)
         self.write_types(children)
 

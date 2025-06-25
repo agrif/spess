@@ -103,7 +103,11 @@ class ServerStatus:
         class MostCredit:
             __doc__ = ' '
 
-            """This model is ``AgentLike``."""
+            """
+
+                     This model is
+            :class:`AgentLike<spess.models.AgentLike>`.
+            """
 
             #: Symbol of the agent.
             agent_symbol: str
@@ -131,7 +135,11 @@ class ServerStatus:
         class MostSubmittedChart:
             __doc__ = ' '
 
-            """This model is ``AgentLike``."""
+            """
+
+                     This model is
+            :class:`AgentLike<spess.models.AgentLike>`.
+            """
 
             #: Symbol of the agent.
             agent_symbol: str
