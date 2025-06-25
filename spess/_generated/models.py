@@ -432,7 +432,7 @@ class SystemType(Enum):
 
 # spec_name: SystemWaypoint
 @dataclasses.dataclass
-class SystemWaypoint:
+class SystemWaypoint(LocalClient):
     """Waypoint details.
 
     This model is :class:`WaypointLike<spess.models.WaypointLike>`.
@@ -485,6 +485,20 @@ class SystemWaypoint:
 
         return self.symbol
 
+    #
+    # Systems
+    #
+
+    # spec_name: get-waypoint
+    def waypoint(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.symbol)
+
 # spec_name: WaypointType
 class WaypointType(Enum):
     """The type of waypoint."""
@@ -506,7 +520,7 @@ class WaypointType(Enum):
 
 # spec_name: WaypointOrbital
 @dataclasses.dataclass
-class WaypointOrbital:
+class WaypointOrbital(LocalClient):
     """An orbital is another waypoint that orbits a parent
     waypoint.
 
@@ -535,6 +549,20 @@ class WaypointOrbital:
         """Alias for ``self.symbol``."""
 
         return self.symbol
+
+    #
+    # Systems
+    #
+
+    # spec_name: get-waypoint
+    def waypoint(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.symbol)
 
 # spec_name: SystemFaction
 @dataclasses.dataclass
@@ -681,6 +709,14 @@ class Waypoint(LocalClient, Keyed[WaypointLike]):
     #
     # Systems
     #
+
+    # spec_name: get-system
+    def system(self) -> System:
+        """Get the details of a system. Requires the system to
+        have been visited or charted.
+        """
+
+        return self._c.system(self.system_symbol)
 
     # spec_name: get-waypoint
     def update(self) -> Waypoint:
@@ -917,7 +953,7 @@ class WaypointModifier(Enum):
 
 # spec_name: Chart
 @dataclasses.dataclass
-class Chart:
+class Chart(LocalClient):
     """The chart of a system or waypoint, which makes the
     location visible to other agents.
 
@@ -949,9 +985,23 @@ class Chart:
             submitted_on = from_json(datetime, v['submittedOn']),
         )
 
+    #
+    # Systems
+    #
+
+    # spec_name: get-waypoint
+    def waypoint(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.waypoint_symbol)
+
 # spec_name: Construction
 @dataclasses.dataclass
-class Construction:
+class Construction(LocalClient):
     """The construction details of a waypoint.
 
     This model is :class:`WaypointLike<spess.models.WaypointLike>`.
@@ -987,6 +1037,20 @@ class Construction:
         """Alias for ``self.symbol``."""
 
         return self.symbol
+
+    #
+    # Systems
+    #
+
+    # spec_name: get-waypoint
+    def waypoint(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.symbol)
 
 # spec_name: ConstructionMaterial
 @dataclasses.dataclass
@@ -1236,7 +1300,7 @@ class ShipCargoItem:
 
 # spec_name: Market
 @dataclasses.dataclass
-class Market:
+class Market(LocalClient):
     """Market details.
 
     This model is :class:`WaypointLike<spess.models.WaypointLike>`.
@@ -1291,6 +1355,20 @@ class Market:
 
         return self.symbol
 
+    #
+    # Systems
+    #
+
+    # spec_name: get-waypoint
+    def waypoint(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.symbol)
+
 # spec_name: TradeGood
 @dataclasses.dataclass
 class TradeGood:
@@ -1323,7 +1401,7 @@ class TradeGood:
 
 # spec_name: MarketTransaction
 @dataclasses.dataclass
-class MarketTransaction:
+class MarketTransaction(LocalClient):
     """Result of a transaction with a market.
 
     This model is :class:`ShipLike<spess.models.ShipLike>` and
@@ -1381,6 +1459,32 @@ class MarketTransaction:
             total_price = from_json(int, v['totalPrice']),
             timestamp = from_json(datetime, v['timestamp']),
         )
+
+    #
+    # Fleet
+    #
+
+    # spec_name: get-my-ship
+    def ship(self) -> Ship:
+        """Retrieve the details of a ship under your agent's
+        ownership.
+        """
+
+        return self._c.ship(self.ship_symbol)
+
+    #
+    # Systems
+    #
+
+    # spec_name: get-waypoint
+    def waypoint(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.waypoint_symbol)
 
 # spec_name: MarketTradeGood
 @dataclasses.dataclass
@@ -1473,7 +1577,7 @@ class ActivityLevel(Enum):
 
 # spec_name: JumpGate
 @dataclasses.dataclass
-class JumpGate:
+class JumpGate(LocalClient):
     """Details of a jump gate waypoint.
 
     This model is :class:`WaypointLike<spess.models.WaypointLike>`.
@@ -1506,9 +1610,23 @@ class JumpGate:
 
         return self.symbol
 
+    #
+    # Systems
+    #
+
+    # spec_name: get-waypoint
+    def waypoint(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.symbol)
+
 # spec_name: Shipyard
 @dataclasses.dataclass
-class Shipyard:
+class Shipyard(LocalClient):
     """Shipyard details.
 
     This model is :class:`WaypointLike<spess.models.WaypointLike>`.
@@ -1582,6 +1700,20 @@ class Shipyard:
 
         return self.symbol
 
+    #
+    # Systems
+    #
+
+    # spec_name: get-waypoint
+    def waypoint(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.symbol)
+
 # spec_name: ShipType
 class ShipType(Enum):
     """Type of ship"""
@@ -1602,7 +1734,7 @@ class ShipType(Enum):
 
 # spec_name: ShipyardTransaction
 @dataclasses.dataclass
-class ShipyardTransaction:
+class ShipyardTransaction(LocalClient):
     """Results of a transaction with a shipyard.
 
     This model is :class:`AgentLike<spess.models.AgentLike>`,
@@ -1649,6 +1781,32 @@ class ShipyardTransaction:
             agent_symbol = from_json(str, v['agentSymbol']),
             timestamp = from_json(datetime, v['timestamp']),
         )
+
+    #
+    # Fleet
+    #
+
+    # spec_name: get-my-ship
+    def ship(self) -> Ship:
+        """Retrieve the details of a ship under your agent's
+        ownership.
+        """
+
+        return self._c.ship(self.ship_symbol)
+
+    #
+    # Systems
+    #
+
+    # spec_name: get-waypoint
+    def waypoint(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.waypoint_symbol)
 
 # spec_name: ShipyardShip
 @dataclasses.dataclass
@@ -2392,7 +2550,7 @@ class ContractPayment:
 
 # spec_name: ContractDeliverGood
 @dataclasses.dataclass
-class ContractDeliverGood:
+class ContractDeliverGood(LocalClient):
     """The details of a delivery contract. Includes the type of
     good, units needed, and the destination.
 
@@ -2433,6 +2591,20 @@ class ContractDeliverGood:
         """Alias for ``self.destination_symbol``."""
 
         return self.destination_symbol
+
+    #
+    # Systems
+    #
+
+    # spec_name: get-waypoint
+    def waypoint(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.destination_symbol)
 
 # spec_name: Agent
 @dataclasses.dataclass
@@ -3085,6 +3257,28 @@ class Ship(LocalClient, Keyed[ShipLike]):
         return self._c.patch_ship_nav(self.symbol, flight_mode=flight_mode)
 
     #
+    # Systems
+    #
+
+    # spec_name: get-system
+    def system(self) -> System:
+        """Get the details of a system. Requires the system to
+        have been visited or charted.
+        """
+
+        return self._c.system(self.nav.system_symbol)
+
+    # spec_name: get-waypoint
+    def waypoint(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.nav.waypoint_symbol)
+
+    #
     # Waiting
     #
 
@@ -3198,6 +3392,28 @@ class ShipNav(LocalClient):
         )
 
     #
+    # Systems
+    #
+
+    # spec_name: get-system
+    def system(self) -> System:
+        """Get the details of a system. Requires the system to
+        have been visited or charted.
+        """
+
+        return self._c.system(self.system_symbol)
+
+    # spec_name: get-waypoint
+    def waypoint(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.waypoint_symbol)
+
+    #
     # Waiting
     #
 
@@ -3276,7 +3492,7 @@ class ShipNavRoute(LocalClient):
 
 # spec_name: ShipNavRouteWaypoint
 @dataclasses.dataclass
-class ShipNavRouteWaypoint:
+class ShipNavRouteWaypoint(LocalClient):
     """The destination or departure of a ships nav route.
 
     This model is :class:`SystemLike<spess.models.SystemLike>` and
@@ -3321,6 +3537,28 @@ class ShipNavRouteWaypoint:
         """Alias for ``self.symbol``."""
 
         return self.symbol
+
+    #
+    # Systems
+    #
+
+    # spec_name: get-system
+    def system(self) -> System:
+        """Get the details of a system. Requires the system to
+        have been visited or charted.
+        """
+
+        return self._c.system(self.system_symbol)
+
+    # spec_name: get-waypoint
+    def waypoint(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.symbol)
 
 # spec_name: ShipNavStatus
 class ShipStatus(Enum):
@@ -3504,6 +3742,18 @@ class Cooldown(LocalClient):
         )
 
     #
+    # Fleet
+    #
+
+    # spec_name: get-my-ship
+    def ship(self) -> Ship:
+        """Retrieve the details of a ship under your agent's
+        ownership.
+        """
+
+        return self._c.ship(self.ship_symbol)
+
+    #
     # Waiting
     #
 
@@ -3525,7 +3775,7 @@ class Cooldown(LocalClient):
 
 # spec_name: ChartTransaction
 @dataclasses.dataclass
-class ChartTransaction:
+class ChartTransaction(LocalClient):
     """Result of a chart transaction.
 
     This model is :class:`ShipLike<spess.models.ShipLike>` and
@@ -3561,9 +3811,35 @@ class ChartTransaction:
             timestamp = from_json(datetime, v['timestamp']),
         )
 
+    #
+    # Fleet
+    #
+
+    # spec_name: get-my-ship
+    def ship(self) -> Ship:
+        """Retrieve the details of a ship under your agent's
+        ownership.
+        """
+
+        return self._c.ship(self.ship_symbol)
+
+    #
+    # Systems
+    #
+
+    # spec_name: get-waypoint
+    def waypoint(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.waypoint_symbol)
+
 # spec_name: Extraction
 @dataclasses.dataclass
-class Extraction:
+class Extraction(LocalClient):
     """Extraction details.
 
     This model is :class:`ShipLike<spess.models.ShipLike>`.
@@ -3589,6 +3865,18 @@ class Extraction:
             ship_symbol = from_json(str, v['shipSymbol']),
             yield_ = from_json(ExtractionYield, v['yield']),
         )
+
+    #
+    # Fleet
+    #
+
+    # spec_name: get-my-ship
+    def ship(self) -> Ship:
+        """Retrieve the details of a ship under your agent's
+        ownership.
+        """
+
+        return self._c.ship(self.ship_symbol)
 
 # spec_name: ExtractionYield
 @dataclasses.dataclass
@@ -3692,7 +3980,7 @@ class ShipConditionEvent:
 
 # spec_name: Survey
 @dataclasses.dataclass
-class Survey:
+class Survey(LocalClient):
     """A resource survey of a waypoint, detailing a specific
     extraction location and the types of resources that can be found
     there.
@@ -3746,6 +4034,20 @@ class Survey:
 
         return self.symbol
 
+    #
+    # Systems
+    #
+
+    # spec_name: get-waypoint
+    def waypoint(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.symbol)
+
 # spec_name: SurveyDeposit
 @dataclasses.dataclass
 class SurveyDeposit:
@@ -3782,7 +4084,7 @@ class SurveySize(Enum):
 
 # spec_name: ScannedSystem
 @dataclasses.dataclass
-class ScannedSystem:
+class ScannedSystem(LocalClient):
     """Details of a system was that scanned.
 
     This model is :class:`SystemLike<spess.models.SystemLike>`.
@@ -3831,9 +4133,21 @@ class ScannedSystem:
 
         return self.symbol
 
+    #
+    # Systems
+    #
+
+    # spec_name: get-system
+    def system(self) -> System:
+        """Get the details of a system. Requires the system to
+        have been visited or charted.
+        """
+
+        return self._c.system(self.symbol)
+
 # spec_name: ScannedWaypoint
 @dataclasses.dataclass
-class ScannedWaypoint:
+class ScannedWaypoint(LocalClient):
     """A waypoint that was scanned by a ship.
 
     This model is :class:`SystemLike<spess.models.SystemLike>` and
@@ -3898,9 +4212,31 @@ class ScannedWaypoint:
 
         return self.symbol
 
+    #
+    # Systems
+    #
+
+    # spec_name: get-system
+    def system(self) -> System:
+        """Get the details of a system. Requires the system to
+        have been visited or charted.
+        """
+
+        return self._c.system(self.system_symbol)
+
+    # spec_name: get-waypoint
+    def waypoint(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.symbol)
+
 # spec_name: ScannedShip
 @dataclasses.dataclass
-class ScannedShip:
+class ScannedShip(LocalClient):
     """The ship that was scanned. Details include information
     about the ship that could be detected by the scanner.
 
@@ -4045,9 +4381,21 @@ class ScannedShip:
 
         return self.symbol
 
+    #
+    # Fleet
+    #
+
+    # spec_name: get-my-ship
+    def ship(self) -> Ship:
+        """Retrieve the details of a ship under your agent's
+        ownership.
+        """
+
+        return self._c.ship(self.symbol)
+
 # spec_name: ScrapTransaction
 @dataclasses.dataclass
-class ScrapTransaction:
+class ScrapTransaction(LocalClient):
     """Result of a scrap transaction.
 
     This model is :class:`ShipLike<spess.models.ShipLike>` and
@@ -4083,9 +4431,35 @@ class ScrapTransaction:
             timestamp = from_json(datetime, v['timestamp']),
         )
 
+    #
+    # Fleet
+    #
+
+    # spec_name: get-my-ship
+    def ship(self) -> Ship:
+        """Retrieve the details of a ship under your agent's
+        ownership.
+        """
+
+        return self._c.ship(self.ship_symbol)
+
+    #
+    # Systems
+    #
+
+    # spec_name: get-waypoint
+    def waypoint(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.waypoint_symbol)
+
 # spec_name: RepairTransaction
 @dataclasses.dataclass
-class RepairTransaction:
+class RepairTransaction(LocalClient):
     """Result of a repair transaction.
 
     This model is :class:`ShipLike<spess.models.ShipLike>` and
@@ -4121,9 +4495,35 @@ class RepairTransaction:
             timestamp = from_json(datetime, v['timestamp']),
         )
 
+    #
+    # Fleet
+    #
+
+    # spec_name: get-my-ship
+    def ship(self) -> Ship:
+        """Retrieve the details of a ship under your agent's
+        ownership.
+        """
+
+        return self._c.ship(self.ship_symbol)
+
+    #
+    # Systems
+    #
+
+    # spec_name: get-waypoint
+    def waypoint(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.waypoint_symbol)
+
 # spec_name: Siphon
 @dataclasses.dataclass
-class Siphon:
+class Siphon(LocalClient):
     """Siphon details.
 
     This model is :class:`ShipLike<spess.models.ShipLike>`.
@@ -4149,6 +4549,18 @@ class Siphon:
             ship_symbol = from_json(str, v['shipSymbol']),
             yield_ = from_json(SiphonYield, v['yield']),
         )
+
+    #
+    # Fleet
+    #
+
+    # spec_name: get-my-ship
+    def ship(self) -> Ship:
+        """Retrieve the details of a ship under your agent's
+        ownership.
+        """
+
+        return self._c.ship(self.ship_symbol)
 
 # spec_name: SiphonYield
 @dataclasses.dataclass
@@ -4179,7 +4591,7 @@ class SiphonYield:
 
 # spec_name: ShipModificationTransaction
 @dataclasses.dataclass
-class ShipModificationTransaction:
+class ShipModificationTransaction(LocalClient):
     """Result of a transaction for a ship modification, such as
     installing a mount or a module.
 
@@ -4219,6 +4631,32 @@ class ShipModificationTransaction:
             total_price = from_json(int, v['totalPrice']),
             timestamp = from_json(datetime, v['timestamp']),
         )
+
+    #
+    # Fleet
+    #
+
+    # spec_name: get-my-ship
+    def ship(self) -> Ship:
+        """Retrieve the details of a ship under your agent's
+        ownership.
+        """
+
+        return self._c.ship(self.ship_symbol)
+
+    #
+    # Systems
+    #
+
+    # spec_name: get-waypoint
+    def waypoint(self) -> Waypoint:
+        """View the details of a waypoint.
+
+        If the waypoint is uncharted, it will return the 'Uncharted'
+        trait instead of its actual traits.
+        """
+
+        return self._c.waypoint(self.waypoint_symbol)
 
 # spec_name: ship-refine.body.produce
 class Produce(Enum):

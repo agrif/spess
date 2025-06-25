@@ -404,7 +404,7 @@ class Resolver:
                 self.iter_tree(module=module, types=children, prefix=prefix if absolute else ty.py_name),
             )
 
-    def iter_flat(self, module: str | None, absolute: bool = False, types: IterTypes | None = None) -> typing.Iterator[Type]:
+    def iter_flat(self, module: str | None = None, absolute: bool = False, types: IterTypes | None = None) -> typing.Iterator[Type]:
         if types is None:
             types = self.iter_tree(module=module, absolute=absolute)
         for ty, children in types:

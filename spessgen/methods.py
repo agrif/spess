@@ -240,19 +240,24 @@ class Converter:
                 )
 
     def _add_convenience(self, m: Method, ty: types.Type) -> None:
-        if not ty.keyed:
-            return
-
         do_conv = False
         for arg in m.all_args:
             if arg.consolidated:
                 continue
-            elif arg.keyed == ty.py_name:
+
+            if arg.keyed == ty.py_name:
+                # first argument is us
                 do_conv = True
                 break
-            else:
-                # only check first argument
-                break
+            elif arg.keyed in ty.as_keyed:
+                key_common = humps.decamelize(arg.keyed.rsplit('.', 1)[-1])
+                if key_common == m.py_name:
+                    # first argument is *like* us, and this is an update
+                    do_conv = True
+                    break
+
+            # only check first argument
+            break
 
         if not do_conv:
             return
@@ -262,24 +267,33 @@ class Converter:
         except KeyError:
             method_name = m.py_name
             common = humps.decamelize(ty.py_name.rsplit('.', 1)[-1])
+            if method_name == common:
+                method_name = 'update'
             if method_name.endswith('_' + common):
                 method_name = method_name[:-len(common) - 1]
             if method_name.startswith(common + '_'):
                 method_name = method_name[len(common) + 1:]
-            if method_name == common:
-                method_name = 'update'
 
         args: list[Convenience.Argument | str] = []
         used_self = False
         for arg in m.all_args:
             if arg.consolidated:
                 continue
-            if arg.keyed == ty.py_name and not used_self:
+            if arg.keyed in ty.as_keyed and not used_self:
                 used_self = True
-                if arg.optional:
-                    args.append(f'{arg.py_name}=self.{ty.keyed.local}')
+
+                if arg.keyed == ty.py_name and ty.keyed:
+                    key_expr = f'self.{ty.keyed.local}'
                 else:
-                    args.append(f'self.{ty.keyed.local}')
+                    key_ty = self.resolver.get(arg.keyed)
+                    assert key_ty.keyed
+                    key_expr = key_ty.keyed.foreign
+                    key_expr = ty.properties.get(key_expr, f'self.{key_expr}')
+
+                if arg.optional:
+                    args.append(f'{arg.py_name}={key_expr}')
+                else:
+                    args.append(f'{key_expr}')
             else:
                 args.append(Convenience.Argument(
                     py_name = arg.py_name,
@@ -360,8 +374,7 @@ class Converter:
             for sub_key, convert in KEY_CONSOLIDATE.get(arg.keyed, {}).items():
                 self._consolidate(m, arg, sub_key, convert)
 
-        for keyed_type, keyed in KEYED_TYPES.items():
-            ty = self.resolver.get(keyed_type)
+        for ty in self.resolver.iter_flat():
             self._add_convenience(m, ty)
 
         if m.py_name in self.methods:
