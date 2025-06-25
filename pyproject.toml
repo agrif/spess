@@ -1,7 +1,7 @@
 [project]
 name = 'spess'
-version = '0.0'
 requires-python = '>= 3.13'
+dynamic = ['version', 'readme']
 
 dependencies = [
     'requests~=2.28',
@@ -9,11 +9,9 @@ dependencies = [
 ]
 
 [project.scripts]
-
 spess = 'spess.__main__:main'
 
 [project.optional-dependencies]
-
 dev = [
     'commonmark~=0.9.1',
     'mypy~=1.16',
@@ -30,6 +28,12 @@ doc = [
 [build-system]
 requires = ['setuptools~=77.0', 'setuptools-scm~=8.0']
 build-backend = 'setuptools.build_meta'
+
+[tool.setuptools]
+packages = ['spess']
+
+[tool.setuptools.dynamic]
+readme = { file = ['README.md'], content-type = 'text/markdown' }
 
 [tool.setuptools_scm]
 version_scheme = 'release-branch-semver'

@@ -1,5 +1,8 @@
 __pycache__/
 
+/build/
+/*.egg-info/
+
 /doc/build/
 /token
 /account-token
