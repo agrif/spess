@@ -1,9 +1,8 @@
 SPESS
 =====
 
-Stick your agent token in a file named `token` in the root, then
-install the dependencies (see `pyproject.toml`) and run `python3 -m
-spess`.
+Stick your agent token in a file named *~/.config/spess/tokens.txt*,
+install the dependencies (see `pyproject.toml`) and run `python3 -m spess`.
 
 ```py
 me = c.my_agent()

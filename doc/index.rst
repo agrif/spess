@@ -6,5 +6,6 @@ spess documentation
    :caption: Contents:
 
    client
+   config
    models
    responses

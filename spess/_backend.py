@@ -11,11 +11,13 @@ import requests
 import rich.progress
 
 import spess.client
+import spess.config
 import spess._json
 import spess.models
 import spess._model_bases as bases
 import spess._paged
 import spess._rate_limit
+import spess.responses
 
 #: Set to False to turn off interactive waits.
 _wait_interactive: bool = True
@@ -103,29 +105,38 @@ class NoContentError(Error):
 
 class Backend:
     #: The default base url to use for requests.
-    SERVER_URL: str
+    SERVER_URL: typing.ClassVar[str]
+
+    config: spess.config.Config
+    account_token: spess.models.Token | None
+    agent_token: spess.models.Token | None
 
     debug: bool
 
-    _base_url: str
     _session: requests.Session
     _limit: spess._rate_limit.Limiter
-    _reset_date: dt.date | None
+    _reset_date: dt.date
 
     _aliases: dict[tuple[type[bases.Keyed], str], str]
     _sync_table: weakref.WeakValueDictionary[tuple[type[bases.Synced], str], bases.Synced]
 
-    def __init__(self, token: str, url: str | None = None, debug: bool = False):
+    def __init__(
+            self,
+            config: spess.config.Config | None = None,
+            debug: bool = False,
+    ):
+        if config is None:
+            config = spess.config.Config.default()
+        self.config = config
         self.debug = debug
 
-        self._base_url = self.SERVER_URL
-        if url is not None:
-            self._base_url = url
-        self._base_url = self._base_url.lstrip('/')
+        # set up state
+        self._aliases = {}
+        self._sync_table = weakref.WeakValueDictionary()
 
+        # begin bringing up the http side
         self._session = requests.Session()
         self._session.headers['User-Agent'] = f'{__package__}/{spess.__version__}'
-        self._session.headers['Authorization'] = f'Bearer {token}'
 
         # spacetrader limits to 2 per second, 30 in 60s
         # put a 5% margin on it to be safe
@@ -134,17 +145,40 @@ class Backend:
             spess._rate_limit.Windowed(30, 60.0, margin=0.05),
         ).synced()
 
-        self._aliases = {}
-        self._sync_table = weakref.WeakValueDictionary()
+        self._load_tokens()
 
+    def _load_tokens(self) -> None:
         # grab some information and also test connection
-        self._reset_date = None
-        if isinstance(self, spess.client.Client):
-            self._reset_date = self.status().reset_date
+        self._reset_date = self.status().reset_date
+
+        # assign tokens
+        try:
+            self.account_token = self.config.tokens.get_account(
+                self.config.account_token)
+        except (ValueError, RuntimeError):
+            self.account_token = None
+            if self.config.account_token is not None:
+                raise
+
+        try:
+            self.agent_token = self.config.tokens.get_agent(
+                self._reset_date, self.config.agent_token)
+        except (ValueError, RuntimeError):
+            self.agent_token = None
+            if self.config.agent_token is not None:
+                raise
+
+        # later on, choose this method-by-method, but for now...
+        if self.agent_token:
+            self._session.headers['Authorization'] = f'Bearer {self.agent_token.token}'
 
     def _debug(self, *args, **kwargs):
         if self.debug:
             print(*args, file=sys.stderr, **kwargs)
+
+    # a stub so we can call this in __init__
+    def status(self) -> spess.responses.ServerStatus:
+        raise NotImplementedError
 
     #
     # Requests
@@ -158,7 +192,10 @@ class Backend:
             body: spess._json.Json = None,
     ) -> spess._json.Json:
         # resolve the url
-        url = self._base_url + path
+        base_url = self.SERVER_URL
+        if self.config.url:
+            base_url = self.config.url
+        url = base_url.lstrip('/') + path
 
         self._debug('>>>', url, query_args, body)
 

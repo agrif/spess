@@ -18,13 +18,8 @@ def main() -> None:
         handlers=[rich.logging.RichHandler(markup=True)],
     )
 
-    # load token
-    here = pathlib.Path(__file__).parent
-    with open(here / '..' / 'token') as f:
-        token = f.read().strip()
-
     # create client
-    client = spess.client.Client(token)
+    client = spess.client.Client()
 
     # set up interactive namespace
     vars = globals()
