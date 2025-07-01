@@ -3,6 +3,7 @@ from __future__ import annotations
 import contextlib
 import dataclasses
 import datetime as dt
+import io
 import os
 import pathlib
 import typing
@@ -36,7 +37,7 @@ class Config:
         @contextlib.contextmanager
         def _replace_file(self) -> typing.Iterator[typing.TextIO]:
             if not self.write:
-                return
+                yield io.StringIO()
 
             self.path.parent.mkdir(parents=True, exist_ok=True)
             tmp = self.path.with_name(self.path.name + '.new')
