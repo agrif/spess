@@ -99,6 +99,12 @@ class WriteMethods(writer.Writer):
             self.print()
             for arg in method.all_args:
                 self._cast_arg(method, arg)
+            if method.sync_code:
+                self.print()
+                with self.print(f'def _sync(r: {method.py_result}) -> {method.py_result}:'):
+                    for sync_code in method.sync_code:
+                        self.print(sync_code.format('r'))
+                    self.print('return r')
             self.print()
             with self.print(f'return self.{call_method}('):
                 self.print(f'{method.py_result},')
@@ -109,6 +115,8 @@ class WriteMethods(writer.Writer):
                 self._collect_body(method.body_args)
                 if method.adhoc:
                     self.print('adhoc = True,')
+                if method.sync_code:
+                    self.print('sync = _sync,')
             self.print(')')
 
     def write_convenience_method(self, type: types.Type, conv: methods.Convenience, banner: str | None = None) -> None:

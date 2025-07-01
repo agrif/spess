@@ -267,3 +267,26 @@ WAIT: dict[str, list[str]] = {
     # routes have an arrival time
     'models.ShipNavRoute': ['self.arrival'],
 }
+
+# code to run to perform sync on responses
+# map from PyType to codestr | None, where codestr is a format string
+# accepting a value of that type. None indicates explicit ignore.
+SYNC_CODE: dict[str, str | None] = {
+    # false positives from sync heuristic
+    'models.FactionSymbol': None,
+
+    # not totally sure how to do this
+    'list[models.WaypointModifierInfo]': None,
+
+    # special cases
+    'responses.TransferCargo': 'self._sync_transfer_cargo({}, from_ship, to_ship)',
+
+    # normal syncable responses
+    'models.Chart': 'self._sync_chart({})',
+    'models.Cooldown': 'self._sync_cooldown({}, ship)',
+    'models.ShipCargo': 'self._sync_ship_cargo({}, ship)',
+    'models.ShipFuel': 'self._sync_ship_fuel({}, ship)',
+    'list[models.ShipModule]': 'self._sync_ship_modules({}, ship)',
+    'list[models.ShipMount]': 'self._sync_ship_mounts({}, ship)',
+    'models.ShipNav': 'self._sync_ship_nav({}, ship)',
+}

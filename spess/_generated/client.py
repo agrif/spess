@@ -91,6 +91,11 @@ class Client(backend.Backend):
         minutes.
         """
 
+        def _sync(r: responses.Register) -> responses.Register:
+            r.contract = self._sync(r.contract)
+            r.ships = self._sync_list(r.ships)
+            return r
+
         return self._call(
             responses.Register,
             'post',
@@ -99,6 +104,7 @@ class Client(backend.Backend):
                 'symbol': to_json(symbol),
                 'faction': to_json(faction),
             },
+            sync = _sync,
         )
 
     #
@@ -109,10 +115,15 @@ class Client(backend.Backend):
     def agents(self) -> Paged[models.PublicAgent]:
         """List all public agent details."""
 
+        def _sync(r: models.PublicAgent) -> models.PublicAgent:
+            r = self._sync(r)
+            return r
+
         return self._call_paginated(
             models.PublicAgent,
             'get',
             '/agents',
+            sync = _sync,
         )
 
     # spec_name: get-agent
@@ -121,6 +132,10 @@ class Client(backend.Backend):
 
         agent = self._resolve(models.PublicAgent, agent)
 
+        def _sync(r: models.PublicAgent) -> models.PublicAgent:
+            r = self._sync(r)
+            return r
+
         return self._call(
             models.PublicAgent,
             'get',
@@ -128,6 +143,7 @@ class Client(backend.Backend):
             path_args = {
                 'agentSymbol': agent,
             },
+            sync = _sync,
         )
 
     # spec_name: get-my-agent
@@ -158,10 +174,15 @@ class Client(backend.Backend):
     def contracts(self) -> Paged[models.Contract]:
         """Return a paginated list of all your contracts."""
 
+        def _sync(r: models.Contract) -> models.Contract:
+            r = self._sync(r)
+            return r
+
         return self._call_paginated(
             models.Contract,
             'get',
             '/my/contracts',
+            sync = _sync,
         )
 
     # spec_name: get-contract
@@ -170,6 +191,10 @@ class Client(backend.Backend):
 
         contract = self._resolve(models.Contract, contract)
 
+        def _sync(r: models.Contract) -> models.Contract:
+            r = self._sync(r)
+            return r
+
         return self._call(
             models.Contract,
             'get',
@@ -177,6 +202,7 @@ class Client(backend.Backend):
             path_args = {
                 'contractId': contract,
             },
+            sync = _sync,
         )
 
     # spec_name: accept-contract
@@ -189,6 +215,10 @@ class Client(backend.Backend):
 
         contract = self._resolve(models.Contract, contract)
 
+        def _sync(r: responses.AcceptContract) -> responses.AcceptContract:
+            r.contract = self._sync(r.contract)
+            return r
+
         return self._call(
             responses.AcceptContract,
             'post',
@@ -196,6 +226,7 @@ class Client(backend.Backend):
             path_args = {
                 'contractId': contract,
             },
+            sync = _sync,
         )
 
     # spec_name: fulfill-contract
@@ -206,6 +237,10 @@ class Client(backend.Backend):
 
         contract = self._resolve(models.Contract, contract)
 
+        def _sync(r: responses.FulfillContract) -> responses.FulfillContract:
+            r.contract = self._sync(r.contract)
+            return r
+
         return self._call(
             responses.FulfillContract,
             'post',
@@ -213,6 +248,7 @@ class Client(backend.Backend):
             path_args = {
                 'contractId': contract,
             },
+            sync = _sync,
         )
 
     # spec_name: deliver-contract
@@ -231,6 +267,11 @@ class Client(backend.Backend):
         contract = self._resolve(models.Contract, contract)
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.DeliverContract) -> responses.DeliverContract:
+            r.contract = self._sync(r.contract)
+            self._sync_ship_cargo(r.cargo, ship)
+            return r
+
         return self._call(
             responses.DeliverContract,
             'post',
@@ -243,6 +284,7 @@ class Client(backend.Backend):
                 'tradeSymbol': to_json(trade_symbol),
                 'units': to_json(units),
             },
+            sync = _sync,
         )
 
     # spec_name: negotiate-contract
@@ -264,6 +306,10 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.NegotiateContract) -> responses.NegotiateContract:
+            r.contract = self._sync(r.contract)
+            return r
+
         return self._call(
             responses.NegotiateContract,
             'post',
@@ -271,6 +317,7 @@ class Client(backend.Backend):
             path_args = {
                 'shipSymbol': ship,
             },
+            sync = _sync,
         )
 
     #
@@ -324,10 +371,15 @@ class Client(backend.Backend):
         agent's ownership.
         """
 
+        def _sync(r: models.Ship) -> models.Ship:
+            r = self._sync(r)
+            return r
+
         return self._call_paginated(
             models.Ship,
             'get',
             '/my/ships',
+            sync = _sync,
         )
 
     # spec_name: purchase-ship
@@ -345,6 +397,10 @@ class Client(backend.Backend):
 
         waypoint = self._resolve(models.Waypoint, waypoint)
 
+        def _sync(r: responses.PurchaseShip) -> responses.PurchaseShip:
+            r.ship = self._sync(r.ship)
+            return r
+
         return self._call(
             responses.PurchaseShip,
             'post',
@@ -353,6 +409,7 @@ class Client(backend.Backend):
                 'shipType': to_json(ship_type),
                 'waypointSymbol': to_json(waypoint),
             },
+            sync = _sync,
         )
 
     # spec_name: get-my-ship
@@ -363,6 +420,10 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: models.Ship) -> models.Ship:
+            r = self._sync(r)
+            return r
+
         return self._call(
             models.Ship,
             'get',
@@ -370,6 +431,7 @@ class Client(backend.Backend):
             path_args = {
                 'shipSymbol': ship,
             },
+            sync = _sync,
         )
 
     # spec_name: create-chart
@@ -390,6 +452,11 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.CreateChart) -> responses.CreateChart:
+            self._sync_chart(r.chart)
+            r.waypoint = self._sync(r.waypoint)
+            return r
+
         return self._call(
             responses.CreateChart,
             'post',
@@ -397,6 +464,7 @@ class Client(backend.Backend):
             path_args = {
                 'shipSymbol': ship,
             },
+            sync = _sync,
         )
 
     # spec_name: get-ship-cooldown
@@ -417,6 +485,10 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: models.Cooldown) -> models.Cooldown:
+            self._sync_cooldown(r, ship)
+            return r
+
         return self._call(
             models.Cooldown,
             'get',
@@ -424,6 +496,7 @@ class Client(backend.Backend):
             path_args = {
                 'shipSymbol': ship,
             },
+            sync = _sync,
         )
 
     # spec_name: dock-ship
@@ -443,6 +516,10 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.DockShip) -> responses.DockShip:
+            self._sync_ship_nav(r.nav, ship)
+            return r
+
         return self._call(
             responses.DockShip,
             'post',
@@ -450,6 +527,7 @@ class Client(backend.Backend):
             path_args = {
                 'shipSymbol': ship,
             },
+            sync = _sync,
         )
 
     # spec_name: extract-resources
@@ -469,6 +547,11 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.ExtractResources) -> responses.ExtractResources:
+            self._sync_cooldown(r.cooldown, ship)
+            self._sync_ship_cargo(r.cargo, ship)
+            return r
+
         return self._call(
             responses.ExtractResources,
             'post',
@@ -476,6 +559,7 @@ class Client(backend.Backend):
             path_args = {
                 'shipSymbol': ship,
             },
+            sync = _sync,
         )
 
     # spec_name: extract-resources-with-survey
@@ -492,6 +576,11 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.ExtractResourcesWithSurvey) -> responses.ExtractResourcesWithSurvey:
+            self._sync_cooldown(r.cooldown, ship)
+            self._sync_ship_cargo(r.cargo, ship)
+            return r
+
         return self._call(
             responses.ExtractResourcesWithSurvey,
             'post',
@@ -500,6 +589,7 @@ class Client(backend.Backend):
                 'shipSymbol': ship,
             },
             body = to_json(survey),
+            sync = _sync,
         )
 
     # spec_name: jettison
@@ -507,6 +597,10 @@ class Client(backend.Backend):
         """Jettison cargo from your ship's cargo hold."""
 
         ship = self._resolve(models.Ship, ship)
+
+        def _sync(r: responses.Jettison) -> responses.Jettison:
+            self._sync_ship_cargo(r.cargo, ship)
+            return r
 
         return self._call(
             responses.Jettison,
@@ -519,6 +613,7 @@ class Client(backend.Backend):
                 'symbol': to_json(symbol),
                 'units': to_json(units),
             },
+            sync = _sync,
         )
 
     # spec_name: jump-ship
@@ -535,6 +630,11 @@ class Client(backend.Backend):
         ship = self._resolve(models.Ship, ship)
         waypoint = self._resolve(models.Waypoint, waypoint)
 
+        def _sync(r: responses.JumpShip) -> responses.JumpShip:
+            self._sync_ship_nav(r.nav, ship)
+            self._sync_cooldown(r.cooldown, ship)
+            return r
+
         return self._call(
             responses.JumpShip,
             'post',
@@ -545,6 +645,7 @@ class Client(backend.Backend):
             body = {
                 'waypointSymbol': to_json(waypoint),
             },
+            sync = _sync,
         )
 
     # spec_name: create-ship-system-scan
@@ -560,6 +661,10 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.CreateShipSystemScan) -> responses.CreateShipSystemScan:
+            self._sync_cooldown(r.cooldown, ship)
+            return r
+
         return self._call(
             responses.CreateShipSystemScan,
             'post',
@@ -567,6 +672,7 @@ class Client(backend.Backend):
             path_args = {
                 'shipSymbol': ship,
             },
+            sync = _sync,
         )
 
     # spec_name: create-ship-waypoint-scan
@@ -585,6 +691,10 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.CreateShipWaypointScan) -> responses.CreateShipWaypointScan:
+            self._sync_cooldown(r.cooldown, ship)
+            return r
+
         return self._call(
             responses.CreateShipWaypointScan,
             'post',
@@ -592,6 +702,7 @@ class Client(backend.Backend):
             path_args = {
                 'shipSymbol': ship,
             },
+            sync = _sync,
         )
 
     # spec_name: create-ship-ship-scan
@@ -608,6 +719,10 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.CreateShipShipScan) -> responses.CreateShipShipScan:
+            self._sync_cooldown(r.cooldown, ship)
+            return r
+
         return self._call(
             responses.CreateShipShipScan,
             'post',
@@ -615,6 +730,7 @@ class Client(backend.Backend):
             path_args = {
                 'shipSymbol': ship,
             },
+            sync = _sync,
         )
 
     # spec_name: scrap-ship
@@ -672,6 +788,11 @@ class Client(backend.Backend):
         ship = self._resolve(models.Ship, ship)
         waypoint = self._resolve(models.Waypoint, waypoint)
 
+        def _sync(r: responses.NavigateShip) -> responses.NavigateShip:
+            self._sync_ship_nav(r.nav, ship)
+            self._sync_ship_fuel(r.fuel, ship)
+            return r
+
         return self._call(
             responses.NavigateShip,
             'post',
@@ -682,6 +803,7 @@ class Client(backend.Backend):
             body = {
                 'waypointSymbol': to_json(waypoint),
             },
+            sync = _sync,
         )
 
     # spec_name: warp-ship
@@ -699,6 +821,11 @@ class Client(backend.Backend):
         ship = self._resolve(models.Ship, ship)
         waypoint = self._resolve(models.Waypoint, waypoint)
 
+        def _sync(r: responses.WarpShip) -> responses.WarpShip:
+            self._sync_ship_nav(r.nav, ship)
+            self._sync_ship_fuel(r.fuel, ship)
+            return r
+
         return self._call(
             responses.WarpShip,
             'post',
@@ -709,6 +836,7 @@ class Client(backend.Backend):
             body = {
                 'waypointSymbol': to_json(waypoint),
             },
+            sync = _sync,
         )
 
     # spec_name: orbit-ship
@@ -728,6 +856,10 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.OrbitShip) -> responses.OrbitShip:
+            self._sync_ship_nav(r.nav, ship)
+            return r
+
         return self._call(
             responses.OrbitShip,
             'post',
@@ -735,6 +867,7 @@ class Client(backend.Backend):
             path_args = {
                 'shipSymbol': ship,
             },
+            sync = _sync,
         )
 
     # spec_name: purchase-cargo
@@ -754,6 +887,10 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.PurchaseCargo) -> responses.PurchaseCargo:
+            self._sync_ship_cargo(r.cargo, ship)
+            return r
+
         return self._call(
             responses.PurchaseCargo,
             'post',
@@ -765,6 +902,7 @@ class Client(backend.Backend):
                 'symbol': to_json(symbol),
                 'units': to_json(units),
             },
+            sync = _sync,
         )
 
     # spec_name: ship-refine
@@ -781,6 +919,11 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.ShipRefine) -> responses.ShipRefine:
+            self._sync_ship_cargo(r.cargo, ship)
+            self._sync_cooldown(r.cooldown, ship)
+            return r
+
         return self._call(
             responses.ShipRefine,
             'post',
@@ -791,6 +934,7 @@ class Client(backend.Backend):
             body = {
                 'produce': to_json(produce),
             },
+            sync = _sync,
         )
 
     # spec_name: refuel-ship
@@ -811,6 +955,11 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.RefuelShip) -> responses.RefuelShip:
+            self._sync_ship_fuel(r.fuel, ship)
+            self._sync_ship_cargo(r.cargo, ship)
+            return r
+
         return self._call(
             responses.RefuelShip,
             'post',
@@ -822,6 +971,7 @@ class Client(backend.Backend):
                 'units': to_json(units),
                 'fromCargo': to_json(from_cargo),
             },
+            sync = _sync,
         )
 
     # spec_name: repair-ship
@@ -834,6 +984,10 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.RepairShip) -> responses.RepairShip:
+            r.ship = self._sync(r.ship)
+            return r
+
         return self._call(
             responses.RepairShip,
             'post',
@@ -841,6 +995,7 @@ class Client(backend.Backend):
             path_args = {
                 'shipSymbol': ship,
             },
+            sync = _sync,
         )
 
     # spec_name: get-repair-ship
@@ -869,6 +1024,10 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.SellCargo) -> responses.SellCargo:
+            self._sync_ship_cargo(r.cargo, ship)
+            return r
+
         return self._call(
             responses.SellCargo,
             'post',
@@ -880,6 +1039,7 @@ class Client(backend.Backend):
                 'symbol': to_json(symbol),
                 'units': to_json(units),
             },
+            sync = _sync,
         )
 
     # spec_name: siphon-resources
@@ -892,6 +1052,11 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.SiphonResources) -> responses.SiphonResources:
+            self._sync_cooldown(r.cooldown, ship)
+            self._sync_ship_cargo(r.cargo, ship)
+            return r
+
         return self._call(
             responses.SiphonResources,
             'post',
@@ -899,6 +1064,7 @@ class Client(backend.Backend):
             path_args = {
                 'shipSymbol': ship,
             },
+            sync = _sync,
         )
 
     # spec_name: create-survey
@@ -928,6 +1094,10 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.CreateSurvey) -> responses.CreateSurvey:
+            self._sync_cooldown(r.cooldown, ship)
+            return r
+
         return self._call(
             responses.CreateSurvey,
             'post',
@@ -935,6 +1105,7 @@ class Client(backend.Backend):
             path_args = {
                 'shipSymbol': ship,
             },
+            sync = _sync,
         )
 
     # spec_name: transfer-cargo
@@ -951,6 +1122,10 @@ class Client(backend.Backend):
         ship after the transfer is complete.
         """
 
+        def _sync(r: responses.TransferCargo) -> responses.TransferCargo:
+            self._sync_transfer_cargo(r, from_ship, to_ship)
+            return r
+
         return self._call(
             responses.TransferCargo,
             'post',
@@ -963,6 +1138,7 @@ class Client(backend.Backend):
                 'units': to_json(units),
                 'shipSymbol': to_json(to_ship),
             },
+            sync = _sync,
         )
 
     # spec_name: get-my-ship-cargo
@@ -973,6 +1149,10 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: models.ShipCargo) -> models.ShipCargo:
+            self._sync_ship_cargo(r, ship)
+            return r
+
         return self._call(
             models.ShipCargo,
             'get',
@@ -980,6 +1160,7 @@ class Client(backend.Backend):
             path_args = {
                 'shipSymbol': ship,
             },
+            sync = _sync,
         )
 
     # spec_name: get-ship-modules
@@ -988,6 +1169,10 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: list[models.ShipModule]) -> list[models.ShipModule]:
+            self._sync_ship_modules(r, ship)
+            return r
+
         return self._call(
             list[models.ShipModule],
             'get',
@@ -995,6 +1180,7 @@ class Client(backend.Backend):
             path_args = {
                 'shipSymbol': ship,
             },
+            sync = _sync,
         )
 
     # spec_name: install-ship-module
@@ -1004,6 +1190,11 @@ class Client(backend.Backend):
         """
 
         ship = self._resolve(models.Ship, ship)
+
+        def _sync(r: responses.InstallShipModule) -> responses.InstallShipModule:
+            self._sync_ship_modules(r.modules, ship)
+            self._sync_ship_cargo(r.cargo, ship)
+            return r
 
         return self._call(
             responses.InstallShipModule,
@@ -1015,6 +1206,7 @@ class Client(backend.Backend):
             body = {
                 'symbol': to_json(symbol),
             },
+            sync = _sync,
         )
 
     # spec_name: remove-ship-module
@@ -1024,6 +1216,11 @@ class Client(backend.Backend):
         """
 
         ship = self._resolve(models.Ship, ship)
+
+        def _sync(r: responses.RemoveShipModule) -> responses.RemoveShipModule:
+            self._sync_ship_modules(r.modules, ship)
+            self._sync_ship_cargo(r.cargo, ship)
+            return r
 
         return self._call(
             responses.RemoveShipModule,
@@ -1035,6 +1232,7 @@ class Client(backend.Backend):
             body = {
                 'symbol': to_json(symbol),
             },
+            sync = _sync,
         )
 
     # spec_name: get-mounts
@@ -1043,6 +1241,10 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: list[models.ShipMount]) -> list[models.ShipMount]:
+            self._sync_ship_mounts(r, ship)
+            return r
+
         return self._call(
             list[models.ShipMount],
             'get',
@@ -1050,6 +1252,7 @@ class Client(backend.Backend):
             path_args = {
                 'shipSymbol': ship,
             },
+            sync = _sync,
         )
 
     # spec_name: install-mount
@@ -1066,6 +1269,11 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.InstallMount) -> responses.InstallMount:
+            self._sync_ship_mounts(r.mounts, ship)
+            self._sync_ship_cargo(r.cargo, ship)
+            return r
+
         return self._call(
             responses.InstallMount,
             'post',
@@ -1076,6 +1284,7 @@ class Client(backend.Backend):
             body = {
                 'symbol': to_json(symbol),
             },
+            sync = _sync,
         )
 
     # spec_name: remove-mount
@@ -1091,6 +1300,11 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.RemoveMount) -> responses.RemoveMount:
+            self._sync_ship_mounts(r.mounts, ship)
+            self._sync_ship_cargo(r.cargo, ship)
+            return r
+
         return self._call(
             responses.RemoveMount,
             'post',
@@ -1101,6 +1315,7 @@ class Client(backend.Backend):
             body = {
                 'symbol': to_json(symbol),
             },
+            sync = _sync,
         )
 
     # spec_name: get-ship-nav
@@ -1109,6 +1324,10 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: models.ShipNav) -> models.ShipNav:
+            self._sync_ship_nav(r, ship)
+            return r
+
         return self._call(
             models.ShipNav,
             'get',
@@ -1116,6 +1335,7 @@ class Client(backend.Backend):
             path_args = {
                 'shipSymbol': ship,
             },
+            sync = _sync,
         )
 
     # spec_name: patch-ship-nav
@@ -1128,6 +1348,11 @@ class Client(backend.Backend):
 
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.PatchShipNav) -> responses.PatchShipNav:
+            self._sync_ship_nav(r.nav, ship)
+            self._sync_ship_fuel(r.fuel, ship)
+            return r
+
         return self._call(
             responses.PatchShipNav,
             'patch',
@@ -1138,6 +1363,7 @@ class Client(backend.Backend):
             body = {
                 'flightMode': to_json(flight_mode),
             },
+            sync = _sync,
         )
 
     #
@@ -1148,10 +1374,15 @@ class Client(backend.Backend):
     def systems(self) -> Paged[models.System]:
         """Return a paginated list of all systems."""
 
+        def _sync(r: models.System) -> models.System:
+            r = self._sync(r)
+            return r
+
         return self._call_paginated(
             models.System,
             'get',
             '/systems',
+            sync = _sync,
         )
 
     # spec_name: get-system
@@ -1162,6 +1393,10 @@ class Client(backend.Backend):
 
         system = self._resolve(models.System, system)
 
+        def _sync(r: models.System) -> models.System:
+            r = self._sync(r)
+            return r
+
         return self._call(
             models.System,
             'get',
@@ -1169,6 +1404,7 @@ class Client(backend.Backend):
             path_args = {
                 'systemSymbol': system,
             },
+            sync = _sync,
         )
 
     # spec_name: get-system-waypoints
@@ -1182,6 +1418,10 @@ class Client(backend.Backend):
 
         system = self._resolve(models.System, system)
 
+        def _sync(r: models.Waypoint) -> models.Waypoint:
+            r = self._sync(r)
+            return r
+
         return self._call_paginated(
             models.Waypoint,
             'get',
@@ -1193,6 +1433,7 @@ class Client(backend.Backend):
                 'type': str(type) if type is not None else None,
                 'traits': ','.join(str(x) for x in traits) if traits is not None else None,
             },
+            sync = _sync,
         )
 
     # spec_name: get-waypoint
@@ -1206,6 +1447,10 @@ class Client(backend.Backend):
         system = self._waypoint_to_system(waypoint)
         waypoint = self._resolve(models.Waypoint, waypoint)
 
+        def _sync(r: models.Waypoint) -> models.Waypoint:
+            r = self._sync(r)
+            return r
+
         return self._call(
             models.Waypoint,
             'get',
@@ -1214,6 +1459,7 @@ class Client(backend.Backend):
                 'systemSymbol': system,
                 'waypointSymbol': waypoint,
             },
+            sync = _sync,
         )
 
     # spec_name: get-construction
@@ -1251,6 +1497,10 @@ class Client(backend.Backend):
         waypoint = self._resolve(models.Waypoint, waypoint)
         ship = self._resolve(models.Ship, ship)
 
+        def _sync(r: responses.SupplyConstruction) -> responses.SupplyConstruction:
+            self._sync_ship_cargo(r.cargo, ship)
+            return r
+
         return self._call(
             responses.SupplyConstruction,
             'post',
@@ -1264,6 +1514,7 @@ class Client(backend.Backend):
                 'tradeSymbol': to_json(trade_symbol),
                 'units': to_json(units),
             },
+            sync = _sync,
         )
 
     # spec_name: get-market

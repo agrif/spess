@@ -260,6 +260,7 @@ class Backend:
             query_args: dict[str, str | None] = {},
             body: spess._json.Json = None,
             adhoc: bool = False,
+            sync: typing.Callable[[T], T] | None = None,
     ) -> T:
         # filter out Nones from values, which indicate absent optionals
         path_args = {k: v for k, v in path_args.items() if v is not None}
@@ -282,7 +283,10 @@ class Backend:
         except Exception:
             raise ParseError(message=f'response is not {ty!r}')
 
-        return self._merge(ty, data)
+        self._set_client(data)
+        if sync:
+            data = sync(data)
+        return data
 
     def _call_paginated[T](
             self,
@@ -292,6 +296,7 @@ class Backend:
             path_args: dict[str, str | None] = {},
             query_args: dict[str, str | None] = {},
             body: spess._json.Json = None,
+            sync: typing.Callable[[T], T] | None = None,
     ) -> spess._paged.Paged[T]:
         # filter out Nones from values, which indicate absent optionals
         path_args = {k: v for k, v in path_args.items() if v is not None}
@@ -324,7 +329,13 @@ class Backend:
             except Exception:
                 raise ParseError(message=f'paged response data is not {ty!r}')
 
-            return (meta, [self._merge(ty, x) for x in data])
+            for x in data:
+                self._set_client(x)
+
+            if sync:
+                return (meta, [sync(x) for x in data])
+            else:
+                return (meta, data)
 
         return spess._paged.Paged(get_page)
 
@@ -386,17 +397,66 @@ class Backend:
     # Model Manipulation
     #
 
-    def _merge[T](self, ty: type[T], obj: T) -> T:
+    def _set_client[T](self, obj: T):
         if isinstance(obj, bases.LocalClient) and isinstance(self, spess.client.Client):
             obj._set_client(self)
 
-        if isinstance(obj, bases.Synced):
-            sync_key = (type(obj), obj._class_key)
-            try:
-                existing = self._sync_table[sync_key]
-            except KeyError:
-                self._sync_table[sync_key] = obj
-            else:
-                obj = existing._update(obj) # type: ignore
+    #
+    # Sync Code
+    #
+
+    def _sync[T: bases.Synced](self, obj: T) -> T:
+        sync_key = (type(obj), getattr(obj, obj._class_key))
+        try:
+            existing = self._sync_table[sync_key]
+        except KeyError:
+            self._sync_table[sync_key] = obj
+        else:
+            obj = existing._update(obj) # type: ignore
 
         return obj
+
+    def _sync_list[T: bases.Synced](self, objs: list[T]) -> list[T]:
+        return [self._sync(x) for x in objs]
+
+    def _sync_transfer_cargo(self, transfer: spess.responses.TransferCargo, from_ship: str, to_ship: str) -> None:
+        self._sync_ship_cargo(transfer.cargo, from_ship)
+        self._sync_ship_cargo(transfer.target_cargo, to_ship)
+
+    def _get_synced[T: bases.Synced](self, ty: type[T], key: str) -> typing.Iterator[T]:
+        try:
+            existing = self._sync_table[(ty, key)]
+        except KeyError:
+            pass
+        else:
+            yield existing # type: ignore
+
+    def _sync_chart(self, chart: spess.models.Chart) -> None:
+        for waypoint in self._get_synced(spess.models.Waypoint, chart.waypoint_symbol):
+            waypoint.chart = chart
+
+    def _sync_cooldown(self, cooldown: spess.models.Cooldown, ship_symbol: str) -> None:
+        for ship in self._get_synced(spess.models.Ship, ship_symbol):
+            ship.cooldown = cooldown
+
+    def _sync_ship_cargo(self, cargo: spess.models.ShipCargo | None, ship_symbol: str) -> None:
+        if cargo is None:
+            return
+        for ship in self._get_synced(spess.models.Ship, ship_symbol):
+            ship.cargo = cargo
+
+    def _sync_ship_fuel(self, fuel: spess.models.ShipFuel, ship_symbol: str) -> None:
+        for ship in self._get_synced(spess.models.Ship, ship_symbol):
+            ship.fuel = fuel
+
+    def _sync_ship_modules(self, modules: list[spess.models.ShipModule], ship_symbol: str) -> None:
+        for ship in self._get_synced(spess.models.Ship, ship_symbol):
+            ship.modules = modules
+
+    def _sync_ship_mounts(self, mounts: list[spess.models.ShipMount], ship_symbol: str) -> None:
+        for ship in self._get_synced(spess.models.Ship, ship_symbol):
+            ship.mounts = mounts
+
+    def _sync_ship_nav(self, nav: spess.models.ShipNav, ship_symbol: str) -> None:
+        for ship in self._get_synced(spess.models.Ship, ship_symbol):
+            ship.nav = nav

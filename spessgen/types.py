@@ -426,3 +426,22 @@ class Resolver:
             except KeyError:
                 pass
         raise KeyError(py_name)
+
+    def children(self, ty: Type) -> typing.Iterator[str]:
+        if isinstance(ty.definition, Struct):
+            for field in ty.definition.fields.values():
+                child = field.py_type
+                if child.startswith('list[') and child.endswith(']'):
+                    child = child[len('list['):-len(']')]
+                yield child
+        elif isinstance(ty.definition, Enum):
+            pass
+        else:
+            typing.assert_never(ty.definition)
+
+    def parents(self, ty: Type) -> typing.Iterator[Type]:
+        for parent in self.iter_flat():
+            for child in self.children(parent):
+                if child == ty.py_name:
+                    yield parent
+                    break

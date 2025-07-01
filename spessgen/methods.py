@@ -40,6 +40,8 @@ class Method:
     adhoc: bool
     paginated: bool
 
+    sync_code: list[str]
+
     @property
     def all_args(self) -> list[Argument]:
         if isinstance(self.body_args, list):
@@ -323,6 +325,78 @@ class Converter:
         ty.check_name(conv.py_name)
         ty.convenience[conv.py_name] = conv
 
+    def _type_inside_synced(self, ty: types.Type) -> bool:
+        if ty.synced:
+            return True
+        for parent in self.resolver.parents(ty):
+            if self._type_inside_synced(parent):
+                return True
+        return False
+
+    def _add_result_sync(self, m: Method) -> None:
+        try:
+            sync_code = SYNC_CODE[m.py_result]
+        except KeyError:
+            pass
+        else:
+            if sync_code is not None:
+                m.sync_code.append(sync_code)
+            return
+
+        py_result = m.py_result
+        if py_result.startswith('list[') and py_result.endswith(']'):
+            py_result = py_result[len('list['):-len(']')]
+        ty = self.resolver.get(py_result)
+
+        # if ty is itself synced, this is handled with Backend._sync
+        if ty.synced:
+            m.sync_code.append('{0} = self._sync({0})')
+            return
+
+        # if this result is itself inside a synced but not handled above...
+        if self._type_inside_synced(ty):
+            raise RuntimeError(f'method {m.py_name} response {ty.py_name} needs sync code')
+
+        # if result itself isn't inside a synced, check subfields
+        # (but only on response classes, not models)
+        if not py_result.startswith(self.responses_module + '.'):
+            return
+        if not isinstance(ty.definition, types.Struct):
+            return
+
+        for field in ty.definition.fields.values():
+            child_name = field.py_type
+            try:
+                sync_code = SYNC_CODE[child_name]
+            except KeyError:
+                pass
+            else:
+                if sync_code is not None:
+                    m.sync_code.append(sync_code.format(f'{{0}}.{field.py_name}'))
+                continue
+
+            # check to see if we need a sync
+            in_list = False
+            if child_name.startswith('list[') and child_name.endswith(']'):
+                in_list = True
+                child_name = child_name[len('list['):-len(']')]
+            try:
+                child = self.resolver.get(child_name)
+            except KeyError:
+                continue
+
+            # if the child itself is sync, this is handled in Backend._sync
+            if child.synced:
+                sync_code = '{0} = self._sync({0})'
+                if in_list:
+                    sync_code = '{0} = self._sync_list({0})'
+                m.sync_code.append(sync_code.format(f'{{0}}.{field.py_name}'))
+                continue
+
+            # if this child is inside a sync but not handled above...
+            if self._type_inside_synced(child):
+                raise RuntimeError(f'method {m.py_name} response field {child.py_name} needs sync code')
+
     def add_op(self, path: str, method: spec.Path.Method, op: spec.Operation) -> None:
         spec_name = op.operationId
         if spec_name in METHOD_SKIP:
@@ -373,6 +447,8 @@ class Converter:
             py_result = py_result,
             adhoc = adhoc,
             paginated = paginated,
+
+            sync_code = [],
         )
 
         for arg in m.all_args:
@@ -383,6 +459,8 @@ class Converter:
 
         for ty in self.resolver.iter_flat():
             self._add_convenience(m, ty)
+
+        self._add_result_sync(m)
 
         if m.py_name in self.methods:
             raise RuntimeError(f'conflicting method names: {m.py_name}')
