@@ -47,10 +47,10 @@ class WriteTypes(write_methods.WriteMethods):
                 self.print('@property')
                 self.print(f'def {type.keyed.foreign}(self) -> str: ...')
 
-    def _write_key_var(self, type: types.Type) -> None:
-        if type.keyed:
+    def _write_sync_var(self, type: types.Type) -> None:
+        if type.synced:
             self.print()
-            self.print(f'_class_key: typing.ClassVar[str] = {type.keyed.foreign!r}')
+            self.print(f'_class_key: typing.ClassVar[str] = {type.synced!r}')
 
     def _write_properties(self, type: types.Type) -> None:
         for k, v in type.properties.items():
@@ -77,7 +77,7 @@ class WriteTypes(write_methods.WriteMethods):
             doc += self.markdown_to_rest(type.doc)
         doc += self._doc_like_str(type)
         self.doc_string(doc, rest=True)
-        self._write_key_var(type)
+        self._write_sync_var(type)
         self.write_types(children)
 
     def _write_bottom(self, type: types.Type) -> None:
@@ -93,6 +93,8 @@ class WriteTypes(write_methods.WriteMethods):
         if type.keyed:
             base_classes.append(f'Keyed[{type.keyed.name}]')
             dataclass_args['eq'] = False
+        elif type.synced:
+            base_classes.append('Synced')
 
         base = ''
         if base_classes:

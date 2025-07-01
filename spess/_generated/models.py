@@ -8,7 +8,7 @@ import typing
 
 import spess._backend as backend
 from spess._json import Json, from_json, to_json
-from spess._model_bases import date, datetime, Enum, LocalClient, Keyed
+from spess._model_bases import date, datetime, Enum, LocalClient, Synced, Keyed
 from spess._paged import Paged
 import spess.responses as responses
 

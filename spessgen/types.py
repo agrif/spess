@@ -51,6 +51,7 @@ class Type:
     doc: str | None
     definition: Struct | Enum
 
+    synced: str | None
     keyed: Keyed | None
     as_keyed: list[str]
     properties: dict[str, str]
@@ -342,9 +343,11 @@ class Resolver:
             raise NotImplementedError(f'no definition for {schema!r}')
 
         keyed = KEYED_TYPES.get(py_name)
+        synced = None
         if keyed and parent is not None:
             keyed = dataclasses.replace(keyed)
             keyed.name = parent + '.' + keyed.name
+            synced = keyed.foreign
 
         ty = Type(
             spec_name = spec_name,
@@ -352,6 +355,7 @@ class Resolver:
             py_name = py_name,
             doc = schema.description,
             definition = definition,
+            synced = synced,
             keyed = keyed,
             as_keyed = [],
             properties = {},
